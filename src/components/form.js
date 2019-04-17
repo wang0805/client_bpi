@@ -9,15 +9,15 @@ class Form extends Component {
     traderB: [],
     traderS: [],
     productsObj: [],
-    product_code: [],
+    product_code: "FEF",
     products: [],
     accountsB: [],
     accountsS: [],
-    fromM: "",
-    toM: "",
-    year: "",
+    fromM: "Apr",
+    toM: "Apr",
+    year: "2019",
     price: "",
-    size: "",
+    qty: "",
     execTime: "",
     dealGroup: 1,
     s_idb: "",
@@ -31,7 +31,7 @@ class Form extends Component {
     let day;
     // let exec_date =
     //   date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-    console.log(this.state.execDate, date.toLocaleTimeString(), "exec date");
+    // console.log(this.state.execDate, date.toLocaleTimeString(), "exec date");
     if (date.getMonth() + 1 < 10) {
       month = "0" + (date.getMonth() + 1);
     } else {
@@ -44,7 +44,7 @@ class Form extends Component {
     }
     let exec_date = date.getFullYear() + "-" + month + "-" + day;
     this.setState({ execDate: exec_date });
-    this.setState({ execTime: date.toLocaleTimeString() });
+    this.setState({ execTime: date.toLocaleTimeString().substring(0, 5) });
 
     fetch("/api/clients")
       .then(res => res.json())
@@ -102,17 +102,48 @@ class Form extends Component {
 
   handleChange = x => e => {
     this.setState({ [x]: e.target.value });
+    console.log("Fired");
+  };
+
+  handleChangeB = x => e => {
+    this.setState({ [x]: e.target.value });
+    let client = e.target.value;
+    for (let i = 0; i < this.state.value.length; i++) {
+      if (this.state.value[i].clients === client) {
+        this.setState({ traderB: this.state.value[i].traders[0] });
+        this.setState({ accountsB: this.state.value[i].accounts[0] });
+      }
+    }
+  };
+
+  handleChangeS = x => e => {
+    this.setState({ [x]: e.target.value });
+    let client = e.target.value;
+    for (let i = 0; i < this.state.value.length; i++) {
+      if (this.state.value[i].clients === client) {
+        this.setState({ traderS: this.state.value[i].traders[0] });
+        this.setState({ accountsS: this.state.value[i].accounts[0] });
+      }
+    }
   };
 
   loopFunc(x, y) {
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.clientB === this.state.value[i].clients) {
         for (let j = 0; j < this.state.value[i][x].length; j++) {
-          y.push(
-            <option key={j} value={this.state.value[i][x][j]}>
-              {this.state.value[i][x][j]}
-            </option>
-          );
+          if (j === 0) {
+            y.push(
+              <option selected key={j} value={this.state.value[i][x][j]}>
+                {this.state.value[i][x][j]}
+              </option>
+            );
+          } else {
+            y.push(
+              <option key={j} value={this.state.value[i][x][j]}>
+                {this.state.value[i][x][j]}
+              </option>
+            );
+          }
         }
       }
     }
@@ -122,11 +153,19 @@ class Form extends Component {
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.clientS === this.state.value[i].clients) {
         for (let j = 0; j < this.state.value[i][x].length; j++) {
-          y.push(
-            <option key={j} value={this.state.value[i][x][j]}>
-              {this.state.value[i][x][j]}
-            </option>
-          );
+          if (j === 0) {
+            y.push(
+              <option selected key={j} value={this.state.value[i][x][j]}>
+                {this.state.value[i][x][j]}
+              </option>
+            );
+          } else {
+            y.push(
+              <option key={j} value={this.state.value[i][x][j]}>
+                {this.state.value[i][x][j]}
+              </option>
+            );
+          }
         }
       }
     }
@@ -159,8 +198,19 @@ class Form extends Component {
     let date = new Date();
     let execDate =
       date.getDate() + 1 + "/" + date.getMonth() + "/" + date.getFullYear();
-    let gcmS = this.state.accountsS.split(" ")[1];
-    let gcmB = this.state.accountsB.split(" ")[1];
+    let gcmB;
+    let gcmS;
+    if (this.state.accountsB.length > 0 && this.state.accountsS.length > 0) {
+      gcmB = this.state.accountsB.split(" ")[1];
+      gcmS = this.state.accountsS.split(" ")[1];
+    } else if (this.state.accountsS.length > 0) {
+      gcmS = this.state.accountsS.split(" ")[1];
+    } else if (this.state.accountsB.length > 0) {
+      gcmB = this.state.accountsB.split(" ")[1];
+    } else {
+      gcmB = "";
+      gcmS = "";
+    }
 
     const rows = [
       [
@@ -229,21 +279,20 @@ class Form extends Component {
     this.sloopFunc("traders", tradersS);
     this.sloopFunc("accounts", accountsS);
 
-    console.log("tradersB", tradersB, "tradersS", tradersS);
-
     let year = (
       <select
         value={this.state.year}
         onChange={this.handleChange("year")}
         multiple={false}
       >
-        <option value="2019">2019</option>
+        <option value="2019" selected>
+          2019
+        </option>
         <option value="2020">2020</option>
         <option value="2021">2021</option>
         <option value="2021">2022</option>
       </select>
     );
-    console.log(this.state.execDate);
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -256,7 +305,7 @@ class Form extends Component {
           <input
             value={this.state.execTime}
             type="time"
-            min="08:00:00"
+            min="08:00"
             onChange={this.handleChange("execTime")}
           />
           Trade date:{" "}
@@ -292,7 +341,7 @@ class Form extends Component {
           Buyer:{" "}
           <select
             value={this.state.clientB}
-            onChange={this.handleChange("clientB")}
+            onChange={this.handleChangeB("clientB")}
             multiple={false}
           >
             {this.state.clients.map((client, index) => (
@@ -302,6 +351,7 @@ class Form extends Component {
             ))}
           </select>
           <br />
+          Traders:
           <select
             value={this.state.traderB}
             onChange={this.handleChange("traderB")}
@@ -315,6 +365,7 @@ class Form extends Component {
             value={this.state.b_idb}
             onChange={this.handleChange("b_idb")}
           />
+          Accounts:
           <select
             value={this.state.accountsB}
             onChange={this.handleChange("accountsB")}
@@ -323,6 +374,7 @@ class Form extends Component {
             {accountsB.map(account => account)}
           </select>
           <br />
+          From:
           <select
             value={this.state.fromM}
             onChange={this.handleChange("fromM")}
@@ -332,7 +384,9 @@ class Form extends Component {
             <option value="Feb">Feb</option>
             <option value="Mar">Mar</option>
             <option value="Apr">Apr</option>
-            <option value="May">May</option>
+            <option selected value="May">
+              May
+            </option>
             <option value="Jun">Jun</option>
             <option value="Jul">Jul</option>
             <option value="Aug">Aug</option>
@@ -342,7 +396,7 @@ class Form extends Component {
             <option value="Dec">Dec</option>
           </select>
           {year}
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>To:
           <select
             value={this.state.toM}
             onChange={this.handleChange("toM")}
@@ -352,7 +406,9 @@ class Form extends Component {
             <option value="Feb">Feb</option>
             <option value="Mar">Mar</option>
             <option value="Apr">Apr</option>
-            <option value="May">May</option>
+            <option selected value="May">
+              May
+            </option>
             <option value="Jun">Jun</option>
             <option value="Jul">Jul</option>
             <option value="Aug">Aug</option>
@@ -366,7 +422,7 @@ class Form extends Component {
           Seller:{" "}
           <select
             value={this.state.clientS}
-            onChange={this.handleChange("clientS")}
+            onChange={this.handleChangeS("clientS")}
             multiple={false}
           >
             {this.state.clients.map((client, index) => (
@@ -376,6 +432,7 @@ class Form extends Component {
             ))}
           </select>
           <br />
+          Traders:
           <select
             value={this.state.traderS}
             onChange={this.handleChange("traderS")}
@@ -389,6 +446,7 @@ class Form extends Component {
             value={this.state.s_idb}
             onChange={this.handleChange("s_idb")}
           />
+          Accounts:
           <select
             value={this.state.accountsS}
             onChange={this.handleChange("accountsS")}
@@ -399,12 +457,18 @@ class Form extends Component {
           <br />
           Price:{" "}
           <input
+            type="number"
             value={this.state.price}
             onChange={this.handleChange("price")}
           />
           <br />
           Qty:{" "}
-          <input value={this.state.qty} onChange={this.handleChange("qty")} />
+          <input
+            type="numnber"
+            value={this.state.qty}
+            onChange={this.handleChange("qty")}
+          />
+          <br />
           <input type="submit" value="submit" />
         </form>
       </div>
