@@ -4,25 +4,29 @@ class Form extends Component {
   state = {
     value: [], //full list clients in dictionary
     clients: [], //clients array
-    clientB: [], //client select
-    clientS: [], //client Sell select
-    traderB: [],
-    traderS: [],
+    b_client: [], //client select
+    s_client: [], //client Sell select
+    b_trader: [],
+    s_trader: [],
+    b_accounts: [],
+    s_accounts: [],
+    s_comms: 0.0,
+    b_comms: 0.0,
+    s_idb: "",
+    b_idb: "",
+    s_recap: "",
+    b_recap: "",
     productsObj: [],
     product_code: "FEF",
     products: [],
-    accountsB: [],
-    accountsS: [],
     fromM: "Apr",
     toM: "Apr",
     year: "2019",
     price: "",
     qty: "",
     execTime: "",
-    dealGroup: 1,
-    s_idb: "",
-    b_idb: "",
-    execDate: ""
+    execDate: "",
+    dealGroup: 1
   };
 
   componentDidMount() {
@@ -64,7 +68,7 @@ class Form extends Component {
           let gcms_code = [];
           let accounts = [];
           let recap_emails = "";
-          let commission;
+          let commission = 0;
 
           for (let j = 0; j < data.length; j++) {
             if (data[j].client_name === clients[i]) {
@@ -100,8 +104,8 @@ class Form extends Component {
       });
   }
 
-  handleChange = x => e => {
-    this.setState({ [x]: e.target.value });
+  handleChange = e => {
+    this.setState({ [e.target.name]: e.target.value });
     console.log("Fired");
   };
 
@@ -110,8 +114,10 @@ class Form extends Component {
     let client = e.target.value;
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.value[i].clients === client) {
-        this.setState({ traderB: this.state.value[i].traders[0] });
-        this.setState({ accountsB: this.state.value[i].accounts[0] });
+        this.setState({ b_trader: this.state.value[i].traders[0] });
+        this.setState({ b_accounts: this.state.value[i].accounts[0] });
+        this.setState({ b_comms: this.state.value[i].commission });
+        this.setState({ b_recap: this.state.value[i].recap_emails });
       }
     }
   };
@@ -121,15 +127,17 @@ class Form extends Component {
     let client = e.target.value;
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.value[i].clients === client) {
-        this.setState({ traderS: this.state.value[i].traders[0] });
-        this.setState({ accountsS: this.state.value[i].accounts[0] });
+        this.setState({ s_trader: this.state.value[i].traders[0] });
+        this.setState({ s_accounts: this.state.value[i].accounts[0] });
+        this.setState({ s_comms: this.state.value[i].commission });
+        this.setState({ s_recap: this.state.value[i].recap_emails });
       }
     }
   };
 
   loopFunc(x, y) {
     for (let i = 0; i < this.state.value.length; i++) {
-      if (this.state.clientB === this.state.value[i].clients) {
+      if (this.state.b_client === this.state.value[i].clients) {
         for (let j = 0; j < this.state.value[i][x].length; j++) {
           if (j === 0) {
             y.push(
@@ -151,7 +159,7 @@ class Form extends Component {
 
   sloopFunc(x, y) {
     for (let i = 0; i < this.state.value.length; i++) {
-      if (this.state.clientS === this.state.value[i].clients) {
+      if (this.state.s_client === this.state.value[i].clients) {
         for (let j = 0; j < this.state.value[i][x].length; j++) {
           if (j === 0) {
             y.push(
@@ -170,43 +178,30 @@ class Form extends Component {
       }
     }
   }
-
-  // loopFunc(x, y) {
-  //   if (this.state.value.length > 0 && this.state.client.length === 1) {
-  //     let test = [...this.state.value];
-  //     let client = test.filter(client => client.clients === this.state.client);
-  //     console.log(client);
-  //     for (let j = 0; j < client[0][x].length; j++) {
-  //       y.push(
-  //         <option key={j} value={client[0][x][j]}>
-  //           {client[0][x][j]}
-  //         </option>
-  //       );
-  //     }
-  //   }
-  // }
-
+  //get month in number
   getMon = month => {
     return "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(month) / 3 + 1;
   };
 
   handleSubmit = e => {
     e.preventDefault();
+
     let toM = this.getMon(this.state.toM);
     let fromM = this.getMon(this.state.fromM);
     let consMonth = (toM - fromM + 1).toString();
+    //date to change
     let date = new Date();
     let execDate =
       date.getDate() + 1 + "/" + date.getMonth() + "/" + date.getFullYear();
     let gcmB;
     let gcmS;
-    if (this.state.accountsB.length > 0 && this.state.accountsS.length > 0) {
-      gcmB = this.state.accountsB.split(" ")[1];
-      gcmS = this.state.accountsS.split(" ")[1];
-    } else if (this.state.accountsS.length > 0) {
-      gcmS = this.state.accountsS.split(" ")[1];
-    } else if (this.state.accountsB.length > 0) {
-      gcmB = this.state.accountsB.split(" ")[1];
+    if (this.state.b_accounts.length > 0 && this.state.s_accounts.length > 0) {
+      gcmB = this.state.b_accounts.split(" ")[1];
+      gcmS = this.state.s_accounts.split(" ")[1];
+    } else if (this.state.s_accounts.length > 0) {
+      gcmS = this.state.s_accounts.split(" ")[1];
+    } else if (this.state.b_accounts.length > 0) {
+      gcmB = this.state.b_accounts.split(" ")[1];
     } else {
       gcmB = "";
       gcmS = "";
@@ -254,35 +249,62 @@ class Form extends Component {
         this.state.price,
         this.state.s_idb,
         gcmS,
-        this.state.accountsS,
+        this.state.s_accounts,
         "",
         this.state.b_idb,
         gcmB,
-        this.state.accountsB,
+        this.state.b_accounts,
         ""
       ]
     ];
+    //download to csv
     let csvContent =
       "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
     var encodedUri = encodeURI(csvContent);
     window.open(encodedUri);
+
+    // console.log(this.state, "states passing through");
+    const data = { ...this.state };
+    //post to email
+    fetch("/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(() => {
+      console.log("this is a success to email!!");
+    });
+    // post to transaction
+    fetch("/api/transactions", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(() => {
+      console.log("this is a success on transactions!!");
+    });
   };
 
   render() {
-    let tradersB = [];
-    let accountsB = [];
-    let tradersS = [];
-    let accountsS = [];
+    let b_traders = [];
+    let b_accounts = [];
+    let s_traders = [];
+    let s_accounts = [];
 
-    this.loopFunc("traders", tradersB);
-    this.loopFunc("accounts", accountsB);
-    this.sloopFunc("traders", tradersS);
-    this.sloopFunc("accounts", accountsS);
+    this.loopFunc("traders", b_traders);
+    this.loopFunc("accounts", b_accounts);
+    this.sloopFunc("traders", s_traders);
+    this.sloopFunc("accounts", s_accounts);
 
     let year = (
       <select
+        name="year"
         value={this.state.year}
-        onChange={this.handleChange("year")}
+        onChange={this.handleChange}
         multiple={false}
       >
         <option value="2019" selected>
@@ -296,28 +318,33 @@ class Form extends Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          Deal group:{" "}
+          Deal group:
           <input
+            name="dealGroup"
             value={this.state.dealGroup}
-            onChange={this.handleChange("dealGroup")}
+            onChange={this.handleChange}
           />
-          Trade time:{" "}
+          <br />
+          Trade time:
           <input
+            name="execTime"
             value={this.state.execTime}
             type="time"
             min="08:00"
-            onChange={this.handleChange("execTime")}
+            onChange={this.handleChange}
           />
-          Trade date:{" "}
+          Trade date:
           <input
+            name="execDate"
             value={this.state.execDate}
             type="date"
-            onChange={this.handleChange("execDate")}
+            onChange={this.handleChange}
           />
           <br />
           <select
+            name="product_code"
             value={this.state.product_code}
-            onChange={this.handleChange("product_code")}
+            onChange={this.handleChange}
             multiple={false}
           >
             {this.state.productsObj.map((code, index) => (
@@ -327,8 +354,9 @@ class Form extends Component {
             ))}
           </select>
           <select
+            name="products"
             value={this.state.products}
-            onChange={this.handleChange("products")}
+            onChange={this.handleChange}
             multiple={false}
           >
             {this.state.productsObj.map((name, index) => (
@@ -338,10 +366,10 @@ class Form extends Component {
             ))}
           </select>
           <br />
-          Buyer:{" "}
+          Buyer:
           <select
-            value={this.state.clientB}
-            onChange={this.handleChangeB("clientB")}
+            value={this.state.b_client}
+            onChange={this.handleChangeB("b_client")}
             multiple={false}
           >
             {this.state.clients.map((client, index) => (
@@ -353,31 +381,44 @@ class Form extends Component {
           <br />
           Traders:
           <select
-            value={this.state.traderB}
-            onChange={this.handleChange("traderB")}
+            name="b_trader"
+            value={this.state.b_trader}
+            onChange={this.handleChange}
             multiple={false}
           >
-            {tradersB.map(trader => trader)}
+            {b_traders.map(trader => trader)}
           </select>
           <br />
           IDB:
           <input
+            name="b_idb"
             value={this.state.b_idb}
-            onChange={this.handleChange("b_idb")}
+            onChange={this.handleChange}
           />
+          <br />
           Accounts:
           <select
-            value={this.state.accountsB}
-            onChange={this.handleChange("accountsB")}
+            name="b_accounts"
+            value={this.state.b_accounts}
+            onChange={this.handleChange}
             multiple={false}
           >
-            {accountsB.map(account => account)}
+            {b_accounts.map(account => account)}
           </select>
+          <br />
+          Commission:
+          <input
+            name="b_comms"
+            type="number"
+            value={this.state.b_comms}
+            onChange={this.handleChange}
+          />
           <br />
           From:
           <select
+            name="fromM"
             value={this.state.fromM}
-            onChange={this.handleChange("fromM")}
+            onChange={this.handleChange}
             multiple={false}
           >
             <option value="Jan">Jan</option>
@@ -398,8 +439,9 @@ class Form extends Component {
           {year}
           <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>To:
           <select
+            name="toM"
             value={this.state.toM}
-            onChange={this.handleChange("toM")}
+            onChange={this.handleChange}
             multiple={false}
           >
             <option value="Jan">Jan</option>
@@ -419,10 +461,10 @@ class Form extends Component {
           </select>
           {year}
           <br />
-          Seller:{" "}
+          Seller:
           <select
-            value={this.state.clientS}
-            onChange={this.handleChangeS("clientS")}
+            value={this.state.s_client}
+            onChange={this.handleChangeS("s_client")}
             multiple={false}
           >
             {this.state.clients.map((client, index) => (
@@ -434,39 +476,53 @@ class Form extends Component {
           <br />
           Traders:
           <select
-            value={this.state.traderS}
-            onChange={this.handleChange("traderS")}
+            name="s_trader"
+            value={this.state.s_trader}
+            onChange={this.handleChange}
             multiple={false}
           >
-            {tradersS.map(trader => trader)}
+            {s_traders.map(trader => trader)}
           </select>
           <br />
           IDB:
           <input
+            name="s_idb"
             value={this.state.s_idb}
-            onChange={this.handleChange("s_idb")}
+            onChange={this.handleChange}
           />
+          <br />
           Accounts:
           <select
-            value={this.state.accountsS}
-            onChange={this.handleChange("accountsS")}
+            name="s_accounts"
+            value={this.state.s_accounts}
+            onChange={this.handleChange}
             multiple={false}
           >
-            {accountsS.map(account => account)}
+            {s_accounts.map(account => account)}
           </select>
           <br />
-          Price:{" "}
+          Commission:
           <input
+            name="s_comms"
             type="number"
-            value={this.state.price}
-            onChange={this.handleChange("price")}
+            value={this.state.s_comms}
+            onChange={this.handleChange}
           />
           <br />
-          Qty:{" "}
+          Price:
           <input
+            name="price"
+            type="number"
+            value={this.state.price}
+            onChange={this.handleChange}
+          />
+          <br />
+          Qty:
+          <input
+            name="qty"
             type="numnber"
             value={this.state.qty}
-            onChange={this.handleChange("qty")}
+            onChange={this.handleChange}
           />
           <br />
           <input type="submit" value="submit" />
