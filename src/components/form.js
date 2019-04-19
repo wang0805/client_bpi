@@ -236,15 +236,15 @@ class Form extends Component {
     console.log(fromM, toM, consMonth, "checking to and from");
     let contract = "";
     if (fromM === 1 && consMonth === 3) {
-      contract = "Q1, " + this.state.year;
+      contract = "Q1'" + this.state.year;
     } else if (fromM === 4 && consMonth === 3) {
-      contract = "Q2, " + this.state.year;
+      contract = "Q2'" + this.state.year;
     } else if (fromM === 7 && consMonth === 3) {
-      contract = "Q3, " + this.state.year;
+      contract = "Q3'" + this.state.year;
     } else if (fromM === 10 && consMonth === 3) {
-      contract = "Q4, " + this.state.year;
+      contract = "Q4'" + this.state.year;
     } else {
-      contract = this.state.fromM + ", " + this.state.year;
+      contract = this.state.fromM + "'" + this.state.year;
     }
 
     const rows = [
