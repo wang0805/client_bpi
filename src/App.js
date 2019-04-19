@@ -5,6 +5,7 @@ import "./App.css";
 import AppProvider from "./components/store/provider";
 
 import Form from "./components/form";
+import Transactions from "./components/transactions";
 
 class App extends Component {
   render() {
@@ -16,6 +17,8 @@ class App extends Component {
             <div>
               INPUT
               <Form />
+              <br />
+              {/* <Transactions /> */}
             </div>
           </header>
         </div>

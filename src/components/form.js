@@ -23,7 +23,7 @@ class Form extends Component {
     toM: "May",
     year: "2019",
     price: "",
-    qty: "",
+    qty: 50,
     execTime: "",
     execDate: "",
     dealGroup: 1
@@ -220,7 +220,7 @@ class Form extends Component {
 
     let toM = this.getMon(this.state.toM);
     let fromM = this.getMon(this.state.fromM);
-    let consMonth = (toM - fromM + 1).toString();
+    let consMonth = toM - fromM + 1;
     let date = this.state.execDate.split("-");
     let execDate = date[2] + "/" + date[1] + "/" + date[0];
     let gcmB = "";
@@ -232,6 +232,19 @@ class Form extends Component {
       gcmS = this.state.s_accounts.split(" ")[1];
     } else if (this.state.b_accounts.length > 0) {
       gcmB = this.state.b_accounts.split(" ")[1];
+    }
+    console.log(fromM, toM, consMonth, "checking to and from");
+    let contract = "";
+    if (fromM === 1 && consMonth === 3) {
+      contract = "Q1, " + this.state.year;
+    } else if (fromM === 4 && consMonth === 3) {
+      contract = "Q2, " + this.state.year;
+    } else if (fromM === 7 && consMonth === 3) {
+      contract = "Q3, " + this.state.year;
+    } else if (fromM === 10 && consMonth === 3) {
+      contract = "Q4, " + this.state.year;
+    } else {
+      contract = this.state.fromM + ", " + this.state.year;
     }
 
     const rows = [
@@ -286,7 +299,21 @@ class Form extends Component {
     ];
     if (
       window.confirm(
-        `buyer: ${this.state.b_client} and seller: ${this.state.s_client}`
+        `Please check the below info:
+        
+        Buyer: ${this.state.b_client}
+        Buyer_account: ${this.state.b_accounts} 
+        Buyer_trader: ${this.state.b_trader}
+        Buyer_comms: ${this.state.b_comms}
+
+        Seller: ${this.state.s_client}
+        Seller_account: ${this.state.s_accounts} 
+        Seller_trader: ${this.state.s_trader}
+        Seller_comms: ${this.state.s_comms}
+        
+        Contract: ${contract}
+        Price: ${this.state.price}
+        Quantity: ${this.state.qty}`
       )
     ) {
       //download to csv
@@ -296,7 +323,7 @@ class Form extends Component {
       window.open(encodedUri);
 
       // console.log(this.state, "states passing through");
-      const data = { ...this.state };
+      const data = { ...this.state, contract: contract };
       //post to email
       fetch("/send", {
         method: "POST",
@@ -432,6 +459,7 @@ class Form extends Component {
           <input
             name="b_comms"
             type="number"
+            step="0.01"
             value={this.state.b_comms}
             onChange={this.handleChange}
           />
@@ -527,6 +555,7 @@ class Form extends Component {
           <input
             name="s_comms"
             type="number"
+            step="0.01"
             value={this.state.s_comms}
             onChange={this.handleChange}
           />
@@ -535,6 +564,7 @@ class Form extends Component {
           <input
             name="price"
             type="number"
+            step="0.05"
             value={this.state.price}
             onChange={this.handleChange}
           />
@@ -542,7 +572,8 @@ class Form extends Component {
           Qty:
           <input
             name="qty"
-            type="numnber"
+            type="number"
+            step="50"
             value={this.state.qty}
             onChange={this.handleChange}
           />
