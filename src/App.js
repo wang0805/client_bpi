@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
+// import logo from "./logo.svg";
+import bpi from "./bpi.png";
 import "./App.css";
 import AppProvider from "./components/store/provider";
 
@@ -11,9 +12,9 @@ class App extends Component {
       <AppProvider>
         <div className="App">
           <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
+            <img src={bpi} className="App-logo" alt="logo" />
             <div>
-              Input
+              INPUT
               <Form />
             </div>
           </header>

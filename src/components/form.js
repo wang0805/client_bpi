@@ -18,9 +18,9 @@ class Form extends Component {
     b_recap: "",
     productsObj: [],
     product_code: "FEF",
-    products: [],
-    fromM: "Apr",
-    toM: "Apr",
+    products: "Iron ore TSI62 Futures",
+    fromM: "May",
+    toM: "May",
     year: "2019",
     price: "",
     qty: "",
@@ -62,7 +62,6 @@ class Form extends Component {
         clients = [...new Set(clients)];
         for (let i = 0; i < clients.length; i++) {
           let traders = [];
-          let products = [];
           let product_code = [];
           let gcms = [];
           let gcms_code = [];
@@ -73,7 +72,6 @@ class Form extends Component {
           for (let j = 0; j < data.length; j++) {
             if (data[j].client_name === clients[i]) {
               traders.push(data[j].trader_name);
-              products.push(data[j].product_name);
               product_code.push(data[j].product_code);
               gcms.push(data[j].gcm_name);
               gcms_code.push(data[j].gcm_code);
@@ -85,7 +83,6 @@ class Form extends Component {
           clientsObj.push({
             clients: clients[i],
             product_code: [...new Set(product_code)],
-            products: [...new Set(products)],
             gcms_code: [...new Set(gcms_code)],
             gcms: [...new Set(gcms)],
             accounts: [...new Set(accounts)],
@@ -141,7 +138,7 @@ class Form extends Component {
         for (let j = 0; j < this.state.value[i][x].length; j++) {
           if (j === 0) {
             y.push(
-              <option selected key={j} value={this.state.value[i][x][j]}>
+              <option defaultValue key={j} value={this.state.value[i][x][j]}>
                 {this.state.value[i][x][j]}
               </option>
             );
@@ -163,7 +160,7 @@ class Form extends Component {
         for (let j = 0; j < this.state.value[i][x].length; j++) {
           if (j === 0) {
             y.push(
-              <option selected key={j} value={this.state.value[i][x][j]}>
+              <option defaultValue key={j} value={this.state.value[i][x][j]}>
                 {this.state.value[i][x][j]}
               </option>
             );
@@ -183,18 +180,51 @@ class Form extends Component {
     return "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(month) / 3 + 1;
   };
 
+  flip = () => {
+    let b_client = this.state.b_client;
+    let b_trader = this.state.b_trader;
+    let b_accounts = this.state.b_accounts;
+    let b_comms = this.state.b_comms;
+    let s_client = this.state.s_client;
+    let s_trader = this.state.s_trader;
+    let s_accounts = this.state.s_accounts;
+    let s_comms = this.state.s_comms;
+
+    this.setState({
+      b_client: s_client,
+      b_trader: s_trader,
+      b_accounts: s_accounts,
+      b_comms: s_comms,
+      s_client: b_client,
+      s_trader: b_trader,
+      s_accounts: b_accounts,
+      s_comms: b_comms
+    });
+  };
+
+  clear = () => {
+    this.setState({
+      b_client: "",
+      b_trader: "",
+      b_accounts: "",
+      b_comms: 0,
+      s_client: "",
+      s_trader: "",
+      s_accounts: "",
+      s_comms: 0
+    });
+  };
+
   handleSubmit = e => {
     e.preventDefault();
 
     let toM = this.getMon(this.state.toM);
     let fromM = this.getMon(this.state.fromM);
     let consMonth = (toM - fromM + 1).toString();
-    //date to change
-    let date = new Date();
-    let execDate =
-      date.getDate() + 1 + "/" + date.getMonth() + "/" + date.getFullYear();
-    let gcmB;
-    let gcmS;
+    let date = this.state.execDate.split("-");
+    let execDate = date[2] + "/" + date[1] + "/" + date[0];
+    let gcmB = "";
+    let gcmS = "";
     if (this.state.b_accounts.length > 0 && this.state.s_accounts.length > 0) {
       gcmB = this.state.b_accounts.split(" ")[1];
       gcmS = this.state.s_accounts.split(" ")[1];
@@ -202,9 +232,6 @@ class Form extends Component {
       gcmS = this.state.s_accounts.split(" ")[1];
     } else if (this.state.b_accounts.length > 0) {
       gcmB = this.state.b_accounts.split(" ")[1];
-    } else {
-      gcmB = "";
-      gcmS = "";
     }
 
     const rows = [
@@ -257,36 +284,42 @@ class Form extends Component {
         ""
       ]
     ];
-    //download to csv
-    let csvContent =
-      "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
-    var encodedUri = encodeURI(csvContent);
-    window.open(encodedUri);
+    if (
+      window.confirm(
+        `buyer: ${this.state.b_client} and seller: ${this.state.s_client}`
+      )
+    ) {
+      //download to csv
+      let csvContent =
+        "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+      var encodedUri = encodeURI(csvContent);
+      window.open(encodedUri);
 
-    // console.log(this.state, "states passing through");
-    const data = { ...this.state };
-    //post to email
-    fetch("/send", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    }).then(() => {
-      console.log("this is a success to email!!");
-    });
-    // post to transaction
-    fetch("/api/transactions", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    }).then(() => {
-      console.log("this is a success on transactions!!");
-    });
+      // console.log(this.state, "states passing through");
+      const data = { ...this.state };
+      //post to email
+      fetch("/send", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      }).then(() => {
+        console.log("this is a success to email!!");
+      });
+      // post to transaction
+      fetch("/api/transactions", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      }).then(() => {
+        console.log("this is a success on transactions!!");
+      });
+    }
   };
 
   render() {
@@ -307,7 +340,7 @@ class Form extends Component {
         onChange={this.handleChange}
         multiple={false}
       >
-        <option value="2019" selected>
+        <option value="2019" defaultValue>
           2019
         </option>
         <option value="2020">2020</option>
@@ -341,6 +374,7 @@ class Form extends Component {
             onChange={this.handleChange}
           />
           <br />
+          Product:
           <select
             name="product_code"
             value={this.state.product_code}
@@ -349,19 +383,7 @@ class Form extends Component {
           >
             {this.state.productsObj.map((code, index) => (
               <option key={index} value={code.code}>
-                {code.code}
-              </option>
-            ))}
-          </select>
-          <select
-            name="products"
-            value={this.state.products}
-            onChange={this.handleChange}
-            multiple={false}
-          >
-            {this.state.productsObj.map((name, index) => (
-              <option key={index} value={name.name}>
-                {name.name}
+                {code.code}&nbsp;&nbsp;&nbsp;{code.name}
               </option>
             ))}
           </select>
@@ -379,7 +401,7 @@ class Form extends Component {
             ))}
           </select>
           <br />
-          Traders:
+          Trader:
           <select
             name="b_trader"
             value={this.state.b_trader}
@@ -425,7 +447,7 @@ class Form extends Component {
             <option value="Feb">Feb</option>
             <option value="Mar">Mar</option>
             <option value="Apr">Apr</option>
-            <option selected value="May">
+            <option defaultValue value="May">
               May
             </option>
             <option value="Jun">Jun</option>
@@ -448,7 +470,7 @@ class Form extends Component {
             <option value="Feb">Feb</option>
             <option value="Mar">Mar</option>
             <option value="Apr">Apr</option>
-            <option selected value="May">
+            <option defaultValue value="May">
               May
             </option>
             <option value="Jun">Jun</option>
@@ -474,7 +496,7 @@ class Form extends Component {
             ))}
           </select>
           <br />
-          Traders:
+          Trader:
           <select
             name="s_trader"
             value={this.state.s_trader}
@@ -525,8 +547,10 @@ class Form extends Component {
             onChange={this.handleChange}
           />
           <br />
-          <input type="submit" value="submit" />
+          <input type="submit" value="Submit" />
         </form>
+        <button onClick={this.flip}>Flip</button>
+        <button onClick={this.clear}>Clear</button>
       </div>
     );
   }
