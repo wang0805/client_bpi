@@ -18,7 +18,7 @@ class App extends Component {
               INPUT
               <Form />
               <br />
-              {/* <Transactions /> */}
+              <Transactions />
             </div>
           </header>
         </div>

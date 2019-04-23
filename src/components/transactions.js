@@ -5,13 +5,20 @@ class Transactions extends Component {
   state = { data: "", data_filtered: [] };
 
   async componentDidMount() {
-    await fetch("/api/transactions")
-      .then(res => res.json())
-      .then(data => {
-        this.setState({ data });
-      });
-
-    // console.log(this.state.data, "checking data from api");
+    try {
+      await fetch("/api/transactions", {
+        method: "GET",
+        headers: {
+          Authorization: localStorage.getItem("token")
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          this.setState({ data });
+        });
+    } catch (e) {
+      console.log(e, "error getting transactions due to permissions");
+    }
   }
   render() {
     const columnsAll = [

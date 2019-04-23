@@ -49,56 +49,64 @@ class Form extends Component {
     let exec_date = date.getFullYear() + "-" + month + "-" + day;
     this.setState({ execDate: exec_date });
     this.setState({ execTime: date.toLocaleTimeString().substring(0, 5) });
-
-    fetch("/api/clients")
-      .then(res => res.json())
-      .then(data => {
-        // console.log("api result of clients:", data);
-        let clients = [" "];
-        let clientsObj = [];
-        for (let i = 0; i < data.length; i++) {
-          clients.push(data[i].client_name);
+    try {
+      fetch("/api/clients", {
+        method: "GET",
+        headers: {
+          Authorization: localStorage.getItem("token")
         }
-        clients = [...new Set(clients)];
-        for (let i = 0; i < clients.length; i++) {
-          let traders = [];
-          let product_code = [];
-          let gcms = [];
-          let gcms_code = [];
-          let accounts = [];
-          let recap_emails = "";
-          let commission = 0;
-
-          for (let j = 0; j < data.length; j++) {
-            if (data[j].client_name === clients[i]) {
-              traders.push(data[j].trader_name);
-              product_code.push(data[j].product_code);
-              gcms.push(data[j].gcm_name);
-              gcms_code.push(data[j].gcm_code);
-              accounts.push(data[j].account);
-              recap_emails = data[j].recap_emails;
-              commission = data[j].commission;
-            }
+      })
+        .then(res => res.json())
+        .then(data => {
+          // console.log("api result of clients:", data);
+          let clients = [" "];
+          let clientsObj = [];
+          for (let i = 0; i < data.length; i++) {
+            clients.push(data[i].client_name);
           }
-          clientsObj.push({
-            clients: clients[i],
-            product_code: [...new Set(product_code)],
-            gcms_code: [...new Set(gcms_code)],
-            gcms: [...new Set(gcms)],
-            accounts: [...new Set(accounts)],
-            traders: [...new Set(traders)],
-            commission: commission,
-            recap_emails: recap_emails
-          });
-        }
-        this.setState({ value: clientsObj });
-        this.setState({ clients: clients });
-      });
-    fetch("/api/products")
-      .then(res => res.json())
-      .then(data => {
-        this.setState({ productsObj: data });
-      });
+          clients = [...new Set(clients)];
+          for (let i = 0; i < clients.length; i++) {
+            let traders = [];
+            let product_code = [];
+            let gcms = [];
+            let gcms_code = [];
+            let accounts = [];
+            let recap_emails = "";
+            let commission = 0;
+
+            for (let j = 0; j < data.length; j++) {
+              if (data[j].client_name === clients[i]) {
+                traders.push(data[j].trader_name);
+                product_code.push(data[j].product_code);
+                gcms.push(data[j].gcm_name);
+                gcms_code.push(data[j].gcm_code);
+                accounts.push(data[j].account);
+                recap_emails = data[j].recap_emails;
+                commission = data[j].commission;
+              }
+            }
+            clientsObj.push({
+              clients: clients[i],
+              product_code: [...new Set(product_code)],
+              gcms_code: [...new Set(gcms_code)],
+              gcms: [...new Set(gcms)],
+              accounts: [...new Set(accounts)],
+              traders: [...new Set(traders)],
+              commission: commission,
+              recap_emails: recap_emails
+            });
+          }
+          this.setState({ value: clientsObj });
+          this.setState({ clients: clients });
+        });
+      fetch("/api/products")
+        .then(res => res.json())
+        .then(data => {
+          this.setState({ productsObj: data });
+        });
+    } catch (e) {
+      console.log(e, "error getting clients due to permissions");
+    }
   }
 
   handleChange = e => {
