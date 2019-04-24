@@ -310,11 +310,13 @@ class Form extends Component {
         `Please check the below info:
         
         Buyer: ${this.state.b_client}
+        Buyer_IDB: ${this.state.b_idb}
         Buyer_account: ${this.state.b_accounts} 
         Buyer_trader: ${this.state.b_trader}
         Buyer_comms: ${this.state.b_comms}
 
         Seller: ${this.state.s_client}
+        Seller_IDB: ${this.state.s_idb}
         Seller_account: ${this.state.s_accounts} 
         Seller_trader: ${this.state.s_trader}
         Seller_comms: ${this.state.s_comms}

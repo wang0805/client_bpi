@@ -14,6 +14,7 @@ class Transactions extends Component {
       })
         .then(res => res.json())
         .then(data => {
+          console.log(data, "data from trasactions current date");
           this.setState({ data });
         });
     } catch (e) {
