@@ -100,6 +100,7 @@ class Login extends Component {
       .then(res => res.json())
       .then(data => {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("user_id", data.user_id);
         this.props.history.push("/"); //props are inherent from router
       });
   }

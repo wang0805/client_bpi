@@ -1,8 +1,26 @@
 import React, { Component } from "react";
-import MUIDataTable from "mui-datatables";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+
+const styles = theme => ({
+  root: {
+    width: "100%",
+    marginTop: theme.spacing.unit * 3,
+    overflowX: "auto"
+  },
+  table: {
+    minWidth: 700
+  }
+});
 
 class Transactions extends Component {
-  state = { data: "", data_filtered: [] };
+  state = { data: "" };
 
   async componentDidMount() {
     try {
@@ -14,75 +32,93 @@ class Transactions extends Component {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data, "data from trasactions current date");
           this.setState({ data });
         });
     } catch (e) {
       console.log(e, "error getting transactions due to permissions");
     }
   }
+
+  updatePost = id => {
+    this.props.history.push("/updateid/" + id);
+  };
+
   render() {
-    const columnsAll = [
-      "Trade_id",
-      "trade_date",
-      "Trade_time",
-      "Client_buyer",
-      "Account_buyer",
-      "Trader_buyer",
-      "Comms_buyer",
-      "Client_seller",
-      "Account_seller",
-      "Trader_seller",
-      "Comms_seller",
-      "Price",
-      "Quantity",
-      "Contract",
-      "Year",
-      "Deal_id",
-      "Created_by",
-      "Created_at"
-    ];
-
-    //all
-    for (let i = 0; i < this.state.data.length; i++) {
-      let array = [];
-      array.push(this.state.data[i].id);
-      array.push(this.state.data[i].trade_date);
-      array.push(this.state.data[i].trade_time);
-      array.push(this.state.data[i].b_client);
-      array.push(this.state.data[i].b_account);
-      array.push(this.state.data[i].b_trader);
-      array.push(this.state.data[i].b_commission);
-      array.push(this.state.data[i].s_client);
-      array.push(this.state.data[i].s_account);
-      array.push(this.state.data[i].s_trader);
-      array.push(this.state.data[i].s_commission);
-      array.push(this.state.data[i].price);
-      array.push(this.state.data[i].qty);
-      array.push(this.state.data[i].contract);
-      array.push(this.state.data[i].year);
-      array.push(this.state.data[i].deal_id);
-      array.push(this.state.data[i].created_by_id);
-      array.push(this.state.data[i].created_at);
-      this.state.data_filtered.push(array);
-    }
-
-    const options = {
-      filterType: "checkbox",
-      resizableColumns: "true"
-    };
+    const { classes } = this.props;
 
     return (
-      <div>
-        <MUIDataTable
-          title={"Buyers"}
-          data={this.state.data_filtered}
-          columns={columnsAll}
-          options={options}
-        />
-      </div>
+      <Paper className={classes.root}>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Trade_id</TableCell>
+              <TableCell align="right">Trade_date</TableCell>
+              <TableCell align="right">Product</TableCell>
+              <TableCell align="right">Client_buy</TableCell>
+              <TableCell align="right">Acct_buy</TableCell>
+              <TableCell align="right">Trader_buy</TableCell>
+              <TableCell align="right">Comms_buy</TableCell>
+              <TableCell align="right">Client_sell</TableCell>
+              <TableCell align="right">Acct_sell</TableCell>
+              <TableCell align="right">Trader_sell</TableCell>
+              <TableCell align="right">Comms_sell</TableCell>
+              <TableCell align="right">Price</TableCell>
+              <TableCell align="right">Quantity</TableCell>
+              <TableCell align="right">Contract</TableCell>
+              <TableCell align="right">Year</TableCell>
+              <TableCell align="right">Deal_id</TableCell>
+              <TableCell align="right">Created_by</TableCell>
+              <TableCell align="right">Created_at (GMT +8)</TableCell>
+              <TableCell align="right">Edit</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.state.data.length > 0 &&
+              this.state.data.map(row => {
+                let date = new Date(row.created_at);
+                let date_time =
+                  date.toLocaleDateString() + " " + date.toLocaleTimeString();
+                return (
+                  <TableRow key={row.id}>
+                    <TableCell component="th" scope="row">
+                      {row.id}
+                    </TableCell>
+                    <TableCell align="right">
+                      {row.trade_date.substring(0, 10)}
+                    </TableCell>
+                    <TableCell align="right">{row.product}</TableCell>
+                    <TableCell align="right">{row.b_client}</TableCell>
+                    <TableCell align="right">{row.b_account}</TableCell>
+                    <TableCell align="right">{row.b_trader}</TableCell>
+                    <TableCell align="right">{row.b_commission}</TableCell>
+                    <TableCell align="right">{row.s_client}</TableCell>
+                    <TableCell align="right">{row.s_account}</TableCell>
+                    <TableCell align="right">{row.s_trader}</TableCell>
+                    <TableCell align="right">{row.s_commission}</TableCell>
+                    <TableCell align="right">{row.price}</TableCell>
+                    <TableCell align="right">{row.qty}</TableCell>
+                    <TableCell align="right">{row.contract}</TableCell>
+                    <TableCell align="right">{row.year}</TableCell>
+                    <TableCell align="right">{row.deal_id}</TableCell>
+                    <TableCell align="right">{row.created_by_id}</TableCell>
+                    <TableCell align="right">{date_time}</TableCell>
+                    <TableCell align="right">
+                      <button onClick={() => this.updatePost(row.id)}>
+                        Edit
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
+      </Paper>
     );
   }
 }
 
-export default Transactions;
+Transactions.propTypes = {
+  classes: PropTypes.object.isRequired
+};
+
+export default withStyles(styles)(Transactions);

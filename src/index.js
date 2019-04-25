@@ -4,9 +4,10 @@ import "./index.css";
 import App from "./App";
 import { BrowserRouter, Route, Link } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
-import Login from "../src/components/login";
+import Login from "./components/login";
+import Edit from "./components/edit";
 
-const Routing = (
+const Routing = props => (
   <BrowserRouter>
     <div>
       <ul>
@@ -17,13 +18,15 @@ const Routing = (
           <Link to="/login">Login</Link>
         </li>
       </ul>
+
       <Route exact path="/" component={App} />
       <Route path="/login" render={() => <Login />} />
+      <Route path="/updateid/:id" component={Edit} />
     </div>
   </BrowserRouter>
 );
 
-ReactDOM.render(Routing, document.getElementById("root"));
+ReactDOM.render(<Routing />, document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
