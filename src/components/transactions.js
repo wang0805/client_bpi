@@ -8,14 +8,19 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
+const CustomTableCell = withStyles(() => ({
+  head: {
+    fontSize: 12
+  },
+  body: {
+    fontSize: 11
+  }
+}))(TableCell);
+
 const styles = theme => ({
   root: {
-    width: "100%",
     marginTop: theme.spacing.unit * 3,
     overflowX: "auto"
-  },
-  table: {
-    minWidth: 700
   }
 });
 
@@ -48,28 +53,29 @@ class Transactions extends Component {
 
     return (
       <Paper className={classes.root}>
-        <Table className={classes.table}>
+        <Table style={{ width: 3000 }}>
           <TableHead>
             <TableRow>
-              <TableCell>Trade_id</TableCell>
-              <TableCell align="right">Trade_date</TableCell>
-              <TableCell align="right">Product</TableCell>
-              <TableCell align="right">Client_buy</TableCell>
-              <TableCell align="right">Acct_buy</TableCell>
-              <TableCell align="right">Trader_buy</TableCell>
-              <TableCell align="right">Comms_buy</TableCell>
-              <TableCell align="right">Client_sell</TableCell>
-              <TableCell align="right">Acct_sell</TableCell>
-              <TableCell align="right">Trader_sell</TableCell>
-              <TableCell align="right">Comms_sell</TableCell>
-              <TableCell align="right">Price</TableCell>
-              <TableCell align="right">Quantity</TableCell>
-              <TableCell align="right">Contract</TableCell>
-              <TableCell align="right">Year</TableCell>
-              <TableCell align="right">Deal_id</TableCell>
-              <TableCell align="right">Created_by</TableCell>
-              <TableCell align="right">Created_at (GMT +8)</TableCell>
-              <TableCell align="right">Edit</TableCell>
+              <CustomTableCell>Trade_id</CustomTableCell>
+              <CustomTableCell align="right">Trade_date</CustomTableCell>
+              <CustomTableCell align="right">Product</CustomTableCell>
+              <CustomTableCell align="right">Client_buy</CustomTableCell>
+              <CustomTableCell align="right">Acct_buy</CustomTableCell>
+              <CustomTableCell align="right">Trader_buy</CustomTableCell>
+              <CustomTableCell align="right">Comms_buy</CustomTableCell>
+              <CustomTableCell align="right">Client_sell</CustomTableCell>
+              <CustomTableCell align="right">Acct_sell</CustomTableCell>
+              <CustomTableCell align="right">Trader_sell</CustomTableCell>
+              <CustomTableCell align="right">Comms_sell</CustomTableCell>
+              <CustomTableCell align="right">Price</CustomTableCell>
+              <CustomTableCell align="right">Quantity</CustomTableCell>
+              <CustomTableCell align="right">Contract</CustomTableCell>
+              <CustomTableCell align="right">Deal_id</CustomTableCell>
+              <CustomTableCell align="right">Created_by</CustomTableCell>
+              <CustomTableCell align="right">
+                Created_at (GMT +8)
+              </CustomTableCell>
+              <CustomTableCell align="right">Edit</CustomTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -79,34 +85,57 @@ class Transactions extends Component {
                 let date_time =
                   date.toLocaleDateString() + " " + date.toLocaleTimeString();
                 return (
-                  <TableRow key={row.id}>
-                    <TableCell component="th" scope="row">
-                      {row.id}
-                    </TableCell>
-                    <TableCell align="right">
+                  <TableRow key={row.trade_id}>
+                    <CustomTableCell component="th" scope="row">
+                      {row.trade_id}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
                       {row.trade_date.substring(0, 10)}
-                    </TableCell>
-                    <TableCell align="right">{row.product}</TableCell>
-                    <TableCell align="right">{row.b_client}</TableCell>
-                    <TableCell align="right">{row.b_account}</TableCell>
-                    <TableCell align="right">{row.b_trader}</TableCell>
-                    <TableCell align="right">{row.b_commission}</TableCell>
-                    <TableCell align="right">{row.s_client}</TableCell>
-                    <TableCell align="right">{row.s_account}</TableCell>
-                    <TableCell align="right">{row.s_trader}</TableCell>
-                    <TableCell align="right">{row.s_commission}</TableCell>
-                    <TableCell align="right">{row.price}</TableCell>
-                    <TableCell align="right">{row.qty}</TableCell>
-                    <TableCell align="right">{row.contract}</TableCell>
-                    <TableCell align="right">{row.year}</TableCell>
-                    <TableCell align="right">{row.deal_id}</TableCell>
-                    <TableCell align="right">{row.created_by_id}</TableCell>
-                    <TableCell align="right">{date_time}</TableCell>
-                    <TableCell align="right">
-                      <button onClick={() => this.updatePost(row.id)}>
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.product}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.b_client}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.b_account}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.b_trader}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.b_commission}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.s_client}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.s_account}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.s_trader}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.s_commission}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">{row.price}</CustomTableCell>
+                    <CustomTableCell align="right">{row.qty}</CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.contract}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.deal_id}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.created_by}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">{date_time}</CustomTableCell>
+                    <CustomTableCell align="right">
+                      <button onClick={() => this.updatePost(row.trade_id)}>
                         Edit
                       </button>
-                    </TableCell>
+                    </CustomTableCell>
                   </TableRow>
                 );
               })}

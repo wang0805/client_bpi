@@ -1,26 +1,4 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
-
-import { withStyles } from "@material-ui/core/styles";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-
-const styles = theme => ({
-  formControl: {
-    // margin: theme.spacing.unit,
-    minWidth: 100
-  },
-  dateControl: {
-    maxWidth: 100
-  },
-  textControl: {
-    maxWidth: 100
-  }
-});
 
 class Form extends Component {
   state = {
@@ -44,7 +22,7 @@ class Form extends Component {
     fromM: "May",
     toM: "May",
     year: "2019",
-    price: 0.0,
+    price: "",
     qty: 50,
     execTime: "",
     execDate: "",
@@ -52,9 +30,6 @@ class Form extends Component {
   };
 
   componentDidMount() {
-    this.setState({
-      labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
-    });
     let date = new Date();
     let month;
     let day;
@@ -80,6 +55,7 @@ class Form extends Component {
       })
         .then(res => res.json())
         .then(data => {
+          // console.log("api result of clients:", data);
           let clients = [" "];
           let clientsObj = [];
           for (let i = 0; i < data.length; i++) {
@@ -88,27 +64,33 @@ class Form extends Component {
           clients = [...new Set(clients)];
           for (let i = 0; i < clients.length; i++) {
             let traders = [];
+            let product_code = [];
+            let gcms = [];
+            let gcms_code = [];
             let accounts = [];
             let recap_emails = "";
             let commission = 0;
-            let idb = "";
 
             for (let j = 0; j < data.length; j++) {
               if (data[j].client_name === clients[i]) {
                 traders.push(data[j].trader_name);
+                product_code.push(data[j].product_code);
+                gcms.push(data[j].gcm_name);
+                gcms_code.push(data[j].gcm_code);
                 accounts.push(data[j].account);
                 recap_emails = data[j].recap_emails;
                 commission = data[j].commission;
-                idb = data[j].idb;
               }
             }
             clientsObj.push({
               clients: clients[i],
+              product_code: [...new Set(product_code)],
+              gcms_code: [...new Set(gcms_code)],
+              gcms: [...new Set(gcms)],
               accounts: [...new Set(accounts)],
               traders: [...new Set(traders)],
               commission: commission,
-              recap_emails: recap_emails,
-              idb: idb
+              recap_emails: recap_emails
             });
           }
           this.setState({ value: clientsObj });
@@ -138,7 +120,6 @@ class Form extends Component {
         this.setState({ b_accounts: this.state.value[i].accounts[0] });
         this.setState({ b_comms: this.state.value[i].commission });
         this.setState({ b_recap: this.state.value[i].recap_emails });
-        this.setState({ b_idb: this.state.value[i].idb });
       }
     }
   };
@@ -152,7 +133,6 @@ class Form extends Component {
         this.setState({ s_accounts: this.state.value[i].accounts[0] });
         this.setState({ s_comms: this.state.value[i].commission });
         this.setState({ s_recap: this.state.value[i].recap_emails });
-        this.setState({ s_idb: this.state.value[i].idb });
       }
     }
   };
@@ -377,7 +357,6 @@ class Form extends Component {
   };
 
   render() {
-    const { classes } = this.props;
     let b_traders = [];
     let b_accounts = [];
     let s_traders = [];
@@ -389,395 +368,230 @@ class Form extends Component {
     this.sloopFunc("accounts", s_accounts);
 
     let year = (
-      <FormControl className={classes.dateControl} variant="outlined">
-        <InputLabel
-          ref={ref => {
-            this.InputLabelRef = ref;
-          }}
-        >
-          Year
-        </InputLabel>
-        <Select
-          native
-          name="year"
-          value={this.state.year}
-          onChange={this.handleChange}
-          input={
-            <OutlinedInput name="year" labelWidth={this.state.labelWidth} />
-          }
-        >
-          <option value="2019" defaultValue>
-            2019
-          </option>
-          <option value="2020">2020</option>
-          <option value="2021">2021</option>
-          <option value="2021">2022</option>
-        </Select>
-      </FormControl>
+      <select
+        name="year"
+        value={this.state.year}
+        onChange={this.handleChange}
+        multiple={false}
+      >
+        <option value="2019" defaultValue>
+          2019
+        </option>
+        <option value="2020">2020</option>
+        <option value="2021">2021</option>
+        <option value="2021">2022</option>
+      </select>
     );
-
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <TextField
-            className={classes.textControl}
-            label="Deal Group"
+          Deal group:
+          <input
             name="dealGroup"
-            type="number"
-            inputProps={{ step: 1 }}
             value={this.state.dealGroup}
             onChange={this.handleChange}
-            variant="outlined"
           />
-          <TextField
-            label="Trade date"
-            name="execDate"
-            type="date"
-            value={this.state.execDate}
-            onChange={this.handleChange}
-            variant="outlined"
-          />
-          <TextField
-            label="Trade Time"
-            nam="execTime"
+          <br />
+          Trade time:
+          <input
+            name="execTime"
+            value={this.state.execTime}
             type="time"
             min="08:00"
-            value={this.state.execTime}
             onChange={this.handleChange}
-            variant="outlined"
+          />
+          Trade date:
+          <input
+            name="execDate"
+            value={this.state.execDate}
+            type="date"
+            onChange={this.handleChange}
           />
           <br />
+          Product:
+          <select
+            name="product_code"
+            value={this.state.product_code}
+            onChange={this.handleChange}
+            multiple={false}
+          >
+            {this.state.productsObj.map((code, index) => (
+              <option key={index} value={code.code}>
+                {code.code}&nbsp;&nbsp;&nbsp;{code.name}
+              </option>
+            ))}
+          </select>
           <br />
-          <FormControl className={classes.formControl} variant="outlined">
-            <InputLabel
-              ref={ref => {
-                this.InputLabelRef = ref;
-              }}
-            >
-              Product
-            </InputLabel>
-            <Select
-              native
-              name="product_code"
-              value={this.state.product_code}
-              onChange={this.handleChange}
-              input={
-                <OutlinedInput
-                  name="product_code"
-                  labelWidth={this.state.labelWidth}
-                />
-              }
-            >
-              {this.state.productsObj.map((code, index) => (
-                <option key={index} value={code.code}>
-                  {code.code}&nbsp;&nbsp;&nbsp;{code.name}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
+          Buyer:
+          <select
+            value={this.state.b_client}
+            onChange={this.handleChangeB("b_client")}
+            multiple={false}
+          >
+            {this.state.clients.map((client, index) => (
+              <option key={index} value={client}>
+                {client}
+              </option>
+            ))}
+          </select>
           <br />
+          Trader:
+          <select
+            name="b_trader"
+            value={this.state.b_trader}
+            onChange={this.handleChange}
+            multiple={false}
+          >
+            {b_traders.map(trader => trader)}
+          </select>
           <br />
-          <FormControl className={classes.formControl} variant="outlined">
-            <InputLabel
-              ref={ref => {
-                this.InputLabelRef = ref;
-              }}
-            >
-              Buyer
-            </InputLabel>
-            <Select
-              native
-              value={this.state.b_client}
-              onChange={this.handleChangeB("b_client")}
-              input={
-                <OutlinedInput
-                  name="b_client"
-                  labelWidth={this.state.labelWidth}
-                />
-              }
-            >
-              {this.state.clients.map((client, index) => (
-                <option key={index} value={client}>
-                  {client}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-          <br />
-          <br />
-          <TextField
-            className={classes.textControl}
-            label="IDB"
+          IDB:
+          <input
             name="b_idb"
             value={this.state.b_idb}
             onChange={this.handleChange}
-            variant="outlined"
           />
           <br />
+          Accounts:
+          <select
+            name="b_accounts"
+            value={this.state.b_accounts}
+            onChange={this.handleChange}
+            multiple={false}
+          >
+            {b_accounts.map(account => account)}
+          </select>
           <br />
-          <FormControl className={classes.formControl} variant="outlined">
-            <InputLabel
-              ref={ref => {
-                this.InputLabelRef = ref;
-              }}
-            >
-              Trader
-            </InputLabel>
-            <Select
-              native
-              name="b_trader"
-              value={this.state.b_trader}
-              onChange={this.handleChange}
-              input={
-                <OutlinedInput
-                  name="b_trader"
-                  labelWidth={this.state.labelWidth}
-                />
-              }
-            >
-              {b_traders.map(trader => trader)}
-            </Select>
-          </FormControl>
-          <FormControl className={classes.formControl} variant="outlined">
-            <InputLabel
-              ref={ref => {
-                this.InputLabelRef = ref;
-              }}
-            >
-              Accounts
-            </InputLabel>
-            <Select
-              native
-              name="b_accounts"
-              value={this.state.b_accounts}
-              onChange={this.handleChange}
-              input={
-                <OutlinedInput
-                  name="b_accounts"
-                  labelWidth={this.state.labelWidth}
-                />
-              }
-            >
-              {b_accounts.map(account => account)}
-            </Select>
-          </FormControl>
-          <TextField
-            className={classes.textControl}
-            label="Commission"
+          Commission:
+          <input
             name="b_comms"
             type="number"
-            inputProps={{ step: 0.01 }}
+            step="0.01"
             value={this.state.b_comms}
             onChange={this.handleChange}
-            variant="outlined"
           />
           <br />
-          <br />
-          <FormControl className={classes.dateControl} variant="outlined">
-            <InputLabel
-              ref={ref => {
-                this.InputLabelRef = ref;
-              }}
-            >
-              From Month
-            </InputLabel>
-            <Select
-              native
-              name="fromM"
-              value={this.state.fromM}
-              onChange={this.handleChange}
-              input={
-                <OutlinedInput
-                  name="fromM"
-                  labelWidth={this.state.labelWidth}
-                />
-              }
-            >
-              <option value="Jan">Jan</option>
-              <option value="Feb">Feb</option>
-              <option value="Mar">Mar</option>
-              <option value="Apr">Apr</option>
-              <option defaultValue value="May">
-                May
-              </option>
-              <option value="Jun">Jun</option>
-              <option value="Jul">Jul</option>
-              <option value="Aug">Aug</option>
-              <option value="Sep">Sep</option>
-              <option value="Oct">Oct</option>
-              <option value="Nov">Nov</option>
-              <option value="Dec">Dec</option>
-            </Select>
-          </FormControl>
+          From:
+          <select
+            name="fromM"
+            value={this.state.fromM}
+            onChange={this.handleChange}
+            multiple={false}
+          >
+            <option value="Jan">Jan</option>
+            <option value="Feb">Feb</option>
+            <option value="Mar">Mar</option>
+            <option value="Apr">Apr</option>
+            <option defaultValue value="May">
+              May
+            </option>
+            <option value="Jun">Jun</option>
+            <option value="Jul">Jul</option>
+            <option value="Aug">Aug</option>
+            <option value="Sep">Sep</option>
+            <option value="Oct">Oct</option>
+            <option value="Nov">Nov</option>
+            <option value="Dec">Dec</option>
+          </select>
           {year}
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          <FormControl className={classes.dateControl} variant="outlined">
-            <InputLabel
-              ref={ref => {
-                this.InputLabelRef = ref;
-              }}
-            >
-              To Month
-            </InputLabel>
-            <Select
-              native
-              name="toM"
-              value={this.state.toM}
-              onChange={this.handleChange}
-              input={
-                <OutlinedInput name="toM" labelWidth={this.state.labelWidth} />
-              }
-            >
-              <option value="Jan">Jan</option>
-              <option value="Feb">Feb</option>
-              <option value="Mar">Mar</option>
-              <option value="Apr">Apr</option>
-              <option defaultValue value="May">
-                May
-              </option>
-              <option value="Jun">Jun</option>
-              <option value="Jul">Jul</option>
-              <option value="Aug">Aug</option>
-              <option value="Sep">Sep</option>
-              <option value="Oct">Oct</option>
-              <option value="Nov">Nov</option>
-              <option value="Dec">Dec</option>
-            </Select>
-          </FormControl>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>To:
+          <select
+            name="toM"
+            value={this.state.toM}
+            onChange={this.handleChange}
+            multiple={false}
+          >
+            <option value="Jan">Jan</option>
+            <option value="Feb">Feb</option>
+            <option value="Mar">Mar</option>
+            <option value="Apr">Apr</option>
+            <option defaultValue value="May">
+              May
+            </option>
+            <option value="Jun">Jun</option>
+            <option value="Jul">Jul</option>
+            <option value="Aug">Aug</option>
+            <option value="Sep">Sep</option>
+            <option value="Oct">Oct</option>
+            <option value="Nov">Nov</option>
+            <option value="Dec">Dec</option>
+          </select>
           {year}
           <br />
+          Seller:
+          <select
+            value={this.state.s_client}
+            onChange={this.handleChangeS("s_client")}
+            multiple={false}
+          >
+            {this.state.clients.map((client, index) => (
+              <option key={index} value={client}>
+                {client}
+              </option>
+            ))}
+          </select>
           <br />
-          <FormControl className={classes.formControl} variant="outlined">
-            <InputLabel
-              ref={ref => {
-                this.InputLabelRef = ref;
-              }}
-            >
-              Seller
-            </InputLabel>
-            <Select
-              native
-              value={this.state.s_client}
-              onChange={this.handleChangeS("s_client")}
-              input={
-                <OutlinedInput
-                  name="s_client"
-                  labelWidth={this.state.labelWidth}
-                />
-              }
-            >
-              {this.state.clients.map((client, index) => (
-                <option key={index} value={client}>
-                  {client}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
+          Trader:
+          <select
+            name="s_trader"
+            value={this.state.s_trader}
+            onChange={this.handleChange}
+            multiple={false}
+          >
+            {s_traders.map(trader => trader)}
+          </select>
           <br />
-          <br />
-          <TextField
-            className={classes.textControl}
-            label="IDB"
+          IDB:
+          <input
             name="s_idb"
             value={this.state.s_idb}
             onChange={this.handleChange}
-            variant="outlined"
           />
           <br />
+          Accounts:
+          <select
+            name="s_accounts"
+            value={this.state.s_accounts}
+            onChange={this.handleChange}
+            multiple={false}
+          >
+            {s_accounts.map(account => account)}
+          </select>
           <br />
-          <FormControl className={classes.formControl} variant="outlined">
-            <InputLabel
-              ref={ref => {
-                this.InputLabelRef = ref;
-              }}
-            >
-              Trader
-            </InputLabel>
-            <Select
-              native
-              name="s_trader"
-              value={this.state.s_trader}
-              onChange={this.handleChange}
-              input={
-                <OutlinedInput
-                  name="s_trader"
-                  labelWidth={this.state.labelWidth}
-                />
-              }
-            >
-              {s_traders.map(trader => trader)}
-            </Select>
-          </FormControl>
-          <FormControl className={classes.formControl} variant="outlined">
-            <InputLabel
-              ref={ref => {
-                this.InputLabelRef = ref;
-              }}
-            >
-              Accounts
-            </InputLabel>
-            <Select
-              native
-              name="s_accounts"
-              value={this.state.s_accounts}
-              onChange={this.handleChange}
-              input={
-                <OutlinedInput
-                  name="s_accounts"
-                  labelWidth={this.state.labelWidth}
-                />
-              }
-            >
-              {s_accounts.map(account => account)}
-            </Select>
-          </FormControl>
-          <TextField
-            className={classes.textControl}
-            label="Commission"
+          Commission:
+          <input
             name="s_comms"
             type="number"
-            inputProps={{ step: 0.01 }}
+            step="0.01"
             value={this.state.s_comms}
             onChange={this.handleChange}
-            variant="outlined"
           />
           <br />
-          <br />
-          <TextField
-            label="Price"
+          Price:
+          <input
             name="price"
             type="number"
-            inputProps={{ step: 0.05 }}
+            step="0.05"
             value={this.state.price}
             onChange={this.handleChange}
-            variant="outlined"
           />
-          <TextField
-            label="Quantity"
+          <br />
+          Qty:
+          <input
             name="qty"
             type="number"
-            inputProps={{ step: 50 }}
+            step="50"
             value={this.state.qty}
             onChange={this.handleChange}
-            variant="outlined"
           />
           <br />
-          <br />
-          <Button type="submit" variant="contained" color="primary">
-            Submit
-          </Button>
+          <input type="submit" value="Submit" />
         </form>
-        <br />
-        <Button onClick={this.flip} variant="contained" color="default">
-          Flip
-        </Button>
-        <span>&nbsp;&nbsp;</span>
-        <Button onClick={this.clear} variant="contained" color="default">
-          Clear
-        </Button>
+        <button onClick={this.flip}>Flip</button>
+        <button onClick={this.clear}>Clear</button>
       </div>
     );
   }
 }
 
-export default withStyles(styles)(Form);
+export default Form;
