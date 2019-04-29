@@ -280,6 +280,11 @@ class Form extends Component {
       contract = this.state.fromM + "'" + this.state.year;
     }
 
+    let oet = "NLT";
+    if(this.state.instrument === "S"){
+      oet = "OTC"
+    }
+
     const rows = [
       [
         "Group No.",
@@ -314,7 +319,7 @@ class Form extends Component {
         this.state.product_code,
         fromM.toString() + "/" + this.state.year,
         this.state.instrument,
-        "NLT",
+        oet,
         this.state.strike,
         consMonth,
         "S",
@@ -646,7 +651,7 @@ class Form extends Component {
             </Select>
           </FormControl>
           {year}
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <FormControl className={classes.dateControl} variant="outlined">
             <InputLabel
               ref={ref => {
@@ -780,6 +785,7 @@ class Form extends Component {
           <br />
           <br />
           <TextField
+            className={classes.textControl}
             label="Price"
             name="price"
             type="number"
@@ -789,6 +795,7 @@ class Form extends Component {
             variant="outlined"
           />
           <TextField
+            className={classes.textControl}
             label="Quantity"
             name="qty"
             type="number"
@@ -798,6 +805,7 @@ class Form extends Component {
             variant="outlined"
           />
           <TextField
+            className={classes.textControl}
             label="Strike"
             name="strike"
             type="number"
