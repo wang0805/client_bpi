@@ -81,7 +81,7 @@ class Edit extends Component {
         <Card className={classes.card}>
           <form onSubmit={this.handleSubmit}>
             <CardContent>
-              <Typography variant="h5" component="h2">
+              <Typography component="h2">
                 <div>Trade_id: {data.id}</div>
                 <div>
                   Trade_date:{" "}
