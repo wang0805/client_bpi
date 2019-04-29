@@ -100,6 +100,8 @@ class Edit extends Component {
                 <br />
                 <div>Contract: {data.contract}</div>
                 <div>Price: {data.price}</div>
+                <div>Strike: {data.strike}</div>
+                <div>Instrument: {data.instrument}</div>
                 <div>Quantity: {data.qty}</div>
                 <br />
                 <div>

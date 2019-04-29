@@ -39,12 +39,15 @@ class Form extends Component {
     s_recap: "",
     b_recap: "",
     productsObj: [],
+    instruObj: [],
+    instrument: "F",
     product_code: "FEF",
     products: "Iron ore TSI62 Futures",
     fromM: "May",
     toM: "May",
     year: "2019",
     price: 0.0,
+    strike: "",
     qty: 50,
     execTime: "",
     execDate: "",
@@ -70,7 +73,7 @@ class Form extends Component {
     }
     let exec_date = date.getFullYear() + "-" + month + "-" + day;
     this.setState({ execDate: exec_date });
-    this.setState({ execTime: date.toLocaleTimeString().substring(0,5) });
+    this.setState({ execTime: date.toLocaleTimeString().substring(0, 5) });
     try {
       fetch("/api/clients", {
         method: "GET",
@@ -118,6 +121,11 @@ class Form extends Component {
         .then(res => res.json())
         .then(data => {
           this.setState({ productsObj: data });
+        });
+      fetch("/api/instruments")
+        .then(res => res.json())
+        .then(data => {
+          this.setState({ instruObj: data });
         });
     } catch (e) {
       console.log(e, "error getting clients due to permissions");
@@ -305,9 +313,9 @@ class Form extends Component {
         this.state.execTime,
         this.state.product_code,
         fromM.toString() + "/" + this.state.year,
-        "F",
+        this.state.instrument,
         "NLT",
-        "",
+        this.state.strike,
         consMonth,
         "S",
         this.state.qty,
@@ -339,7 +347,9 @@ class Form extends Component {
         Seller_comms: ${this.state.s_comms}
         
         Contract: ${contract}
+        Instrument: ${this.state.instrument}
         Price: ${this.state.price}
+        Strike: ${this.state.strike}
         Quantity: ${this.state.qty}`
       )
     ) {
@@ -470,6 +480,33 @@ class Form extends Component {
               {this.state.productsObj.map((code, index) => (
                 <option key={index} value={code.code}>
                   {code.code}&nbsp;&nbsp;&nbsp;{code.name}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl className={classes.formControl} variant="outlined">
+            <InputLabel
+              ref={ref => {
+                this.InputLabelRef = ref;
+              }}
+            >
+              Instrument
+            </InputLabel>
+            <Select
+              native
+              name="instrument"
+              value={this.state.instrument}
+              onChange={this.handleChange}
+              input={
+                <OutlinedInput
+                  name="instrument"
+                  labelWidth={this.state.labelWidth}
+                />
+              }
+            >
+              {this.state.instruObj.map((code, index) => (
+                <option key={index} value={code.code}>
+                  {code.code} - {code.name}
                 </option>
               ))}
             </Select>
@@ -757,6 +794,15 @@ class Form extends Component {
             type="number"
             inputProps={{ step: 50 }}
             value={this.state.qty}
+            onChange={this.handleChange}
+            variant="outlined"
+          />
+          <TextField
+            label="Strike"
+            name="strike"
+            type="number"
+            inputProps={{ step: 0.05 }}
+            value={this.state.strike}
             onChange={this.handleChange}
             variant="outlined"
           />

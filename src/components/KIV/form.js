@@ -17,6 +17,7 @@ class Form extends Component {
     s_recap: "",
     b_recap: "",
     productsObj: [],
+    instruObj: [],
     product_code: "FEF",
     products: "Iron ore TSI62 Futures",
     fromM: "May",
@@ -24,6 +25,7 @@ class Form extends Component {
     year: "2019",
     price: "",
     qty: 50,
+    instrument: "F",
     execTime: "",
     execDate: "",
     dealGroup: 1
@@ -100,6 +102,11 @@ class Form extends Component {
         .then(res => res.json())
         .then(data => {
           this.setState({ productsObj: data });
+        });
+      fetch("/api/instruments")
+        .then(res => res.json())
+        .then(data => {
+          this.setState({ instruObj: data });
         });
     } catch (e) {
       console.log(e, "error getting clients due to permissions");
@@ -285,7 +292,7 @@ class Form extends Component {
         this.state.execTime,
         this.state.product_code,
         fromM.toString() + "/" + this.state.year,
-        "F",
+        this.state.instrument,
         "NLT",
         "",
         consMonth,

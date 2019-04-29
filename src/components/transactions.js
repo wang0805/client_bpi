@@ -68,6 +68,8 @@ class Transactions extends Component {
               <CustomTableCell align="right">Trader_sell</CustomTableCell>
               <CustomTableCell align="right">Comms_sell</CustomTableCell>
               <CustomTableCell align="right">Price</CustomTableCell>
+              <CustomTableCell align="right">Strike</CustomTableCell>
+              <CustomTableCell align="right">Instrument</CustomTableCell>
               <CustomTableCell align="right">Quantity</CustomTableCell>
               <CustomTableCell align="right">Contract</CustomTableCell>
               <CustomTableCell align="right">Deal_id</CustomTableCell>
@@ -120,6 +122,12 @@ class Transactions extends Component {
                       {row.s_commission}
                     </CustomTableCell>
                     <CustomTableCell align="right">{row.price}</CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.strike}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.instrument}
+                    </CustomTableCell>
                     <CustomTableCell align="right">{row.qty}</CustomTableCell>
                     <CustomTableCell align="right">
                       {row.contract}
