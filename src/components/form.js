@@ -27,7 +27,9 @@ class Form extends Component {
     value: [], //full list clients in dictionary
     clients: [], //clients array
     b_client: [], //client select
+    b_client_id: "",
     s_client: [], //client Sell select
+    s_client_id: "",
     b_trader: [],
     s_trader: [],
     b_accounts: [],
@@ -73,7 +75,8 @@ class Form extends Component {
     }
     let exec_date = date.getFullYear() + "-" + month + "-" + day;
     this.setState({ execDate: exec_date });
-    this.setState({ execTime: date.toLocaleTimeString().substring(0, 5) });
+    const options = { hour12: false };
+    this.setState({ execTime: date.toLocaleTimeString('en-US', options).substring(0, 5) });
     try {
       fetch("/api/clients", {
         method: "GET",
@@ -83,6 +86,7 @@ class Form extends Component {
       })
         .then(res => res.json())
         .then(data => {
+          console.log(data, "dataaaaaaaa")
           let clients = [" "];
           let clientsObj = [];
           for (let i = 0; i < data.length; i++) {
@@ -95,9 +99,11 @@ class Form extends Component {
             let recap_emails = "";
             let commission = 0;
             let idb = "";
+            let id = "";
 
             for (let j = 0; j < data.length; j++) {
               if (data[j].client_name === clients[i]) {
+                id = data[j].id
                 traders.push(data[j].trader_name);
                 accounts.push(data[j].account);
                 recap_emails = data[j].recap_emails;
@@ -111,7 +117,8 @@ class Form extends Component {
               traders: [...new Set(traders)],
               commission: commission,
               recap_emails: recap_emails,
-              idb: idb
+              idb: idb,
+              id: id
             });
           }
           this.setState({ value: clientsObj });
@@ -130,6 +137,7 @@ class Form extends Component {
     } catch (e) {
       console.log(e, "error getting clients due to permissions");
     }
+   
   }
 
   handleChange = e => {
@@ -142,6 +150,7 @@ class Form extends Component {
     let client = e.target.value;
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.value[i].clients === client) {
+        this.setState({ b_client_id: this.state.value[i].id });
         this.setState({ b_trader: this.state.value[i].traders[0] });
         this.setState({ b_accounts: this.state.value[i].accounts[0] });
         this.setState({ b_comms: this.state.value[i].commission });
@@ -157,6 +166,7 @@ class Form extends Component {
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.value[i].clients === client) {
         this.setState({ s_trader: this.state.value[i].traders[0] });
+        this.setState({ s_client_id: this.state.value[i].id });
         this.setState({ s_accounts: this.state.value[i].accounts[0] });
         this.setState({ s_comms: this.state.value[i].commission });
         this.setState({ s_recap: this.state.value[i].recap_emails });
@@ -392,6 +402,7 @@ class Form extends Component {
   };
 
   render() {
+    console.log(this.state.value, "testing values to see")
     const { classes } = this.props;
     let b_traders = [];
     let b_accounts = [];
