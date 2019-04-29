@@ -12,13 +12,13 @@ import Button from "@material-ui/core/Button";
 const styles = theme => ({
   formControl: {
     // margin: theme.spacing.unit,
-    minWidth: 100
+    minWidth: 120
   },
   dateControl: {
-    maxWidth: 100
+    maxWidth: 120
   },
   textControl: {
-    maxWidth: 100
+    maxWidth: 120
   }
 });
 
@@ -70,7 +70,7 @@ class Form extends Component {
     }
     let exec_date = date.getFullYear() + "-" + month + "-" + day;
     this.setState({ execDate: exec_date });
-    this.setState({ execTime: date.toLocaleTimeString().substring(0, 5) });
+    this.setState({ execTime: date.toLocaleTimeString().substring(0,5) });
     try {
       fetch("/api/clients", {
         method: "GET",
@@ -439,9 +439,8 @@ class Form extends Component {
           />
           <TextField
             label="Trade Time"
-            nam="execTime"
+            name="execTime"
             type="time"
-            min="08:00"
             value={this.state.execTime}
             onChange={this.handleChange}
             variant="outlined"
