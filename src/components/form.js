@@ -50,7 +50,7 @@ class Form extends Component {
     fromM: "May",
     toM: "May",
     year: "2019",
-    price: 0.0,
+    price: "",
     strike: "",
     qty: 50,
     execTime: "",
@@ -61,7 +61,36 @@ class Form extends Component {
 
   componentDidMount() {
     this.setState({
-      labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
+      labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
+      toM: this.revMon(new Date().getMonth()),
+      fromM: this.revMon(new Date().getMonth()),
+      year: new Date().getFullYear(),
+      arrayCsv: [
+        [
+          "Group No.",
+          "Trade type",
+          "Leg Group",
+          "Exec Date",
+          "Exec Time",
+          "Product",
+          "Month/Year",
+          "Instrument Type",
+          "Off-exchange Type",
+          "Strike Px",
+          "Cons Months",
+          "B/S",
+          "Qty",
+          "Price",
+          "Party1 IDB",
+          "Party1 GCM",
+          "Party1 A/C",
+          "Party1 Comment",
+          "Party2 IDB",
+          "Party2 GCM",
+          "Party2 A/C",
+          "Party2 Comment"
+        ]
+      ]
     });
     let date = new Date();
     let month;
@@ -226,6 +255,24 @@ class Form extends Component {
     return "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(month) / 3 + 1;
   };
 
+  revMon = month => {
+    let date = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+    return date[month];
+  };
+
   flip = () => {
     let b_client = this.state.b_client;
     let b_trader = this.state.b_trader;
@@ -263,7 +310,13 @@ class Form extends Component {
       s_accounts: "",
       s_comms: 0,
       s_broker: "",
-      b_broker: ""
+      b_broker: "",
+      strike: "",
+      qty: 50,
+      price: "",
+      fromM: this.revMon(new Date().getMonth()),
+      toM: this.revMon(new Date().getMonth()),
+      year: new Date().getFullYear()
     });
   };
 
@@ -333,36 +386,10 @@ class Form extends Component {
     ];
     //append csv
     this.setState({ arrayCsv: [...this.state.arrayCsv, rows] });
+    this.setState({ dealGroup: this.state.dealGroup + 1 });
   };
 
-  download = async () => {
-    const column = [
-      "Group No.",
-      "Trade type",
-      "Leg Group",
-      "Exec Date",
-      "Exec Time",
-      "Product",
-      "Month/Year",
-      "Instrument Type",
-      "Off-exchange Type",
-      "Strike Px",
-      "Cons Months",
-      "B/S",
-      "Qty",
-      "Price",
-      "Party1 IDB",
-      "Party1 GCM",
-      "Party1 A/C",
-      "Party1 Comment",
-      "Party2 IDB",
-      "Party2 GCM",
-      "Party2 A/C",
-      "Party2 Comment"
-    ];
-
-    await this.setState({ arrayCsv: [column, ...this.state.arrayCsv] });
-
+  download = () => {
     let csvContent =
       "data:text/csv;charset=utf-8," +
       this.state.arrayCsv.map(e => e.join(",")).join("\n");
@@ -548,7 +575,10 @@ class Form extends Component {
           </option>
           <option value="2020">2020</option>
           <option value="2021">2021</option>
-          <option value="2021">2022</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
         </Select>
       </FormControl>
     );
@@ -998,12 +1028,18 @@ class Form extends Component {
           Clear
         </Button>
         <br />
+        <br />
+        <br />
         <div>
-          <ol>
+          <table>
             {this.state.arrayCsv.map((row, index) => (
-              <li>{row}</li>
+              <tr key={index}>
+                {row.map((item, index) => (
+                  <td key={index}>{item}</td>
+                ))}
+              </tr>
             ))}
-          </ol>
+          </table>
         </div>
       </div>
     );
