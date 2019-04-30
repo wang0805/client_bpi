@@ -386,7 +386,7 @@ class Form extends Component {
     ];
     //append csv
     this.setState({ arrayCsv: [...this.state.arrayCsv, rows] });
-    this.setState({ dealGroup: this.state.dealGroup + 1 });
+    this.setState({ dealGroup: parseInt(this.state.dealGroup) + 1 });
   };
 
   download = () => {
