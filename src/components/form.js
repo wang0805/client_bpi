@@ -55,7 +55,8 @@ class Form extends Component {
     qty: 50,
     execTime: "",
     execDate: "",
-    dealGroup: 1
+    dealGroup: 1,
+    arrayCsv: []
   };
 
   componentDidMount() {
@@ -307,58 +308,64 @@ class Form extends Component {
     }
 
     const rows = [
-      [
-        "Group No.",
-        "Trade type",
-        "Leg Group",
-        "Exec Date",
-        "Exec Time",
-        "Product",
-        "Month/Year",
-        "Instrument Type",
-        "Off-exchange Type",
-        "Strike Px",
-        "Cons Months",
-        "B/S",
-        "Qty",
-        "Price",
-        "Party1 IDB",
-        "Party1 GCM",
-        "Party1 A/C",
-        "Party1 Comment",
-        "Party2 IDB",
-        "Party2 GCM",
-        "Party2 A/C",
-        "Party2 Comment"
-      ],
-      [
-        this.state.dealGroup,
-        "Outright",
-        "1",
-        execDate,
-        this.state.execTime,
-        this.state.product_code,
-        fromM.toString() + "/" + this.state.year,
-        this.state.instrument,
-        oet,
-        this.state.strike,
-        consMonth,
-        "S",
-        this.state.qty,
-        this.state.price,
-        this.state.s_idb,
-        gcmS,
-        this.state.s_accounts,
-        "",
-        this.state.b_idb,
-        gcmB,
-        this.state.b_accounts,
-        ""
-      ]
+      this.state.dealGroup,
+      "Outright",
+      "1",
+      execDate,
+      this.state.execTime,
+      this.state.product_code,
+      fromM.toString() + "/" + this.state.year,
+      this.state.instrument,
+      oet,
+      this.state.strike,
+      consMonth,
+      "S",
+      this.state.qty,
+      this.state.price,
+      this.state.s_idb,
+      gcmS,
+      this.state.s_accounts,
+      "",
+      this.state.b_idb,
+      gcmB,
+      this.state.b_accounts,
+      ""
+    ];
+    //append csv
+    this.setState({ arrayCsv: [...this.state.arrayCsv, rows] });
+  };
+
+  download = async () => {
+    const column = [
+      "Group No.",
+      "Trade type",
+      "Leg Group",
+      "Exec Date",
+      "Exec Time",
+      "Product",
+      "Month/Year",
+      "Instrument Type",
+      "Off-exchange Type",
+      "Strike Px",
+      "Cons Months",
+      "B/S",
+      "Qty",
+      "Price",
+      "Party1 IDB",
+      "Party1 GCM",
+      "Party1 A/C",
+      "Party1 Comment",
+      "Party2 IDB",
+      "Party2 GCM",
+      "Party2 A/C",
+      "Party2 Comment"
     ];
 
+    await this.setState({ arrayCsv: [column, ...this.state.arrayCsv] });
+
     let csvContent =
-      "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+      "data:text/csv;charset=utf-8," +
+      this.state.arrayCsv.map(e => e.join(",")).join("\n");
     var encodedUri = encodeURI(csvContent);
     window.open(encodedUri);
   };
@@ -974,7 +981,11 @@ class Form extends Component {
           </Button>
           <span>&nbsp;&nbsp;</span>
           <Button onClick={this.handleCsv} variant="contained" color="primary">
-            CSV
+            Append
+          </Button>
+          <span>&nbsp;&nbsp;</span>
+          <Button onClick={this.download} variant="contained" color="primary">
+            CSV download
           </Button>
         </form>
         <br />
@@ -986,6 +997,14 @@ class Form extends Component {
         <Button onClick={this.clear} variant="contained" color="default">
           Clear
         </Button>
+        <br />
+        <div>
+          <ol>
+            {this.state.arrayCsv.map((row, index) => (
+              <li>{row}</li>
+            ))}
+          </ol>
+        </div>
       </div>
     );
   }
