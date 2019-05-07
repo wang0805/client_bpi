@@ -349,11 +349,6 @@ class Form extends Component {
     let execDate = date[2] + "/" + date[1] + "/" + date[0];
     let gcmB = "";
     let gcmS = "";
-    console.log(
-      this.state.b_accounts,
-      this.state.s_accounts,
-      "testing testing"
-    );
     try {
       if (this.state.b_accounts.length && this.state.s_accounts.length) {
         gcmB = this.state.b_accounts.split(" ")[1];
@@ -367,7 +362,7 @@ class Form extends Component {
       console.error(e);
     }
 
-    console.log(fromM, toM, consMonth, "checking to and from");
+    // console.log(fromM, toM, consMonth, "checking to and from");
 
     let oet = "NLT";
     if (this.state.instrument === "S") {
