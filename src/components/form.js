@@ -182,12 +182,14 @@ class Form extends Component {
     let client = e.target.value;
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.value[i].clients === client) {
-        this.setState({ b_client_id: this.state.value[i].id });
-        this.setState({ b_trader: this.state.value[i].traders[0] });
-        this.setState({ b_accounts: this.state.value[i].accounts[0] });
-        this.setState({ b_comms: this.state.value[i].commission });
-        this.setState({ b_recap: this.state.value[i].recap_emails });
-        this.setState({ b_idb: this.state.value[i].idb });
+        this.setState({
+          b_client_id: this.state.value[i].id,
+          b_trader: this.state.value[i].traders[0],
+          b_accounts: this.state.value[i].accounts[0],
+          b_comms: this.state.value[i].commission,
+          b_recap: this.state.value[i].recap_emails,
+          b_idb: this.state.value[i].idb
+        });
       }
     }
   };
@@ -197,12 +199,14 @@ class Form extends Component {
     let client = e.target.value;
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.value[i].clients === client) {
-        this.setState({ s_trader: this.state.value[i].traders[0] });
-        this.setState({ s_client_id: this.state.value[i].id });
-        this.setState({ s_accounts: this.state.value[i].accounts[0] });
-        this.setState({ s_comms: this.state.value[i].commission });
-        this.setState({ s_recap: this.state.value[i].recap_emails });
-        this.setState({ s_idb: this.state.value[i].idb });
+        this.setState({
+          s_trader: this.state.value[i].traders[0],
+          s_client_id: this.state.value[i].id,
+          s_accounts: this.state.value[i].accounts[0],
+          s_comms: this.state.value[i].commission,
+          s_recap: this.state.value[i].recap_emails,
+          s_idb: this.state.value[i].idb
+        });
       }
     }
   };
@@ -345,14 +349,24 @@ class Form extends Component {
     let execDate = date[2] + "/" + date[1] + "/" + date[0];
     let gcmB = "";
     let gcmS = "";
-    if (this.state.b_accounts.length > 0 && this.state.s_accounts.length > 0) {
-      gcmB = this.state.b_accounts.split(" ")[1];
-      gcmS = this.state.s_accounts.split(" ")[1];
-    } else if (this.state.s_accounts.length > 0) {
-      gcmS = this.state.s_accounts.split(" ")[1];
-    } else if (this.state.b_accounts.length > 0) {
-      gcmB = this.state.b_accounts.split(" ")[1];
+    console.log(
+      this.state.b_accounts,
+      this.state.s_accounts,
+      "testing testing"
+    );
+    try {
+      if (this.state.b_accounts.length && this.state.s_accounts.length) {
+        gcmB = this.state.b_accounts.split(" ")[1];
+        gcmS = this.state.s_accounts.split(" ")[1];
+      } else if (this.state.s_accounts.length) {
+        gcmS = this.state.s_accounts.split(" ")[1];
+      } else if (this.state.b_accounts.length) {
+        gcmB = this.state.b_accounts.split(" ")[1];
+      }
+    } catch (e) {
+      console.error(e);
     }
+
     console.log(fromM, toM, consMonth, "checking to and from");
 
     let oet = "NLT";
