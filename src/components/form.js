@@ -438,61 +438,6 @@ class Form extends Component {
       contract = this.state.fromM + "'" + this.state.year;
     }
 
-    // let oet = "NLT";
-    // if (this.state.instrument === "S") {
-    //   oet = "OTC";
-    // }
-
-    // const rows = [
-    //   [
-    //     "Group No.",
-    //     "Trade type",
-    //     "Leg Group",
-    //     "Exec Date",
-    //     "Exec Time",
-    //     "Product",
-    //     "Month/Year",
-    //     "Instrument Type",
-    //     "Off-exchange Type",
-    //     "Strike Px",
-    //     "Cons Months",
-    //     "B/S",
-    //     "Qty",
-    //     "Price",
-    //     "Party1 IDB",
-    //     "Party1 GCM",
-    //     "Party1 A/C",
-    //     "Party1 Comment",
-    //     "Party2 IDB",
-    //     "Party2 GCM",
-    //     "Party2 A/C",
-    //     "Party2 Comment"
-    //   ],
-    //   [
-    //     this.state.dealGroup,
-    //     "Outright",
-    //     "1",
-    //     execDate,
-    //     this.state.execTime,
-    //     this.state.product_code,
-    //     fromM.toString() + "/" + this.state.year,
-    //     this.state.instrument,
-    //     oet,
-    //     this.state.strike,
-    //     consMonth,
-    //     "S",
-    //     this.state.qty,
-    //     this.state.price,
-    //     this.state.s_idb,
-    //     gcmS,
-    //     this.state.s_accounts,
-    //     "",
-    //     this.state.b_idb,
-    //     gcmB,
-    //     this.state.b_accounts,
-    //     ""
-    //   ]
-    // ];
     if (
       window.confirm(
         `Please check the below info:
@@ -523,18 +468,7 @@ class Form extends Component {
       // window.open(encodedUri);
 
       // console.log(this.state, "states passing through");
-      const data = { ...this.state, contract: contract };
-      //post to email
-      fetch("/send", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      }).then(() => {
-        console.log("this is a success to email!!");
-      });
+      const dataState = { ...this.state, contract: contract };
       // post to transaction
       fetch("/api/transactions", {
         method: "POST",
@@ -542,10 +476,26 @@ class Form extends Component {
           Accept: "application/json",
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(data)
-      }).then(() => {
-        console.log("this is a success on transactions!!");
-      });
+        body: JSON.stringify(dataState)
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("this is a success on transactions!!");
+          console.log(data, data.id, "data from transactions");
+          const newData = { ...dataState, tradeid: data[0].id };
+          console.log(newData, "newdatatatata");
+          //post to email
+          fetch("/send", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newData)
+          }).then(() => {
+            console.log("this is a success to email!!");
+          });
+        });
     }
   };
 
