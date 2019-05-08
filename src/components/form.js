@@ -481,9 +481,7 @@ class Form extends Component {
         .then(res => res.json())
         .then(data => {
           console.log("this is a success on transactions!!");
-          console.log(data, data.id, "data from transactions");
           const newData = { ...dataState, tradeid: data[0].id };
-          console.log(newData, "newdatatatata");
           //post to email
           fetch("/send", {
             method: "POST",
