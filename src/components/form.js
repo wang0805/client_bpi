@@ -19,6 +19,10 @@ const styles = theme => ({
   },
   textControl: {
     maxWidth: 120
+  },
+  resize: {
+    fontSize: 13,
+    lineHeight: 1
   }
 });
 
@@ -520,6 +524,11 @@ class Form extends Component {
         </InputLabel>
         <Select
           native
+          inputProps={{
+            classes: {
+              select: classes.resize
+            }
+          }}
           name="year"
           value={this.state.year}
           onChange={this.handleChange}
@@ -548,7 +557,7 @@ class Form extends Component {
             label="Deal Group"
             name="dealGroup"
             type="number"
-            inputProps={{ step: 1 }}
+            inputProps={{ step: 1, style: { fontSize: 13, lineHeight: 1 } }}
             value={this.state.dealGroup}
             onChange={this.handleChange}
             variant="outlined"
@@ -557,6 +566,9 @@ class Form extends Component {
             label="Trade date"
             name="execDate"
             type="date"
+            inputProps={{
+              style: { fontSize: 13, lineHeight: 1 }
+            }}
             value={this.state.execDate}
             onChange={this.handleChange}
             variant="outlined"
@@ -565,6 +577,9 @@ class Form extends Component {
             label="Trade Time"
             name="execTime"
             type="time"
+            inputProps={{
+              style: { fontSize: 13, lineHeight: 1 }
+            }}
             value={this.state.execTime}
             onChange={this.handleChange}
             variant="outlined"
@@ -578,6 +593,9 @@ class Form extends Component {
             name="b_broker"
             value={this.state.b_broker}
             onChange={this.handleChange}
+            inputProps={{
+              style: { fontSize: 13, lineHeight: 1 }
+            }}
             variant="outlined"
           />
           <TextField
@@ -586,6 +604,9 @@ class Form extends Component {
             name="s_broker"
             value={this.state.s_broker}
             onChange={this.handleChange}
+            inputProps={{
+              style: { fontSize: 13, lineHeight: 1 }
+            }}
             variant="outlined"
           />
           <br />
@@ -599,6 +620,11 @@ class Form extends Component {
               Product
             </InputLabel>
             <Select
+              inputProps={{
+                classes: {
+                  select: classes.resize
+                }
+              }}
               native
               name="product_code"
               value={this.state.product_code}
@@ -636,6 +662,11 @@ class Form extends Component {
                   labelWidth={this.state.labelWidth}
                 />
               }
+              inputProps={{
+                classes: {
+                  select: classes.resize
+                }
+              }}
             >
               {this.state.instruObj.map((code, index) => (
                 <option key={index} value={code.code}>
@@ -655,6 +686,11 @@ class Form extends Component {
               Buyer
             </InputLabel>
             <Select
+              inputProps={{
+                classes: {
+                  select: classes.resize
+                }
+              }}
               native
               value={this.state.b_client}
               onChange={this.handleChangeB("b_client")}
@@ -680,6 +716,9 @@ class Form extends Component {
             name="b_idb"
             value={this.state.b_idb}
             onChange={this.handleChange}
+            inputProps={{
+              style: { fontSize: 13, lineHeight: 1 }
+            }}
             variant="outlined"
           />
           <br />
@@ -693,6 +732,11 @@ class Form extends Component {
               Trader
             </InputLabel>
             <Select
+              inputProps={{
+                classes: {
+                  select: classes.resize
+                }
+              }}
               native
               name="b_trader"
               value={this.state.b_trader}
@@ -716,6 +760,11 @@ class Form extends Component {
               Accounts
             </InputLabel>
             <Select
+              inputProps={{
+                classes: {
+                  select: classes.resize
+                }
+              }}
               native
               name="b_accounts"
               value={this.state.b_accounts}
@@ -735,7 +784,7 @@ class Form extends Component {
             label="Commission"
             name="b_comms"
             type="number"
-            inputProps={{ step: 0.01 }}
+            inputProps={{ step: 0.01, style: { fontSize: 13, lineHeight: 1 } }}
             value={this.state.b_comms}
             onChange={this.handleChange}
             variant="outlined"
@@ -751,6 +800,11 @@ class Form extends Component {
               From Month
             </InputLabel>
             <Select
+              inputProps={{
+                classes: {
+                  select: classes.resize
+                }
+              }}
               native
               name="fromM"
               value={this.state.fromM}
@@ -791,6 +845,11 @@ class Form extends Component {
               To Month
             </InputLabel>
             <Select
+              inputProps={{
+                classes: {
+                  select: classes.resize
+                }
+              }}
               native
               name="toM"
               value={this.state.toM}
@@ -803,9 +862,7 @@ class Form extends Component {
               <option value="Feb">Feb</option>
               <option value="Mar">Mar</option>
               <option value="Apr">Apr</option>
-              <option defaultValue value="May">
-                May
-              </option>
+              <option value="May">May</option>
               <option value="Jun">Jun</option>
               <option value="Jul">Jul</option>
               <option value="Aug">Aug</option>
@@ -844,6 +901,11 @@ class Form extends Component {
               Seller
             </InputLabel>
             <Select
+              inputProps={{
+                classes: {
+                  select: classes.resize
+                }
+              }}
               native
               value={this.state.s_client}
               onChange={this.handleChangeS("s_client")}
@@ -869,6 +931,9 @@ class Form extends Component {
             name="s_idb"
             value={this.state.s_idb}
             onChange={this.handleChange}
+            inputProps={{
+              style: { fontSize: 13, lineHeight: 1 }
+            }}
             variant="outlined"
           />
           <br />
@@ -882,6 +947,11 @@ class Form extends Component {
               Trader
             </InputLabel>
             <Select
+              inputProps={{
+                classes: {
+                  select: classes.resize
+                }
+              }}
               native
               name="s_trader"
               value={this.state.s_trader}
@@ -905,6 +975,11 @@ class Form extends Component {
               Accounts
             </InputLabel>
             <Select
+              inputProps={{
+                classes: {
+                  select: classes.resize
+                }
+              }}
               native
               name="s_accounts"
               value={this.state.s_accounts}
@@ -924,7 +999,7 @@ class Form extends Component {
             label="Commission"
             name="s_comms"
             type="number"
-            inputProps={{ step: 0.01 }}
+            inputProps={{ step: 0.01, style: { fontSize: 13, lineHeight: 1 } }}
             value={this.state.s_comms}
             onChange={this.handleChange}
             variant="outlined"
@@ -936,7 +1011,7 @@ class Form extends Component {
             label="Price"
             name="price"
             type="number"
-            inputProps={{ step: 0.05 }}
+            inputProps={{ step: 0.05, style: { fontSize: 13, lineHeight: 1 } }}
             value={this.state.price}
             onChange={this.handleChange}
             variant="outlined"
@@ -946,7 +1021,7 @@ class Form extends Component {
             label="Quantity"
             name="qty"
             type="number"
-            inputProps={{ step: 50 }}
+            inputProps={{ step: 50, style: { fontSize: 13, lineHeight: 1 } }}
             value={this.state.qty}
             onChange={this.handleChange}
             variant="outlined"
@@ -956,7 +1031,7 @@ class Form extends Component {
             label="Strike"
             name="strike"
             type="number"
-            inputProps={{ step: 0.05 }}
+            inputProps={{ step: 0.05, style: { fontSize: 13, lineHeight: 1 } }}
             value={this.state.strike}
             onChange={this.handleChange}
             variant="outlined"
