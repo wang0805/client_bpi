@@ -292,6 +292,8 @@ class Form extends Component {
     let s_comms = this.state.s_comms;
     let s_broker = this.state.s_broker;
     let b_broker = this.state.b_broker;
+    let b_idb = this.state.s_idb;
+    let s_idb = this.state.b_idb;
 
     this.setState({
       b_client: s_client,
@@ -303,7 +305,9 @@ class Form extends Component {
       s_accounts: b_accounts,
       s_comms: b_comms,
       s_broker: b_broker,
-      b_broker: s_broker
+      b_broker: s_broker,
+      b_idb: s_idb,
+      s_idb: b_idb
     });
   };
 
