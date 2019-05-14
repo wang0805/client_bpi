@@ -62,28 +62,28 @@ class Transactions extends Component {
         <Table style={{ width: 2500 }}>
           <TableHead>
             <TableRow>
-              <CustomTableCell align="right">Trade Id</CustomTableCell>
-              <CustomTableCell align="right">Trade date</CustomTableCell>
-              <CustomTableCell align="right">Product</CustomTableCell>
-              <CustomTableCell align="right">Instrument</CustomTableCell>
-              <CustomTableCell align="right">Client buy</CustomTableCell>
-              <CustomTableCell align="right">Acct buy</CustomTableCell>
-              <CustomTableCell align="right">Trader buy</CustomTableCell>
-              <CustomTableCell align="right">Comms buy</CustomTableCell>
-              <CustomTableCell align="right">Client sell</CustomTableCell>
-              <CustomTableCell align="right">Acct sell</CustomTableCell>
-              <CustomTableCell align="right">Trader sell</CustomTableCell>
-              <CustomTableCell align="right">Comms sell</CustomTableCell>
-              <CustomTableCell align="right">Strike</CustomTableCell>
-              <CustomTableCell align="right">Price</CustomTableCell>
-              <CustomTableCell align="right">Quantity</CustomTableCell>
-              <CustomTableCell align="right">Contract</CustomTableCell>
-              <CustomTableCell align="right">Deal Id</CustomTableCell>
-              <CustomTableCell align="right">Created by</CustomTableCell>
-              <CustomTableCell align="right">
+              <CustomTableCell align="center">Trade Id</CustomTableCell>
+              <CustomTableCell align="center">Trade date</CustomTableCell>
+              <CustomTableCell align="center">Product</CustomTableCell>
+              <CustomTableCell align="center">Instrument</CustomTableCell>
+              <CustomTableCell align="center">Client buy</CustomTableCell>
+              <CustomTableCell align="center">Acct buy</CustomTableCell>
+              <CustomTableCell align="center">Trader buy</CustomTableCell>
+              <CustomTableCell align="center">Comms buy</CustomTableCell>
+              <CustomTableCell align="center">Client sell</CustomTableCell>
+              <CustomTableCell align="center">Acct sell</CustomTableCell>
+              <CustomTableCell align="center">Trader sell</CustomTableCell>
+              <CustomTableCell align="center">Comms sell</CustomTableCell>
+              <CustomTableCell align="center">Strike</CustomTableCell>
+              <CustomTableCell align="center">Price</CustomTableCell>
+              <CustomTableCell align="center">Quantity</CustomTableCell>
+              <CustomTableCell align="center">Contract</CustomTableCell>
+              <CustomTableCell align="center">Deal Id</CustomTableCell>
+              <CustomTableCell align="center">Created by</CustomTableCell>
+              <CustomTableCell align="center">
                 Created at (GMT +8)
               </CustomTableCell>
-              <CustomTableCell align="right">Edit</CustomTableCell>
+              <CustomTableCell align="center">Edit</CustomTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -95,58 +95,62 @@ class Transactions extends Component {
                 let trade_date = new Date(row.trade_date).toLocaleDateString();
                 return (
                   <TableRow key={row.trade_id}>
-                    <CustomTableCell align="right" component="th" scope="row">
+                    <CustomTableCell align="center" component="th" scope="row">
                       {row.trade_id}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {trade_date}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.product}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.instrument}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.b_client}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.b_account}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.b_trader}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.b_commission}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.s_client}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.s_account}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.s_trader}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.s_commission}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.strike}
                     </CustomTableCell>
-                    <CustomTableCell align="right">{row.price}</CustomTableCell>
-                    <CustomTableCell align="right">{row.qty}</CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
+                      {row.price}
+                    </CustomTableCell>
+                    <CustomTableCell align="center">{row.qty}</CustomTableCell>
+                    <CustomTableCell align="center">
                       {row.contract}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.deal_id}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
                       {row.created_by}
                     </CustomTableCell>
-                    <CustomTableCell align="right">{date_time}</CustomTableCell>
-                    <CustomTableCell align="right">
+                    <CustomTableCell align="center">
+                      {date_time}
+                    </CustomTableCell>
+                    <CustomTableCell align="center">
                       <Button
                         size="small"
                         variant="outlined"

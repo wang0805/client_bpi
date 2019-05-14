@@ -85,7 +85,7 @@ class Edit extends Component {
         <Card className={classes.card}>
           <form onSubmit={this.handleSubmit}>
             <CardContent>
-              <Typography component="h2">
+              <Typography component="h3">
                 <div>Trade id: {data.id}</div>
                 <div>Trade date: {date}</div>
                 <div>Trade time: {data.trade_time}</div>
@@ -121,7 +121,7 @@ class Edit extends Component {
                     className={classes.textField}
                     value={this.state.dealid}
                     inputProps={{
-                      style: { fontSize: 13, lineHeight: 1 }
+                      style: { fontSize: 12.8, lineHeight: 1 }
                     }}
                     margin="normal"
                     variant="outlined"
