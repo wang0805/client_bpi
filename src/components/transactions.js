@@ -43,6 +43,7 @@ class Transactions extends Component {
     } catch (e) {
       console.log(e, "error getting transactions due to permissions");
     }
+    console.log(this.state.data, "transactions");
   }
 
   updatePost = id => {
@@ -57,26 +58,26 @@ class Transactions extends Component {
         <Table style={{ width: 3000 }}>
           <TableHead>
             <TableRow>
-              <CustomTableCell>Trade_id</CustomTableCell>
-              <CustomTableCell align="right">Trade_date</CustomTableCell>
+              <CustomTableCell>Trade Id</CustomTableCell>
+              <CustomTableCell align="right">Trade date</CustomTableCell>
               <CustomTableCell align="right">Product</CustomTableCell>
-              <CustomTableCell align="right">Client_buy</CustomTableCell>
-              <CustomTableCell align="right">Acct_buy</CustomTableCell>
-              <CustomTableCell align="right">Trader_buy</CustomTableCell>
-              <CustomTableCell align="right">Comms_buy</CustomTableCell>
-              <CustomTableCell align="right">Client_sell</CustomTableCell>
-              <CustomTableCell align="right">Acct_sell</CustomTableCell>
-              <CustomTableCell align="right">Trader_sell</CustomTableCell>
-              <CustomTableCell align="right">Comms_sell</CustomTableCell>
-              <CustomTableCell align="right">Price</CustomTableCell>
-              <CustomTableCell align="right">Strike</CustomTableCell>
               <CustomTableCell align="right">Instrument</CustomTableCell>
+              <CustomTableCell align="right">Client buy</CustomTableCell>
+              <CustomTableCell align="right">Acct buy</CustomTableCell>
+              <CustomTableCell align="right">Trader buy</CustomTableCell>
+              <CustomTableCell align="right">Comms buy</CustomTableCell>
+              <CustomTableCell align="right">Client sell</CustomTableCell>
+              <CustomTableCell align="right">Acct sell</CustomTableCell>
+              <CustomTableCell align="right">Trader sell</CustomTableCell>
+              <CustomTableCell align="right">Comms sell</CustomTableCell>
+              <CustomTableCell align="right">Strike</CustomTableCell>
+              <CustomTableCell align="right">Price</CustomTableCell>
               <CustomTableCell align="right">Quantity</CustomTableCell>
               <CustomTableCell align="right">Contract</CustomTableCell>
-              <CustomTableCell align="right">Deal_id</CustomTableCell>
-              <CustomTableCell align="right">Created_by</CustomTableCell>
+              <CustomTableCell align="right">Deal Id</CustomTableCell>
+              <CustomTableCell align="right">Created by</CustomTableCell>
               <CustomTableCell align="right">
-                Created_at (GMT +8)
+                Created at (GMT +8)
               </CustomTableCell>
               <CustomTableCell align="right">Edit</CustomTableCell>
             </TableRow>
@@ -98,6 +99,9 @@ class Transactions extends Component {
                     </CustomTableCell>
                     <CustomTableCell align="right">
                       {row.product}
+                    </CustomTableCell>
+                    <CustomTableCell align="right">
+                      {row.instrument}
                     </CustomTableCell>
                     <CustomTableCell align="right">
                       {row.b_client}
@@ -123,13 +127,10 @@ class Transactions extends Component {
                     <CustomTableCell align="right">
                       {row.s_commission}
                     </CustomTableCell>
-                    <CustomTableCell align="right">{row.price}</CustomTableCell>
                     <CustomTableCell align="right">
                       {row.strike}
                     </CustomTableCell>
-                    <CustomTableCell align="right">
-                      {row.instrument}
-                    </CustomTableCell>
+                    <CustomTableCell align="right">{row.price}</CustomTableCell>
                     <CustomTableCell align="right">{row.qty}</CustomTableCell>
                     <CustomTableCell align="right">
                       {row.contract}
@@ -145,10 +146,6 @@ class Transactions extends Component {
                       <Button
                         size="small"
                         variant="outlined"
-                        inputProps={{
-                          step: 0.05,
-                          style: { fontSize: 13, lineHeight: 1 }
-                        }}
                         color="primary"
                         onClick={() => this.updatePost(row.trade_id)}
                       >
