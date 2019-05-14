@@ -86,18 +86,18 @@ class Edit extends Component {
           <form onSubmit={this.handleSubmit}>
             <CardContent>
               <Typography component="h2">
-                <div>Trade_id: {data.id}</div>
-                <div>Trade_date:{date}</div>
-                <div>Trade_time: {data.trade_time}</div>
-                <div>Client_buy: {data.b_client}</div>
-                <div>Account_buy: {data.b_account}</div>
-                <div>Trader_buy: {data.b_trader}</div>
-                <div>Comms_buy: {data.b_commission}</div>
+                <div>Trade id: {data.id}</div>
+                <div>Trade date: {date}</div>
+                <div>Trade time: {data.trade_time}</div>
+                <div>Client buy: {data.b_client}</div>
+                <div>Account buy: {data.b_account}</div>
+                <div>Trader buy: {data.b_trader}</div>
+                <div>Comms buy: {data.b_commission}</div>
                 <br />
-                <div>Client_sell: {data.s_client}</div>
-                <div>Account_sell: {data.s_account}</div>
-                <div>Trader_sell: {data.s_trader}</div>
-                <div>Comms_sell: {data.s_commission}</div>
+                <div>Client sell: {data.s_client}</div>
+                <div>Account sell: {data.s_account}</div>
+                <div>Trader sell: {data.s_trader}</div>
+                <div>Comms sell: {data.s_commission}</div>
                 <br />
                 <div>Contract: {data.contract}</div>
                 <div>Price: {data.price}</div>
