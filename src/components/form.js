@@ -756,7 +756,7 @@ class Form extends Component {
                 ))}
               </Select>
             </FormControl>
-            <span>&nbsp;&nbsp;</span>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
             <Button onClick={() => this.allege("HK")} variant="contained">
               Allege HK
             </Button>
@@ -896,7 +896,7 @@ class Form extends Component {
             </FormControl>
             {year}
             <span>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </span>
             <FormControl className={classes.dateControl} variant="outlined">
               <InputLabel
@@ -988,7 +988,7 @@ class Form extends Component {
                 ))}
               </Select>
             </FormControl>
-            <span>&nbsp;&nbsp;</span>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
             <Button onClick={() => this.allegeS("HK")} variant="contained">
               Allege HK
             </Button>
