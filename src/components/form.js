@@ -758,7 +758,7 @@ class Form extends Component {
             </FormControl>
             <span>&nbsp;&nbsp;</span>
             <Button onClick={() => this.allege("HK")} variant="contained">
-              Alege HK
+              Allege HK
             </Button>
             <span>&nbsp;&nbsp;</span>
             <Button onClick={() => this.allege("SG")} variant="contained">
@@ -990,7 +990,7 @@ class Form extends Component {
             </FormControl>
             <span>&nbsp;&nbsp;</span>
             <Button onClick={() => this.allegeS("HK")} variant="contained">
-              Alege HK
+              Allege HK
             </Button>
             <span>&nbsp;&nbsp;</span>
             <Button onClick={() => this.allegeS("SG")} variant="contained">
