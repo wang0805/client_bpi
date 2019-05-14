@@ -78,6 +78,8 @@ class Edit extends Component {
     const { classes } = this.props;
     let data = this.state.data;
     // console.log(typeof data.trade_date);
+    let date = new Date(data.trade_date).toLocaleDateString();
+
     return (
       <div className={classes.root}>
         <Card className={classes.card}>
@@ -85,10 +87,7 @@ class Edit extends Component {
             <CardContent>
               <Typography component="h2">
                 <div>Trade_id: {data.id}</div>
-                <div>
-                  Trade_date:{" "}
-                  {data.trade_date && data.trade_date.substring(0, 10)}
-                </div>
+                <div>Trade_date:{date}}</div>
                 <div>Trade_time: {data.trade_time}</div>
                 <div>Client_buy: {data.b_client}</div>
                 <div>Account_buy: {data.b_account}</div>
