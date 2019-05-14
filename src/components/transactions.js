@@ -11,10 +11,14 @@ import Paper from "@material-ui/core/Paper";
 
 const CustomTableCell = withStyles(() => ({
   head: {
-    fontSize: 12
+    fontSize: 12,
+    paddingLeft: 8,
+    paddingRight: 8
   },
   body: {
-    fontSize: 11
+    fontSize: 11,
+    paddingLeft: 8,
+    paddingRight: 8
   }
 }))(TableCell);
 
@@ -55,10 +59,10 @@ class Transactions extends Component {
 
     return (
       <Paper className={classes.root}>
-        <Table style={{ width: 3000 }}>
+        <Table style={{ width: 2500 }}>
           <TableHead>
             <TableRow>
-              <CustomTableCell>Trade Id</CustomTableCell>
+              <CustomTableCell align="right">Trade Id</CustomTableCell>
               <CustomTableCell align="right">Trade date</CustomTableCell>
               <CustomTableCell align="right">Product</CustomTableCell>
               <CustomTableCell align="right">Instrument</CustomTableCell>
@@ -91,7 +95,7 @@ class Transactions extends Component {
                 let trade_date = new Date(row.trade_date).toLocaleDateString();
                 return (
                   <TableRow key={row.trade_id}>
-                    <CustomTableCell component="th" scope="row">
+                    <CustomTableCell align="right" component="th" scope="row">
                       {row.trade_id}
                     </CustomTableCell>
                     <CustomTableCell align="right">
