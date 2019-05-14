@@ -852,7 +852,6 @@ class Form extends Component {
             />
           </div>
           <br />
-          <br />
           <div className={classes.midbutton}>
             <FormControl className={classes.dateControl} variant="outlined">
               <InputLabel
@@ -956,7 +955,6 @@ class Form extends Component {
               Q4
             </Button>
           </div>
-          <br />
           <br />
           <div className={classes.midbutton}>
             <FormControl className={classes.formControl} variant="outlined">
