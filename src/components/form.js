@@ -502,8 +502,9 @@ class Form extends Component {
         Seller_trader: ${this.state.s_trader}
         Seller_comms: ${this.state.s_comms}
         
-        Contract: ${contract}
+        Product: ${this.state.product_code}
         Instrument: ${this.state.instrument}
+        Contract: ${contract}
         Price: ${this.state.price}
         Strike: ${this.state.strike}
         Quantity: ${this.state.qty}`

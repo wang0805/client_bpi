@@ -87,7 +87,7 @@ class Edit extends Component {
             <CardContent>
               <Typography component="h2">
                 <div>Trade_id: {data.id}</div>
-                <div>Trade_date:{date}}</div>
+                <div>Trade_date:{date}</div>
                 <div>Trade_time: {data.trade_time}</div>
                 <div>Client_buy: {data.b_client}</div>
                 <div>Account_buy: {data.b_account}</div>
