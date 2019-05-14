@@ -6,6 +6,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 
 const CustomTableCell = withStyles(() => ({
@@ -86,13 +87,14 @@ class Transactions extends Component {
                 let date = new Date(row.created_at);
                 let date_time =
                   date.toLocaleDateString() + " " + date.toLocaleTimeString();
+                let trade_date = new Date(row.trade_date).toLocaleDateString();
                 return (
                   <TableRow key={row.trade_id}>
                     <CustomTableCell component="th" scope="row">
                       {row.trade_id}
                     </CustomTableCell>
                     <CustomTableCell align="right">
-                      {row.trade_date.substring(0, 10)}
+                      {trade_date}
                     </CustomTableCell>
                     <CustomTableCell align="right">
                       {row.product}
@@ -140,9 +142,18 @@ class Transactions extends Component {
                     </CustomTableCell>
                     <CustomTableCell align="right">{date_time}</CustomTableCell>
                     <CustomTableCell align="right">
-                      <button onClick={() => this.updatePost(row.trade_id)}>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        inputProps={{
+                          step: 0.05,
+                          style: { fontSize: 13, lineHeight: 1 }
+                        }}
+                        color="primary"
+                        onClick={() => this.updatePost(row.trade_id)}
+                      >
                         Edit
-                      </button>
+                      </Button>
                     </CustomTableCell>
                   </TableRow>
                 );

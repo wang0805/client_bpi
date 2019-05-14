@@ -7,8 +7,9 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 
-const styles = {
+const styles = theme => ({
   root: {
     display: "flex",
     flexDirection: "column",
@@ -28,8 +29,12 @@ const styles = {
   },
   pos: {
     marginBottom: 12
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit
   }
-};
+});
 
 class Edit extends Component {
   state = { data: "", tradeid: "", dealid: "" };
@@ -42,8 +47,6 @@ class Edit extends Component {
         this.setState({ tradeid: data.id });
         this.setState({ dealid: data.deal_id });
       });
-
-    console.log(this.state.data, "edit data");
   }
 
   handleChange = e => {
@@ -102,14 +105,27 @@ class Edit extends Component {
                 <div>Strike: {data.strike}</div>
                 <div>Instrument: {data.instrument}</div>
                 <div>Quantity: {data.qty}</div>
-                <br />
+
                 <div>
-                  <label>Deal id:</label>
-                  <input
+                  {/* <label>Deal id:</label> */}
+                  {/* <input
                     type="number"
                     name="dealid"
                     value={this.state.dealid}
                     onChange={this.handleChange}
+                  /> */}
+                  <TextField
+                    error
+                    type="number"
+                    name="dealid"
+                    label="Deal id"
+                    className={classes.textField}
+                    value={this.state.dealid}
+                    inputProps={{
+                      style: { fontSize: 13, lineHeight: 1 }
+                    }}
+                    margin="normal"
+                    variant="outlined"
                   />
                 </div>
               </Typography>
