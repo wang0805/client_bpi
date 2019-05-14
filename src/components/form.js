@@ -296,6 +296,8 @@ class Form extends Component {
     let b_idb = this.state.b_idb;
     let b_client_id = this.state.b_client_id;
     let s_client_id = this.state.s_client_id;
+    let b_recap = this.state.b_recap;
+    let s_recap = this.state.s_recap;
 
     this.setState({
       b_client: s_client,
@@ -311,7 +313,9 @@ class Form extends Component {
       s_idb: b_idb,
       b_idb: s_idb,
       s_client_id: b_client_id,
-      b_client_id: s_client_id
+      b_client_id: s_client_id,
+      b_recap: s_recap,
+      s_recap: b_recap
     });
   };
 
