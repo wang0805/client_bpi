@@ -16,7 +16,7 @@ const styles = theme => ({
     alignItems: "center"
   },
   card: {
-    maxWidth: 500,
+    minWidth: 280,
     marginTop: 50
   },
   bullet: {
@@ -121,8 +121,9 @@ class Edit extends Component {
                     className={classes.textField}
                     value={this.state.dealid}
                     inputProps={{
-                      style: { fontSize: 12.8, lineHeight: 1 }
+                      style: { fontSize: 14, lineHeight: 1 }
                     }}
+                    onChange={this.handleChange}
                     margin="normal"
                     variant="outlined"
                   />
