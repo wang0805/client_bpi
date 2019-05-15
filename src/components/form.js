@@ -64,15 +64,19 @@ class Form extends Component {
     execTime: "",
     execDate: "",
     dealGroup: 1,
-    arrayCsv: []
+    arrayCsv: [],
+    created_byid: ""
   };
 
   componentDidMount() {
+    let created_byid = parseInt(localStorage.getItem("user_id"));
     this.setState({
+      created_byid: created_byid,
       labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
       toM: this.revMon(new Date().getMonth()),
       fromM: this.revMon(new Date().getMonth()),
       year: new Date().getFullYear(),
+
       arrayCsv: [
         [
           "Group No.",
