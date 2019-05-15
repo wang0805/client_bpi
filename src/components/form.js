@@ -1155,16 +1155,17 @@ class Form extends Component {
         </div>
         <br />
         <br />
-        <br />
         <div>
           <table>
-            {this.state.arrayCsv.map((row, index) => (
-              <tr key={index}>
-                {row.map((item, index) => (
-                  <td key={index}>{item}</td>
-                ))}
-              </tr>
-            ))}
+            <tbody>
+              {this.state.arrayCsv.map((row, index) => (
+                <tr key={index}>
+                  {row.map((item, index) => (
+                    <td key={index}>{item}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       </div>
