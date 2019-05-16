@@ -169,7 +169,7 @@ class Form extends Component {
           }
           this.setState({ value: clientsObj });
           this.setState({ clients });
-          this.context.setClients(clients);
+          this.context.setClients(clientsObj);
         });
       fetch("/api/products")
         .then(res => res.json())
@@ -523,7 +523,11 @@ class Form extends Component {
       // window.open(encodedUri);
 
       // console.log(this.state, "states passing through");
-      const dataState = { ...this.state, contract: contract };
+      const dataState = {
+        ...this.state,
+        consMonth: consMonth,
+        contract: contract
+      };
       // post to transaction
       fetch("/api/transactions", {
         method: "POST",
