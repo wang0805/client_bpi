@@ -30,8 +30,8 @@ class Client extends Component {
     array.shift();
     for (let i = 0; i < array.length; i++) {
       let obj = {};
-      obj.client = array.clients;
-      obj.id = array.id;
+      obj.client = array[i].clients;
+      obj.id = array[i].id;
       obj.checked = false;
       output.push(obj);
     }
@@ -41,8 +41,9 @@ class Client extends Component {
   handleChange = name => event => {
     let clients = [...this.state.clients];
     for (let i = 0; i < clients.length; i++) {
-      if (clients[i] === name) {
-        clients[i][Object.keys(clients[i])[0]] = event.target.checked;
+      if (clients[i].id === name.id) {
+        clients[i].checked = event.target.checked;
+        break;
       }
     }
     this.setState({ clients: [...clients] });
@@ -51,8 +52,10 @@ class Client extends Component {
   render() {
     const { classes } = this.props;
     const { clients } = this.state;
+    const { transactions } = this.context;
 
-    console.log(this.context);
+    // console.log(this.context.transactions);
+    // console.log(clients, "clients");
 
     let headers = [
       "Id",
@@ -63,12 +66,77 @@ class Client extends Component {
       "Account",
       "Idb",
       "Trader",
-      "Commission",
+      "Comms",
+      "Total Comms",
       "Price",
       "Strike",
       "Quantity",
       "Contract"
     ];
+    let clientarr = [];
+    for (let i = 0; i < clients.length; i++) {
+      if (clients[i].checked === true) {
+        for (let j = 0; j < transactions.length; j++) {
+          let transac = {};
+          if (transactions[j].b_clientid === clients[i].id) {
+            let size = transactions[j].qty;
+            if (transactions[j].instrument === "S") {
+              size = transactions[j].qty * 500 * transactions[j].consmonth;
+            } else {
+              size = transactions[j].qty * 100 * transactions[j].consmonth;
+            }
+            let date = new Date(
+              transactions[j].trade_date
+            ).toLocaleDateString();
+            transac.id = transactions[j].trade_id;
+            transac.trade_date = date;
+            transac.client = transactions[j].b_client;
+            transac.product = transactions[j].product;
+            transac.bs = "Buy";
+            transac.account = transactions[j].b_account;
+            transac.idb = transactions[j].b_idb;
+            transac.trader = transactions[j].b_trader;
+            transac.comms = transactions[j].b_commission;
+            transac.tcomms = parseFloat(transactions[j].b_commission) * size;
+            transac.price = transactions[j].price;
+            transac.strike = transactions[j].strike;
+            transac.qty = transactions[j].qty;
+            transac.size = size;
+            transac.contract = transactions[j].contract;
+          }
+          if (transactions[j].s_clientid === clients[i].id) {
+            let size = transactions[j].qty;
+            if (transactions[j].instrument === "S") {
+              size = transactions[j].qty * 500 * transactions[j].consmonth;
+            } else {
+              size = transactions[j].qty * 100 * transactions[j].consmonth;
+            }
+            let date = new Date(
+              transactions[j].trade_date
+            ).toLocaleDateString();
+            transac.id = transactions[j].trade_id;
+            transac.trade_date = date;
+            transac.client = transactions[j].s_client;
+            transac.product = transactions[j].product;
+            transac.bs = "Sell";
+            transac.account = transactions[j].s_account;
+            transac.idb = transactions[j].s_idb;
+            transac.trader = transactions[j].s_trader;
+            transac.comms = transactions[j].s_commission;
+            transac.tcomms = parseFloat(transactions[j].s_commission) * size;
+            transac.price = transactions[j].price;
+            transac.strike = transactions[j].strike;
+            transac.qty = transactions[j].qty;
+            transac.size = size;
+            transac.contract = transactions[j].contract;
+          }
+          if (Object.keys(transac).length) {
+            clientarr.push(transac);
+          }
+        }
+      }
+    }
+    console.log(clientarr, "clients array");
 
     return (
       <div className={classes.root}>
@@ -93,6 +161,34 @@ class Client extends Component {
           </FormGroup>
           <FormHelperText>Be careful</FormHelperText>
         </FormControl>
+        <table>
+          <tr>
+            {headers.map((field, index) => (
+              <th key={index}>{field}</th>
+            ))}
+          </tr>
+
+          {clientarr.map((client, index) => {
+            return (
+              <tr>
+                <td>{client.id}</td>
+                <td>{client.trade_date}</td>
+                <td>{client.client}</td>
+                <td>{client.product}</td>
+                <td>{client.bs}</td>
+                <td>{client.account}</td>
+                <td>{client.idb}</td>
+                <td>{client.trader}</td>
+                <td>{client.comms}</td>
+                <td>{client.tcomms}</td>
+                <td>{client.price}</td>
+                <td>{client.strike}</td>
+                <td>{client.size}</td>
+                <td>{client.contract}</td>
+              </tr>
+            );
+          })}
+        </table>
       </div>
     );
   }
