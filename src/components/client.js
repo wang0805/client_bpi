@@ -21,53 +21,72 @@ const styles = theme => ({
 
 class Client extends Component {
   state = {
-    clients: {}
+    clients: []
   };
 
   componentDidMount() {
     let array = [...this.context.clients];
-    let obj = {};
+    let output = [];
     array.shift();
     for (let i = 0; i < array.length; i++) {
-      console.log(array[i]);
-      obj[array[i]] = false;
+      let obj = {};
+      obj.client = array.clients;
+      obj.id = array.id;
+      obj.checked = false;
+      output.push(obj);
     }
-    this.setState({ clients: { ...obj } });
+    this.setState({ clients: [...output] });
   }
 
   handleChange = name => event => {
-    console.log(name);
-    let clients = { ...this.state.clients };
-    console.log(event.target.checked);
-    clients[name] = event.target.checked;
-    console.log(clients);
-    this.setState({ clients: { ...clients } });
+    let clients = [...this.state.clients];
+    for (let i = 0; i < clients.length; i++) {
+      if (clients[i] === name) {
+        clients[i][Object.keys(clients[i])[0]] = event.target.checked;
+      }
+    }
+    this.setState({ clients: [...clients] });
   };
 
   render() {
     const { classes } = this.props;
-    console.log(this.state.clients);
+    const { clients } = this.state;
+
     console.log(this.context);
 
-    // for(let i = 0; i<)
+    let headers = [
+      "Id",
+      "Trade Date",
+      "Client",
+      "Product",
+      "Buy/Sell",
+      "Account",
+      "Idb",
+      "Trader",
+      "Commission",
+      "Price",
+      "Strike",
+      "Quantity",
+      "Contract"
+    ];
 
     return (
       <div className={classes.root}>
         <FormControl component="fieldset" className={classes.formControl}>
           <FormLabel component="legend">Select Clients</FormLabel>
           <FormGroup>
-            {Object.keys(this.state.clients).map((client, index) => {
+            {clients.map((client, index) => {
               return (
                 <FormControlLabel
                   key={index}
                   control={
                     <Checkbox
-                      checked={this.state.clients[client]}
+                      checked={client.checked}
                       onChange={this.handleChange(client)}
-                      value={client}
+                      value={client.client}
                     />
                   }
-                  label={client}
+                  label={client.client}
                 />
               );
             })}

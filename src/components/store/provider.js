@@ -18,7 +18,7 @@ class AppProvider extends Component {
 
   async componentDidMount() {
     try {
-      await fetch("/api/transactions", {
+      await fetch("/api/transactionss", {
         method: "GET",
         headers: {
           Authorization: localStorage.getItem("token")
