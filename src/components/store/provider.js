@@ -6,11 +6,41 @@ import { Provider } from "./createContext";
 // Feel free to abstract actions and state away from this file.
 class AppProvider extends Component {
   state = {
+    clients: [],
+    transactions: [],
+    clientsdata: [],
+    setClients: clients => this.setState({ clients })
     // fullcart: [],
     // setFullCart: items => this.setState({ fullcart: items }),
     // addToFullCart: this.addToFullCart.bind(this),
     // remove: this.remove.bind(this),
   };
+
+  async componentDidMount() {
+    try {
+      await fetch("/api/transactions", {
+        method: "GET",
+        headers: {
+          Authorization: localStorage.getItem("token")
+        }
+      })
+        .then(res => res.json())
+        .then(transactions => {
+          this.setState({ transactions });
+        });
+
+      await fetch("/api/clients", {
+        method: "GET",
+        headers: {
+          Authorization: localStorage.getItem("token")
+        }
+      })
+        .then(res => res.json())
+        .then(clientsdata => this.setState({ clientsdata }));
+    } catch (e) {
+      console.log(e, "error getting transactions due to permissions");
+    }
+  }
 
   // addToFullCart(newItem) {
   //   let itemExisted = false
