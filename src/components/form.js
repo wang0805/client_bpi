@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import { MyContext } from "../components/store/createContext";
 
 import { withStyles } from "@material-ui/core/styles";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
@@ -167,7 +168,8 @@ class Form extends Component {
             });
           }
           this.setState({ value: clientsObj });
-          this.setState({ clients: clients });
+          this.setState({ clients });
+          this.context.setClients(clients);
         });
       fetch("/api/products")
         .then(res => res.json())
@@ -543,9 +545,15 @@ class Form extends Component {
               "Content-Type": "application/json"
             },
             body: JSON.stringify(newData)
-          }).then(() => {
-            console.log("this is a success to email!!");
-          });
+          })
+            .then(() => {
+              console.log("this is a success to email");
+              alert("Email successfully sent");
+            })
+            .catch(error => {
+              console.error("error: ", error);
+              alert("Error in sending email, please try again");
+            });
         });
     }
   };
@@ -1176,5 +1184,7 @@ class Form extends Component {
     );
   }
 }
+
+Form.contextType = MyContext;
 
 export default withStyles(styles)(Form);

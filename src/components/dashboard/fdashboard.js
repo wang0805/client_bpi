@@ -20,8 +20,10 @@ import AddCircle from "@material-ui/icons/AddCircle";
 import Archive from "@material-ui/icons/Archive";
 import TouchApp from "@material-ui/icons/TouchApp";
 import { Link } from "react-router-dom";
+
 import Form from "../form";
 import Transactions from "../transactions";
+import Client from "../client";
 
 const drawerWidth = 240;
 
@@ -86,17 +88,26 @@ class Fdashboard extends React.Component {
   state = {
     open: false,
     openForm: true,
-    openTrans: false
+    openTrans: false,
+    openTrades: false
   };
 
   handleFormOpen = () => {
     this.setState({ openForm: true });
     this.setState({ openTrans: false });
+    this.setState({ openTrades: false });
   };
 
   handleTransOpen = () => {
+    this.setState({ openTrades: false });
     this.setState({ openForm: false });
     this.setState({ openTrans: true });
+  };
+
+  handleTradesOpen = () => {
+    this.setState({ openForm: false });
+    this.setState({ openTrans: false });
+    this.setState({ openTrades: true });
   };
 
   handleDrawerOpen = () => {
@@ -177,6 +188,14 @@ class Fdashboard extends React.Component {
             </ListItem>
           </List>
           <Divider />
+          <List>
+            <ListItem button onClick={this.handleTradesOpen}>
+              <ListItemIcon>
+                <Archive />
+              </ListItemIcon>
+              <ListItemText primary={"TBD"} />
+            </ListItem>
+          </List>
           {/* <List>
             <ListItem button key={"NA"}>
               <ListItemIcon>
@@ -194,6 +213,7 @@ class Fdashboard extends React.Component {
           <div className={classes.drawerHeader} />
           {this.state.openForm && <Form />}
           {this.state.openTrans && <Transactions {...this.props} />}
+          {this.state.openTrades && <Client />}
         </main>
       </div>
     );
