@@ -54,7 +54,7 @@ class Client extends Component {
     const { clients } = this.state;
     const { transactions } = this.context;
 
-    // console.log(this.context.transactions);
+    console.log(this.context.transactions);
     // console.log(clients, "clients");
 
     let headers = [
@@ -62,16 +62,17 @@ class Client extends Component {
       "Trade Date",
       "Client",
       "Product",
+      "Instrument",
       "Buy/Sell",
-      "Account",
-      "Idb",
-      "Trader",
-      "Comms",
-      "Total Comms",
+      "Contract",
       "Price",
       "Strike",
       "Quantity",
-      "Contract"
+      "Account",
+      "Trader",
+      "Comms",
+      "Total Comms",
+      "Deal Id"
     ];
     let clientarr = [];
     for (let i = 0; i < clients.length; i++) {
@@ -103,6 +104,7 @@ class Client extends Component {
             transac.qty = transactions[j].qty;
             transac.size = size;
             transac.contract = transactions[j].contract;
+            transac.deal_id = transactions[j].deal_id;
           }
           if (transactions[j].s_clientid === clients[i].id) {
             let size = transactions[j].qty;
@@ -129,6 +131,7 @@ class Client extends Component {
             transac.qty = transactions[j].qty;
             transac.size = size;
             transac.contract = transactions[j].contract;
+            transac.deal_id = transactions[j].deal_id;
           }
           if (Object.keys(transac).length) {
             clientarr.push(transac);
@@ -175,16 +178,18 @@ class Client extends Component {
                 <td>{client.trade_date}</td>
                 <td>{client.client}</td>
                 <td>{client.product}</td>
+                <td>{client.instrument}</td>
                 <td>{client.bs}</td>
-                <td>{client.account}</td>
-                <td>{client.idb}</td>
-                <td>{client.trader}</td>
-                <td>{client.comms}</td>
-                <td>{client.tcomms}</td>
+                <td>{client.contract}</td>
                 <td>{client.price}</td>
                 <td>{client.strike}</td>
                 <td>{client.size}</td>
-                <td>{client.contract}</td>
+                <td>{client.account}</td>
+
+                <td>{client.trader}</td>
+                <td>{client.comms}</td>
+                <td>{client.tcomms}</td>
+                <td>{client.deal_id}</td>
               </tr>
             );
           })}
