@@ -47,6 +47,7 @@ class Blotter extends Component {
     } catch (e) {
       console.log(e, "error getting transactions due to permissions");
     }
+    console.log(this.state.data, "datatatatta");
   }
 
   //   updatePost = id => {
@@ -58,6 +59,7 @@ class Blotter extends Component {
     let header = [
       "Trade id",
       "Trade date",
+      "Trade time",
       "Product",
       "Instrument",
       "Client Buy",
@@ -93,6 +95,7 @@ class Blotter extends Component {
 
       array.push(this.state.data[i].trade_id);
       array.push(trade_date);
+      array.push(this.state.data[i].trade_time);
       array.push(this.state.data[i].product);
       array.push(this.state.data[i].instrument);
       array.push(this.state.data[i].b_client);
@@ -132,6 +135,7 @@ class Blotter extends Component {
               <TableRow>
                 <CustomTableCell align="center">Trade Id</CustomTableCell>
                 <CustomTableCell align="center">Trade date</CustomTableCell>
+                <CustomTableCell align="center">Trade time</CustomTableCell>
                 <CustomTableCell align="center">Product</CustomTableCell>
                 <CustomTableCell align="center">Instrument</CustomTableCell>
                 <CustomTableCell align="center">Client buy</CustomTableCell>
@@ -180,6 +184,9 @@ class Blotter extends Component {
                       </CustomTableCell>
                       <CustomTableCell align="center">
                         {trade_date}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {row.trade_time}
                       </CustomTableCell>
                       <CustomTableCell align="center">
                         {row.product}
