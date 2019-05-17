@@ -93,6 +93,7 @@ class Client extends Component {
             transac.trade_date = date;
             transac.client = transactions[j].b_client;
             transac.product = transactions[j].product;
+            transac.instrument = transactions[j].instrument;
             transac.bs = "Buy";
             transac.account = transactions[j].b_account;
             transac.idb = transactions[j].b_idb;
@@ -120,6 +121,7 @@ class Client extends Component {
             transac.trade_date = date;
             transac.client = transactions[j].s_client;
             transac.product = transactions[j].product;
+            transac.instrument = transactions[j].instrument;
             transac.bs = "Sell";
             transac.account = transactions[j].s_account;
             transac.idb = transactions[j].s_idb;
