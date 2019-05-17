@@ -9,6 +9,7 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
+import Button from "@material-ui/core/Button";
 
 const styles = theme => ({
   root: {
@@ -21,7 +22,8 @@ const styles = theme => ({
 
 class Client extends Component {
   state = {
-    clients: []
+    clients: [],
+    clientarr: []
   };
 
   componentDidMount() {
@@ -38,7 +40,13 @@ class Client extends Component {
     this.setState({ clients: [...output] });
   }
 
-  handleChange = name => event => {
+  //   componentDidUpdate(prevProps, prevState) {
+  //     if (this.state.clientarr !== prevState.clientarr) {
+  //       this.fetchData(this.state.clientarr);
+  //     }
+  //   }
+
+  handleChange = name => async event => {
     let clients = [...this.state.clients];
     for (let i = 0; i < clients.length; i++) {
       if (clients[i].id === name.id) {
@@ -46,37 +54,14 @@ class Client extends Component {
         break;
       }
     }
-    this.setState({ clients: [...clients] });
-  };
+    await this.setState({ clients: [...clients] });
 
-  render() {
-    const { classes } = this.props;
-    const { clients } = this.state;
     const { transactions } = this.context;
 
-    console.log(this.context.transactions);
-    // console.log(clients, "clients");
-
-    let headers = [
-      "Id",
-      "Trade Date",
-      "Client",
-      "Product",
-      "Instrument",
-      "Buy/Sell",
-      "Contract",
-      "Price",
-      "Strike",
-      "Quantity",
-      "Account",
-      "Trader",
-      "Comms",
-      "Total Comms",
-      "Deal Id"
-    ];
+    // set a new array for clientarr to go into pdf
     let clientarr = [];
-    for (let i = 0; i < clients.length; i++) {
-      if (clients[i].checked === true) {
+    for (let i = 0; i < this.state.clients.length; i++) {
+      if (this.state.clients[i].checked === true) {
         for (let j = 0; j < transactions.length; j++) {
           let transac = {};
           if (transactions[j].b_clientid === clients[i].id) {
@@ -93,6 +78,7 @@ class Client extends Component {
             transac.trade_date = date;
             transac.client = transactions[j].b_client;
             transac.product = transactions[j].product;
+            transac.instrument = transactions[j].instrument;
             transac.bs = "Buy";
             transac.account = transactions[j].b_account;
             transac.idb = transactions[j].b_idb;
@@ -120,6 +106,7 @@ class Client extends Component {
             transac.trade_date = date;
             transac.client = transactions[j].s_client;
             transac.product = transactions[j].product;
+            transac.instrument = transactions[j].instrument;
             transac.bs = "Sell";
             transac.account = transactions[j].s_account;
             transac.idb = transactions[j].s_idb;
@@ -140,6 +127,46 @@ class Client extends Component {
       }
     }
     console.log(clientarr, "clients array");
+    this.setState({ clientarr });
+  };
+
+  createPdf = () => {
+    let dataState = [...this.state.clientarr];
+    fetch("/createpdf", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(dataState)
+    });
+  };
+
+  render() {
+    const { classes } = this.props;
+    const { clients } = this.state;
+    const { transactions } = this.context;
+
+    console.log(this.context.transactions);
+    // console.log(clients, "clients");
+
+    let headers = [
+      "Id",
+      "Trade Date",
+      "Client",
+      "Product",
+      "Instrument",
+      "Buy/Sell",
+      "Contract",
+      "Price",
+      "Strike",
+      "Quantity",
+      "Account",
+      "Trader",
+      "Comms",
+      "Total Comms",
+      "Deal Id"
+    ];
 
     return (
       <div className={classes.root}>
@@ -164,35 +191,40 @@ class Client extends Component {
           </FormGroup>
           <FormHelperText>Be careful</FormHelperText>
         </FormControl>
-        <table>
-          <tr>
-            {headers.map((field, index) => (
-              <th key={index}>{field}</th>
-            ))}
-          </tr>
+        <div>
+          <Button variant="contained" color="primary" onClick={this.createPdf}>
+            Create PDF
+          </Button>
+          <table>
+            <tr>
+              {headers.map((field, index) => (
+                <th key={index}>{field}</th>
+              ))}
+            </tr>
 
-          {clientarr.map((client, index) => {
-            return (
-              <tr>
-                <td>{client.id}</td>
-                <td>{client.trade_date}</td>
-                <td>{client.client}</td>
-                <td>{client.product}</td>
-                <td>{client.instrument}</td>
-                <td>{client.bs}</td>
-                <td>{client.contract}</td>
-                <td>{client.price}</td>
-                <td>{client.strike}</td>
-                <td>{client.size}</td>
-                <td>{client.account}</td>
-                <td>{client.trader}</td>
-                <td>{client.comms}</td>
-                <td>{client.tcomms}</td>
-                <td>{client.deal_id}</td>
-              </tr>
-            );
-          })}
-        </table>
+            {this.state.clientarr.map((client, index) => {
+              return (
+                <tr key={index}>
+                  <td>{client.id}</td>
+                  <td>{client.trade_date}</td>
+                  <td>{client.client}</td>
+                  <td>{client.product}</td>
+                  <td>{client.instrument}</td>
+                  <td>{client.bs}</td>
+                  <td>{client.contract}</td>
+                  <td>{client.price}</td>
+                  <td>{client.strike}</td>
+                  <td>{client.size}</td>
+                  <td>{client.account}</td>
+                  <td>{client.trader}</td>
+                  <td>{client.comms}</td>
+                  <td>{client.tcomms}</td>
+                  <td>{client.deal_id}</td>
+                </tr>
+              );
+            })}
+          </table>
+        </div>
       </div>
     );
   }
