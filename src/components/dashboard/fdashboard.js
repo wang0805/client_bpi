@@ -24,6 +24,7 @@ import { Link } from "react-router-dom";
 import Form from "../form";
 import Transactions from "../transactions";
 import Client from "../client";
+import Blotter from "../blotter";
 
 const drawerWidth = 240;
 
@@ -89,25 +90,44 @@ class Fdashboard extends React.Component {
     open: false,
     openForm: true,
     openTrans: false,
-    openTrades: false
+    openTrades: false,
+    openBlotter: false
   };
 
   handleFormOpen = () => {
-    this.setState({ openForm: true });
-    this.setState({ openTrans: false });
-    this.setState({ openTrades: false });
+    this.setState({
+      openForm: true,
+      openTrans: false,
+      openTrades: false,
+      openBlotter: false
+    });
   };
 
   handleTransOpen = () => {
-    this.setState({ openTrades: false });
-    this.setState({ openForm: false });
-    this.setState({ openTrans: true });
+    this.setState({
+      openForm: false,
+      openTrans: true,
+      openTrades: false,
+      openBlotter: false
+    });
   };
 
   handleTradesOpen = () => {
-    this.setState({ openForm: false });
-    this.setState({ openTrans: false });
-    this.setState({ openTrades: true });
+    this.setState({
+      openForm: false,
+      openTrans: false,
+      openTrades: true,
+      openBlotter: false
+    });
+  };
+
+  handleBlotterOpen = () => {
+    this.setState({
+      openForm: false,
+      openTrans: false,
+      openTrades: false,
+      openBlotter: true
+    });
   };
 
   handleDrawerOpen = () => {
@@ -189,11 +209,19 @@ class Fdashboard extends React.Component {
           </List>
           <Divider />
           <List>
+            <ListItem button onClick={this.handleBlotterOpen}>
+              <ListItemIcon>
+                <Archive />
+              </ListItemIcon>
+              <ListItemText primary={"Blotter"} />
+            </ListItem>
+          </List>
+          <List>
             <ListItem button onClick={this.handleTradesOpen}>
               <ListItemIcon>
                 <Archive />
               </ListItemIcon>
-              <ListItemText primary={"TBD"} />
+              <ListItemText primary={"Invoice"} />
             </ListItem>
           </List>
           {/* <List>
@@ -214,6 +242,7 @@ class Fdashboard extends React.Component {
           {this.state.openForm && <Form />}
           {this.state.openTrans && <Transactions {...this.props} />}
           {this.state.openTrades && <Client />}
+          {this.state.openBlotter && <Blotter />}
         </main>
       </div>
     );
