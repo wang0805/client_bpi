@@ -185,7 +185,6 @@ class Client extends Component {
                 <td>{client.strike}</td>
                 <td>{client.size}</td>
                 <td>{client.account}</td>
-
                 <td>{client.trader}</td>
                 <td>{client.comms}</td>
                 <td>{client.tcomms}</td>
