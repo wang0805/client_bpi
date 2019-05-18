@@ -145,9 +145,8 @@ class Client extends Component {
   render() {
     const { classes } = this.props;
     const { clients } = this.state;
-    const { transactions } = this.context;
 
-    console.log(this.context.transactions);
+    // console.log(this.context.transactions);
     // console.log(clients, "clients");
 
     let headers = [
