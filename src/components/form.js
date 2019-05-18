@@ -292,30 +292,44 @@ class Form extends Component {
   };
 
   allege = entity => {
-    this.setState({
-      b_client: "",
-      b_trader: "",
-      b_accounts: ""
-    });
+    // this.setState({
+    //   b_client: "",
+    //   b_trader: "",
+    //   b_accounts: ""
+    // });
 
-    if (entity === "SG") {
-      this.setState({ b_idb: "S674" });
-    } else if (entity === "HK") {
-      this.setState({ b_idb: "S664" });
+    // if (entity === "SG") {
+    //   this.setState({ b_idb: "S674" });
+    // } else if (entity === "HK") {
+    //   this.setState({ b_idb: "S664" });
+    // }
+    if (this.state.b_idb === "S664" && entity === "HK") {
+      this.setState({
+        b_client: "",
+        b_trader: "",
+        b_accounts: ""
+      });
     }
-  };
-
-  allegeS = entity => {
-    this.setState({
-      s_client: "",
-      s_trader: "",
-      s_accounts: ""
-    });
-
-    if (entity === "SG") {
-      this.setState({ s_idb: "S674" });
-    } else if (entity === "HK") {
-      this.setState({ s_idb: "S664" });
+    if (this.state.s_idb === "S664" && entity === "HK") {
+      this.setState({
+        s_client: "",
+        s_trader: "",
+        s_accounts: ""
+      });
+    }
+    if (this.state.b_idb === "S674" && entity === "SG") {
+      this.setState({
+        b_client: "",
+        b_trader: "",
+        b_accounts: ""
+      });
+    }
+    if (this.state.s_idb === "S674" && entity === "SG") {
+      this.setState({
+        s_client: "",
+        s_trader: "",
+        s_accounts: ""
+      });
     }
   };
 
@@ -416,8 +430,6 @@ class Form extends Component {
       console.error(e);
     }
 
-    // console.log(fromM, toM, consMonth, "checking to and from");
-
     let oet = "NLT";
     if (this.state.instrument === "S") {
       oet = "OTC";
@@ -448,8 +460,10 @@ class Form extends Component {
       ""
     ];
     //append csv
-    this.setState({ arrayCsv: [...this.state.arrayCsv, rows] });
-    this.setState({ dealGroup: parseInt(this.state.dealGroup) + 1 });
+    this.setState({
+      arrayCsv: [...this.state.arrayCsv, rows],
+      dealGroup: parseInt(this.state.dealGroup) + 1
+    });
   };
 
   download = () => {
@@ -466,19 +480,7 @@ class Form extends Component {
     let toM = this.getMon(this.state.toM);
     let fromM = this.getMon(this.state.fromM);
     let consMonth = toM - fromM + 1;
-    // let date = this.state.execDate.split("-");
-    // let execDate = date[2] + "/" + date[1] + "/" + date[0];
-    // let gcmB = "";
-    // let gcmS = "";
-    // if (this.state.b_accounts.length > 0 && this.state.s_accounts.length > 0) {
-    //   gcmB = this.state.b_accounts.split(" ")[1];
-    //   gcmS = this.state.s_accounts.split(" ")[1];
-    // } else if (this.state.s_accounts.length > 0) {
-    //   gcmS = this.state.s_accounts.split(" ")[1];
-    // } else if (this.state.b_accounts.length > 0) {
-    //   gcmB = this.state.b_accounts.split(" ")[1];
-    // }
-    console.log(fromM, toM, consMonth, "checking to and from");
+    // console.log(fromM, toM, consMonth, "checking to and from");
     let contract = "";
     if (fromM === 1 && consMonth === 3) {
       contract = "Q1'" + this.state.year;
@@ -516,13 +518,6 @@ class Form extends Component {
         Quantity: ${this.state.qty}`
       )
     ) {
-      //download to csv
-      // let csvContent =
-      //   "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
-      // var encodedUri = encodeURI(csvContent);
-      // window.open(encodedUri);
-
-      // console.log(this.state, "states passing through");
       const dataState = {
         ...this.state,
         consMonth: consMonth,
@@ -773,14 +768,6 @@ class Form extends Component {
                 ))}
               </Select>
             </FormControl>
-            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <Button onClick={() => this.allege("HK")} variant="contained">
-              Allege HK
-            </Button>
-            <span>&nbsp;&nbsp;</span>
-            <Button onClick={() => this.allege("SG")} variant="contained">
-              Allege SG
-            </Button>
           </div>
           <br />
           <div className={classes.midbutton}>
@@ -1005,14 +992,6 @@ class Form extends Component {
                 ))}
               </Select>
             </FormControl>
-            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <Button onClick={() => this.allegeS("HK")} variant="contained">
-              Allege HK
-            </Button>
-            <span>&nbsp;&nbsp;</span>
-            <Button onClick={() => this.allegeS("SG")} variant="contained">
-              Allege SG
-            </Button>
           </div>
           <br />
           <div className={classes.midbutton}>
@@ -1138,6 +1117,14 @@ class Form extends Component {
               onChange={this.handleChange}
               variant="outlined"
             />
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <Button onClick={() => this.allege("HK")} variant="contained">
+              Allege HK
+            </Button>
+            <span>&nbsp;&nbsp;</span>
+            <Button onClick={() => this.allege("SG")} variant="contained">
+              Allege SG
+            </Button>
           </div>
           <br />
           <div className={classes.midbutton}>
@@ -1160,11 +1147,10 @@ class Form extends Component {
         </form>
         <br />
         <div className={classes.midbutton}>
-          <span>&nbsp;&nbsp;</span>
           <Button onClick={this.flip} variant="contained" color="default">
             Flip
           </Button>
-          <span>&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;</span>
           <Button onClick={this.clear} variant="contained" color="default">
             Clear
           </Button>
