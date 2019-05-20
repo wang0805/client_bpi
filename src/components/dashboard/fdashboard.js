@@ -25,7 +25,6 @@ import Form from "../form";
 import Transactions from "../transactions";
 import Client from "../client";
 import Blotter from "../blotter";
-import Spread from "../spread";
 
 const drawerWidth = 240;
 
@@ -139,6 +138,10 @@ class Fdashboard extends React.Component {
     this.setState({ open: false });
   };
 
+  componentWillUnmount() {
+    localStorage.clear();
+  }
+
   render() {
     const { classes, theme } = this.props;
     const { open } = this.state;
@@ -244,7 +247,6 @@ class Fdashboard extends React.Component {
           {this.state.openTrans && <Transactions {...this.props} />}
           {this.state.openTrades && <Client />}
           {this.state.openBlotter && <Blotter />}
-          <Spread />
         </main>
       </div>
     );

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { MyContext } from "../components/store/createContext";
+import { saveAs } from "file-saver";
 
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
@@ -139,7 +140,13 @@ class Client extends Component {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(dataState)
-    });
+    })
+      //blob is used to represent data that does not necessarily be js
+      .then(() => fetch("/getpdf", { responseType: "blob" }))
+      .then(res => {
+        const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+        saveAs(pdfBlob, "newPdf.pdf");
+      });
   };
 
   render() {
