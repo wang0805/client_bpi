@@ -16,7 +16,7 @@ import Button from "@material-ui/core/Button";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
-// import TextField from "@material-ui/core/TextField";
+import TextField from "@material-ui/core/TextField";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -56,7 +56,9 @@ class Client extends Component {
     clientarr: [],
     fromM: "",
     toM: "",
-    year: "2019"
+    year: "2019",
+    exrate: 1.38,
+    invoiceNo: 100
   };
 
   componentDidMount() {
@@ -75,6 +77,7 @@ class Client extends Component {
       obj.client = array[i].clients;
       obj.address = array[i].address;
       obj.invoice_emails = array[i].invoice_emails;
+      obj.entity = array[i].entity;
       obj.id = array[i].id;
       obj.checked = false;
       output.push(obj);
@@ -156,6 +159,7 @@ class Client extends Component {
             ).toLocaleDateString();
             transac.id = transactions[j].trade_id;
             transac.address = clients[i].address;
+            transac.entity = clients[i].entity;
             transac.trade_date = date;
             transac.client = transactions[j].b_client;
             transac.product = transactions[j].product;
@@ -188,6 +192,7 @@ class Client extends Component {
             ).toLocaleDateString();
             transac.id = transactions[j].trade_id;
             transac.address = clients[i].address;
+            transac.entity = clients[i].entity;
             transac.trade_date = date;
             transac.client = transactions[j].s_client;
             transac.product = transactions[j].product;
@@ -211,17 +216,19 @@ class Client extends Component {
         }
       }
     }
-    // console.log(clientarr, "clients array");
     this.setState({ clientarr });
   };
 
   handleChange1 = e => {
     this.setState({ [e.target.name]: e.target.value });
-    // console.log("Fired");
   };
 
   createPdf = () => {
-    let dataState = [...this.state.clientarr];
+    let dataState = {
+      client: [...this.state.clientarr],
+      exrate: this.state.exrate,
+      invoiceNo: this.state.invoiceNo
+    };
     axios
       .post("/createpdf", dataState)
       .then(() => axios.get("/getpdf", { responseType: "blob" }))
@@ -229,30 +236,11 @@ class Client extends Component {
         const pdfBlob = new Blob([res.data], { type: "application.pdf" });
         saveAs(pdfBlob, "new.pdf");
       });
-
-    // fetch("/createpdf", {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json"
-    //   },
-    //   body: JSON.stringify(dataState)
-    // })
-    //   //blob is used to represent data that does not necessarily be js
-    //   .then(() => {
-    //     fetch("/getpdf", { responseType: "blob" }).then(res => {
-    //       const pdfBlob = new Blob([res.data], { type: "application/pdf" });
-    //       saveAs(pdfBlob, "newPdf.pdf");
-    //     });
-    //   });
   };
 
   render() {
     const { classes } = this.props;
     const { clients } = this.state;
-
-    // console.log(this.context.transactions);
-    // console.log(clients, "clients");
 
     let headers = [
       "Id",
@@ -283,11 +271,6 @@ class Client extends Component {
         </InputLabel>
         <Select
           native
-          inputProps={{
-            classes: {
-              select: classes.resize
-            }
-          }}
           name="year"
           value={this.state.year}
           onChange={this.handleChange1}
@@ -370,9 +353,6 @@ class Client extends Component {
             </Select>
           </FormControl>
           {year}
-          <span>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          </span>
           <FormControl className={classes.dateControl} variant="outlined">
             <InputLabel
               ref={ref => {
@@ -405,6 +385,27 @@ class Client extends Component {
             </Select>
           </FormControl>
           {year}
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <TextField
+            className={classes.textControl}
+            label="USDSGD"
+            name="exrate"
+            type="number"
+            inputProps={{ step: 0.001, style: { width: 80 } }}
+            value={this.state.exrate}
+            onChange={this.handleChange1}
+            variant="outlined"
+          />
+          <TextField
+            className={classes.textControl}
+            label="Invoice No."
+            name="invoiceNo"
+            type="number"
+            inputProps={{ step: 1, style: { width: 80 } }}
+            value={this.state.invoiceNo}
+            onChange={this.handleChange1}
+            variant="outlined"
+          />
           <br />
           <br />
           <div>

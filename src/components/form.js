@@ -148,6 +148,7 @@ class Form extends Component {
             let commission = 0;
             let idb = "";
             let id = "";
+            let entity = "";
 
             for (let j = 0; j < data.length; j++) {
               if (data[j].client_name === clients[i]) {
@@ -159,6 +160,7 @@ class Form extends Component {
                 invoice_emails = data[j].invoice_emails;
                 commission = data[j].commission;
                 idb = data[j].idb;
+                entity = data[j].entity;
               }
             }
             clientsObj.push({
@@ -170,7 +172,8 @@ class Form extends Component {
               recap_emails: recap_emails,
               invoice_emails: invoice_emails,
               idb: idb,
-              id: id
+              id: id,
+              entity: entity
             });
           }
           this.setState({ value: clientsObj });
@@ -194,7 +197,7 @@ class Form extends Component {
 
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
-    console.log("Fired");
+    // console.log("Fired");
   };
 
   handleChangeB = x => e => {
@@ -413,6 +416,14 @@ class Form extends Component {
   handleQ4 = () => {
     this.setState({ fromM: "Oct" });
     this.setState({ toM: "Dec" });
+  };
+
+  spreadComms = dir => {
+    if (dir === "buyer") {
+      this.setState({ b_comms: this.state.b_comms / 2 });
+    } else if (dir === "seller") {
+      this.setState({ s_comms: this.state.s_comms / 2 });
+    }
   };
 
   handleCsv = () => {
@@ -860,6 +871,16 @@ class Form extends Component {
               onChange={this.handleChange}
               variant="outlined"
             />
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <Button
+              size="small"
+              variant="contained"
+              onClick={() => {
+                this.spreadComms("buyer");
+              }}
+            >
+              S
+            </Button>
           </div>
           <br />
           <div className={classes.midbutton}>
@@ -1084,6 +1105,16 @@ class Form extends Component {
               onChange={this.handleChange}
               variant="outlined"
             />
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <Button
+              size="small"
+              variant="contained"
+              onClick={() => {
+                this.spreadComms("seller");
+              }}
+            >
+              S
+            </Button>
           </div>
           <br />
           <div className={classes.midbutton}>
