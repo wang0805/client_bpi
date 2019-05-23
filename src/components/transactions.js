@@ -12,20 +12,21 @@ import Paper from "@material-ui/core/Paper";
 const CustomTableCell = withStyles(() => ({
   head: {
     fontSize: 12,
-    paddingLeft: 8,
-    paddingRight: 8
+    paddingLeft: 10,
+    paddingRight: 10
   },
   body: {
-    fontSize: 11,
-    paddingLeft: 8,
-    paddingRight: 8
+    fontSize: 10,
+    paddingLeft: 10,
+    paddingRight: 10
   }
 }))(TableCell);
 
 const styles = theme => ({
   root: {
-    marginTop: theme.spacing.unit * 3,
-    overflowX: "auto"
+    // marginTop: theme.spacing.unit * 3,
+    // overflowX: "auto"
+    display: "flex"
   }
 });
 
@@ -58,7 +59,7 @@ class Transactions extends Component {
 
     return (
       <Paper className={classes.root}>
-        <Table style={{ width: 2500 }}>
+        <Table>
           <TableHead>
             <TableRow>
               <CustomTableCell align="center">Trade Id</CustomTableCell>
