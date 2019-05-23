@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import { MyContext } from "../components/store/createContext";
+import axios from "axios";
 import { saveAs } from "file-saver";
 
 import PropTypes from "prop-types";
@@ -11,6 +13,29 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+// import TextField from "@material-ui/core/TextField";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+
+const CustomTableCell = withStyles(() => ({
+  head: {
+    fontSize: 12,
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  body: {
+    fontSize: 10,
+    paddingLeft: 10,
+    paddingRight: 10
+  }
+}))(TableCell);
 
 const styles = theme => ({
   root: {
@@ -18,22 +43,38 @@ const styles = theme => ({
   },
   formControl: {
     margin: theme.spacing.unit * 3
+  },
+  dateControl: {
+    minWidth: 120,
+    maxWidth: 150
   }
 });
 
 class Client extends Component {
   state = {
     clients: [],
-    clientarr: []
+    clientarr: [],
+    fromM: "",
+    toM: "",
+    year: "2019"
   };
 
   componentDidMount() {
+    this.setState({
+      labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
+      toM: this.revMon(new Date().getMonth()),
+      fromM: this.revMon(new Date().getMonth()),
+      year: new Date().getFullYear()
+    });
+
     let array = [...this.context.clients];
     let output = [];
     array.shift();
     for (let i = 0; i < array.length; i++) {
       let obj = {};
       obj.client = array[i].clients;
+      obj.address = array[i].address;
+      obj.invoice_emails = array[i].invoice_emails;
       obj.id = array[i].id;
       obj.checked = false;
       output.push(obj);
@@ -47,6 +88,36 @@ class Client extends Component {
   //     }
   //   }
 
+  range = (start, end) => {
+    var ans = [];
+    for (let i = start; i <= end; i++) {
+      ans.push(i);
+    }
+    return ans;
+  };
+
+  revMon = month => {
+    let date = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+    return date[month];
+  };
+
+  getMon = month => {
+    return "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(month) / 3 + 1;
+  };
+
   handleChange = name => async event => {
     let clients = [...this.state.clients];
     for (let i = 0; i < clients.length; i++) {
@@ -59,13 +130,21 @@ class Client extends Component {
 
     const { transactions } = this.context;
 
+    let rangearr = this.range(
+      this.getMon(this.state.fromM),
+      this.getMon(this.state.toM)
+    );
     // set a new array for clientarr to go into pdf
     let clientarr = [];
     for (let i = 0; i < this.state.clients.length; i++) {
       if (this.state.clients[i].checked === true) {
         for (let j = 0; j < transactions.length; j++) {
           let transac = {};
-          if (transactions[j].b_clientid === clients[i].id) {
+          let dateMonth = new Date(transactions[j].trade_date).getMonth() + 1;
+          if (
+            transactions[j].b_clientid === clients[i].id &&
+            rangearr.includes(dateMonth)
+          ) {
             let size = transactions[j].qty;
             if (transactions[j].instrument === "S") {
               size = transactions[j].qty * 500 * transactions[j].consmonth;
@@ -76,6 +155,7 @@ class Client extends Component {
               transactions[j].trade_date
             ).toLocaleDateString();
             transac.id = transactions[j].trade_id;
+            transac.address = clients[i].address;
             transac.trade_date = date;
             transac.client = transactions[j].b_client;
             transac.product = transactions[j].product;
@@ -93,7 +173,10 @@ class Client extends Component {
             transac.contract = transactions[j].contract;
             transac.deal_id = transactions[j].deal_id;
           }
-          if (transactions[j].s_clientid === clients[i].id) {
+          if (
+            transactions[j].s_clientid === clients[i].id &&
+            rangearr.includes(dateMonth)
+          ) {
             let size = transactions[j].qty;
             if (transactions[j].instrument === "S") {
               size = transactions[j].qty * 500 * transactions[j].consmonth;
@@ -104,6 +187,7 @@ class Client extends Component {
               transactions[j].trade_date
             ).toLocaleDateString();
             transac.id = transactions[j].trade_id;
+            transac.address = clients[i].address;
             transac.trade_date = date;
             transac.client = transactions[j].s_client;
             transac.product = transactions[j].product;
@@ -127,26 +211,40 @@ class Client extends Component {
         }
       }
     }
-    console.log(clientarr, "clients array");
+    // console.log(clientarr, "clients array");
     this.setState({ clientarr });
+  };
+
+  handleChange1 = e => {
+    this.setState({ [e.target.name]: e.target.value });
+    // console.log("Fired");
   };
 
   createPdf = () => {
     let dataState = [...this.state.clientarr];
-    fetch("/createpdf", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(dataState)
-    })
-      //blob is used to represent data that does not necessarily be js
-      .then(() => fetch("/getpdf", { responseType: "blob" }))
+    axios
+      .post("/createpdf", dataState)
+      .then(() => axios.get("/getpdf", { responseType: "blob" }))
       .then(res => {
-        const pdfBlob = new Blob([res.data], { type: "application/pdf" });
-        saveAs(pdfBlob, "newPdf.pdf");
+        const pdfBlob = new Blob([res.data], { type: "application.pdf" });
+        saveAs(pdfBlob, "new.pdf");
       });
+
+    // fetch("/createpdf", {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json"
+    //   },
+    //   body: JSON.stringify(dataState)
+    // })
+    //   //blob is used to represent data that does not necessarily be js
+    //   .then(() => {
+    //     fetch("/getpdf", { responseType: "blob" }).then(res => {
+    //       const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+    //       saveAs(pdfBlob, "newPdf.pdf");
+    //     });
+    //   });
   };
 
   render() {
@@ -174,6 +272,42 @@ class Client extends Component {
       "Deal Id"
     ];
 
+    let year = (
+      <FormControl className={classes.dateControl} variant="outlined">
+        <InputLabel
+          ref={ref => {
+            this.InputLabelRef = ref;
+          }}
+        >
+          Year
+        </InputLabel>
+        <Select
+          native
+          inputProps={{
+            classes: {
+              select: classes.resize
+            }
+          }}
+          name="year"
+          value={this.state.year}
+          onChange={this.handleChange1}
+          input={
+            <OutlinedInput name="year" labelWidth={this.state.labelWidth} />
+          }
+        >
+          <option value="2019" defaultValue>
+            2019
+          </option>
+          <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+        </Select>
+      </FormControl>
+    );
+
     return (
       <div className={classes.root}>
         <FormControl component="fieldset" className={classes.formControl}>
@@ -195,41 +329,161 @@ class Client extends Component {
               );
             })}
           </FormGroup>
-          <FormHelperText>Be careful</FormHelperText>
+          <FormHelperText>Select only 1 client please</FormHelperText>
         </FormControl>
-        <div>
-          <Button variant="contained" color="primary" onClick={this.createPdf}>
-            Create PDF
-          </Button>
-          <table>
-            <tr>
-              {headers.map((field, index) => (
-                <th key={index}>{field}</th>
-              ))}
-            </tr>
 
-            {this.state.clientarr.map((client, index) => {
-              return (
-                <tr key={index}>
-                  <td>{client.id}</td>
-                  <td>{client.trade_date}</td>
-                  <td>{client.client}</td>
-                  <td>{client.product}</td>
-                  <td>{client.instrument}</td>
-                  <td>{client.bs}</td>
-                  <td>{client.contract}</td>
-                  <td>{client.price}</td>
-                  <td>{client.strike}</td>
-                  <td>{client.size}</td>
-                  <td>{client.account}</td>
-                  <td>{client.trader}</td>
-                  <td>{client.comms}</td>
-                  <td>{client.tcomms}</td>
-                  <td>{client.deal_id}</td>
-                </tr>
-              );
-            })}
-          </table>
+        <div>
+          <br />
+          <br />
+          <FormControl className={classes.dateControl} variant="outlined">
+            <InputLabel
+              ref={ref => {
+                this.InputLabelRef = ref;
+              }}
+            >
+              From Month
+            </InputLabel>
+            <Select
+              native
+              name="fromM"
+              value={this.state.fromM}
+              onChange={this.handleChange1}
+              input={
+                <OutlinedInput
+                  name="fromM"
+                  labelWidth={this.state.labelWidth}
+                />
+              }
+            >
+              <option value="Jan">Jan</option>
+              <option value="Feb">Feb</option>
+              <option value="Mar">Mar</option>
+              <option value="Apr">Apr</option>
+              <option value="May">May</option>
+              <option value="Jun">Jun</option>
+              <option value="Jul">Jul</option>
+              <option value="Aug">Aug</option>
+              <option value="Sep">Sep</option>
+              <option value="Oct">Oct</option>
+              <option value="Nov">Nov</option>
+              <option value="Dec">Dec</option>
+            </Select>
+          </FormControl>
+          {year}
+          <span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </span>
+          <FormControl className={classes.dateControl} variant="outlined">
+            <InputLabel
+              ref={ref => {
+                this.InputLabelRef = ref;
+              }}
+            >
+              To Month
+            </InputLabel>
+            <Select
+              native
+              name="toM"
+              value={this.state.toM}
+              onChange={this.handleChange1}
+              input={
+                <OutlinedInput name="toM" labelWidth={this.state.labelWidth} />
+              }
+            >
+              <option value="Jan">Jan</option>
+              <option value="Feb">Feb</option>
+              <option value="Mar">Mar</option>
+              <option value="Apr">Apr</option>
+              <option value="May">May</option>
+              <option value="Jun">Jun</option>
+              <option value="Jul">Jul</option>
+              <option value="Aug">Aug</option>
+              <option value="Sep">Sep</option>
+              <option value="Oct">Oct</option>
+              <option value="Nov">Nov</option>
+              <option value="Dec">Dec</option>
+            </Select>
+          </FormControl>
+          {year}
+          <br />
+          <br />
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.createPdf}
+            >
+              Create PDF
+            </Button>
+          </div>
+          <br />
+          <br />
+          <Paper className={classes.root}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {headers.map((field, index) => (
+                    <CustomTableCell align="center" key={index}>
+                      {field}
+                    </CustomTableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.state.clientarr.map((client, index) => {
+                  return (
+                    <TableRow key={index}>
+                      <CustomTableCell align="center">
+                        {client.id}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.trade_date}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.client}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.product}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.instrument}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.bs}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.contract}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.price}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.strike}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.size}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.account}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.trader}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.comms}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.tcomms}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {client.deal_id}
+                      </CustomTableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Paper>
         </div>
       </div>
     );

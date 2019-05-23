@@ -140,29 +140,35 @@ class Form extends Component {
           }
           clients = [...new Set(clients)];
           for (let i = 0; i < clients.length; i++) {
+            let address = "";
             let traders = [];
             let accounts = [];
             let recap_emails = "";
+            let invoice_emails = "";
             let commission = 0;
             let idb = "";
             let id = "";
 
             for (let j = 0; j < data.length; j++) {
               if (data[j].client_name === clients[i]) {
+                address = data[j].address;
                 id = data[j].id;
                 traders.push(data[j].trader_name);
                 accounts.push(data[j].account);
                 recap_emails = data[j].recap_emails;
+                invoice_emails = data[j].invoice_emails;
                 commission = data[j].commission;
                 idb = data[j].idb;
               }
             }
             clientsObj.push({
               clients: clients[i],
+              address: address,
               accounts: [...new Set(accounts)],
               traders: [...new Set(traders)],
               commission: commission,
               recap_emails: recap_emails,
+              invoice_emails: invoice_emails,
               idb: idb,
               id: id
             });

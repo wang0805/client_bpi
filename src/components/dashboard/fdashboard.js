@@ -138,9 +138,9 @@ class Fdashboard extends React.Component {
     this.setState({ open: false });
   };
 
-  componentWillUnmount() {
-    localStorage.clear();
-  }
+  // componentWillUnmount() {
+  //   localStorage.clear();
+  // }
 
   render() {
     const { classes, theme } = this.props;
