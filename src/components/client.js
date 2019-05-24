@@ -79,6 +79,7 @@ class Client extends Component {
       obj.invoice_emails = array[i].invoice_emails;
       obj.entity = array[i].entity;
       obj.id = array[i].id;
+      obj.in_sg = array[i].in_sg;
       obj.checked = false;
       output.push(obj);
     }
@@ -160,6 +161,7 @@ class Client extends Component {
             transac.id = transactions[j].trade_id;
             transac.address = clients[i].address;
             transac.entity = clients[i].entity;
+            transac.in_sg = clients[i].in_sg;
             transac.invoice_emails = clients[i].invoice_emails;
             transac.trade_date = date;
             transac.client = transactions[j].b_client;
@@ -194,6 +196,7 @@ class Client extends Component {
             transac.id = transactions[j].trade_id;
             transac.address = clients[i].address;
             transac.entity = clients[i].entity;
+            transac.in_sg = clients[i].in_sg;
             transac.invoice_emails = clients[i].invoice_emails;
             transac.trade_date = date;
             transac.client = transactions[j].s_client;
