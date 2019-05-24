@@ -149,6 +149,7 @@ class Form extends Component {
             let idb = "";
             let id = "";
             let entity = "";
+            let in_sg = 0;
 
             for (let j = 0; j < data.length; j++) {
               if (data[j].client_name === clients[i]) {
@@ -161,6 +162,7 @@ class Form extends Component {
                 commission = data[j].commission;
                 idb = data[j].idb;
                 entity = data[j].entity;
+                in_sg = data[j].in_sg;
               }
             }
             clientsObj.push({
@@ -173,7 +175,8 @@ class Form extends Component {
               invoice_emails: invoice_emails,
               idb: idb,
               id: id,
-              entity: entity
+              entity: entity,
+              in_sg: in_sg
             });
           }
           this.setState({ value: clientsObj });
