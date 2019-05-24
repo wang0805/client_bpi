@@ -160,6 +160,7 @@ class Client extends Component {
             transac.id = transactions[j].trade_id;
             transac.address = clients[i].address;
             transac.entity = clients[i].entity;
+            transac.invoice_emails = clients[i].invoice_emails;
             transac.trade_date = date;
             transac.client = transactions[j].b_client;
             transac.product = transactions[j].product;
@@ -193,6 +194,7 @@ class Client extends Component {
             transac.id = transactions[j].trade_id;
             transac.address = clients[i].address;
             transac.entity = clients[i].entity;
+            transac.invoice_emails = clients[i].invoice_emails;
             transac.trade_date = date;
             transac.client = transactions[j].s_client;
             transac.product = transactions[j].product;
@@ -235,6 +237,29 @@ class Client extends Component {
       .then(res => {
         const pdfBlob = new Blob([res.data], { type: "application.pdf" });
         saveAs(pdfBlob, "new.pdf");
+      });
+  };
+
+  sendPdf = () => {
+    let data = {
+      invoiceNo: this.state.invoiceNo,
+      invoice_emails: this.state.clientarr[0].invoice_emails,
+      client: this.state.clientarr[0].client
+    };
+    fetch("/sendpdf", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(() => {
+        alert("Email successfully sent");
+      })
+      .catch(error => {
+        console.error("error: ", error);
+        alert("Error in sending email, please try again");
       });
   };
 
@@ -415,6 +440,10 @@ class Client extends Component {
               onClick={this.createPdf}
             >
               Create PDF
+            </Button>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <Button variant="contained" color="primary" onClick={this.sendPdf}>
+              Send PDF
             </Button>
           </div>
           <br />

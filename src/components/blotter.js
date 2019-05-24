@@ -47,7 +47,6 @@ class Blotter extends Component {
     } catch (e) {
       console.log(e, "error getting transactions due to permissions");
     }
-    console.log(this.state.data, "datatatatta");
   }
 
   //   updatePost = id => {
