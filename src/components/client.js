@@ -80,6 +80,7 @@ class Client extends Component {
       obj.entity = array[i].entity;
       obj.id = array[i].id;
       obj.in_sg = array[i].in_sg;
+      obj.duedate = array[i].duedate;
       obj.checked = false;
       output.push(obj);
     }
@@ -162,6 +163,7 @@ class Client extends Component {
             transac.address = clients[i].address;
             transac.entity = clients[i].entity;
             transac.in_sg = clients[i].in_sg;
+            transac.duedate = clients[i].duedate;
             transac.invoice_emails = clients[i].invoice_emails;
             transac.trade_date = date;
             transac.client = transactions[j].b_client;
@@ -197,6 +199,7 @@ class Client extends Component {
             transac.address = clients[i].address;
             transac.entity = clients[i].entity;
             transac.in_sg = clients[i].in_sg;
+            transac.duedate = clients[i].duedate;
             transac.invoice_emails = clients[i].invoice_emails;
             transac.trade_date = date;
             transac.client = transactions[j].s_client;
@@ -232,7 +235,10 @@ class Client extends Component {
     let dataState = {
       client: [...this.state.clientarr],
       exrate: this.state.exrate,
-      invoiceNo: this.state.invoiceNo
+      invoiceNo: this.state.invoiceNo,
+      fromM: this.state.fromM,
+      toM: this.state.toM,
+      year: this.state.year
     };
     axios
       .post("/createpdf", dataState)

@@ -17,7 +17,10 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import AddCircle from "@material-ui/icons/AddCircle";
+import FileCopy from "@material-ui/icons/FileCopy";
 import Archive from "@material-ui/icons/Archive";
+import LibraryAdd from "@material-ui/icons/LibraryAdd";
+import MonetizationOn from "@material-ui/icons/MonetizationOn";
 import TouchApp from "@material-ui/icons/TouchApp";
 import { Link } from "react-router-dom";
 
@@ -231,7 +234,7 @@ class Fdashboard extends React.Component {
           <List>
             <ListItem button onClick={this.handleManualOpen}>
               <ListItemIcon>
-                <Archive />
+                <LibraryAdd />
               </ListItemIcon>
               <ListItemText primary={"Manual Form"} />
             </ListItem>
@@ -239,7 +242,7 @@ class Fdashboard extends React.Component {
           <List>
             <ListItem button onClick={this.handleBlotterOpen}>
               <ListItemIcon>
-                <Archive />
+                <FileCopy />
               </ListItemIcon>
               <ListItemText primary={"Blotter"} />
             </ListItem>
@@ -247,7 +250,7 @@ class Fdashboard extends React.Component {
           <List>
             <ListItem button onClick={this.handleTradesOpen}>
               <ListItemIcon>
-                <Archive />
+                <MonetizationOn />
               </ListItemIcon>
               <ListItemText primary={"Invoice"} />
             </ListItem>
