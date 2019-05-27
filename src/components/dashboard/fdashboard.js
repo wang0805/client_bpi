@@ -25,6 +25,7 @@ import Form from "../form";
 import Transactions from "../transactions";
 import Client from "../client";
 import Blotter from "../blotter";
+import Manualinput from "../manualinput";
 
 const drawerWidth = 240;
 
@@ -91,7 +92,8 @@ class Fdashboard extends React.Component {
     openForm: true,
     openTrans: false,
     openTrades: false,
-    openBlotter: false
+    openBlotter: false,
+    openManual: false
   };
 
   handleFormOpen = () => {
@@ -99,7 +101,8 @@ class Fdashboard extends React.Component {
       openForm: true,
       openTrans: false,
       openTrades: false,
-      openBlotter: false
+      openBlotter: false,
+      openManual: false
     });
   };
 
@@ -108,7 +111,8 @@ class Fdashboard extends React.Component {
       openForm: false,
       openTrans: true,
       openTrades: false,
-      openBlotter: false
+      openBlotter: false,
+      openManual: false
     });
   };
 
@@ -117,7 +121,8 @@ class Fdashboard extends React.Component {
       openForm: false,
       openTrans: false,
       openTrades: true,
-      openBlotter: false
+      openBlotter: false,
+      openManual: false
     });
   };
 
@@ -126,7 +131,18 @@ class Fdashboard extends React.Component {
       openForm: false,
       openTrans: false,
       openTrades: false,
-      openBlotter: true
+      openBlotter: true,
+      openManual: false
+    });
+  };
+
+  handleManualOpen = () => {
+    this.setState({
+      openForm: false,
+      openTrans: false,
+      openTrades: false,
+      openBlotter: false,
+      openManual: true
     });
   };
 
@@ -213,6 +229,14 @@ class Fdashboard extends React.Component {
           </List>
           <Divider />
           <List>
+            <ListItem button onClick={this.handleManualOpen}>
+              <ListItemIcon>
+                <Archive />
+              </ListItemIcon>
+              <ListItemText primary={"Manual Form"} />
+            </ListItem>
+          </List>
+          <List>
             <ListItem button onClick={this.handleBlotterOpen}>
               <ListItemIcon>
                 <Archive />
@@ -247,6 +271,7 @@ class Fdashboard extends React.Component {
           {this.state.openTrans && <Transactions {...this.props} />}
           {this.state.openTrades && <Client />}
           {this.state.openBlotter && <Blotter />}
+          {this.state.openManual && <Manualinput />}
         </main>
       </div>
     );
