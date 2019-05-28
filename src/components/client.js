@@ -58,7 +58,7 @@ class Client extends Component {
     toM: "",
     year: "2019",
     exrate: 0.7246,
-    invoiceNo: 100
+    invoiceNo: "BPI"
   };
 
   componentDidMount() {
@@ -466,8 +466,7 @@ class Client extends Component {
             className={classes.textControl}
             label="Invoice No."
             name="invoiceNo"
-            type="number"
-            inputProps={{ step: 1, style: { width: 80 } }}
+            inputProps={{style: { width: 100 } }}
             value={this.state.invoiceNo}
             onChange={this.handleChange1}
             variant="outlined"
