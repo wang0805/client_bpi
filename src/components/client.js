@@ -62,6 +62,38 @@ class Client extends Component {
   };
 
   componentDidMount() {
+    fetch(
+      `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=SGD&to_symbol=USD&apikey=${
+        process.env.REACT_APP_AVAPI
+      }`
+    )
+      .then(res => res.json())
+      .then(data => {
+        let date = new Date();
+        let month;
+        let day;
+        if (date.getMonth() + 1 < 10) {
+          month = "0" + (date.getMonth() + 1);
+        } else {
+          month = date.getMonth() + 1;
+        }
+        if (date.getDate() < 10) {
+          day = "0" + date.getDate();
+        } else {
+          day = date.getDate() - 1;
+        }
+        let dateformatted = date.getFullYear() + "-" + month + "-" + day;
+        try {
+          this.setState({
+            exrate: parseFloat(
+              data["Time Series FX (Daily)"][dateformatted]["4. close"]
+            )
+          });
+        } catch (e) {
+          console.log(e, "error");
+        }
+      });
+
     this.setState({
       labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
       toM: this.revMon(new Date().getMonth()),
@@ -451,7 +483,11 @@ class Client extends Component {
               Create PDF
             </Button>
             <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <Button variant="contained" color="primary" onClick={this.sendPdf}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={this.sendPdf}
+            >
               Send PDF
             </Button>
           </div>
