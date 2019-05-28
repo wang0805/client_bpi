@@ -57,7 +57,7 @@ class Client extends Component {
     fromM: "",
     toM: "",
     year: "2019",
-    exrate: 1.38,
+    exrate: 0.7246,
     invoiceNo: 100
   };
 
@@ -422,7 +422,7 @@ class Client extends Component {
           <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <TextField
             className={classes.textControl}
-            label="USDSGD"
+            label="SGD/USD"
             name="exrate"
             type="number"
             inputProps={{ step: 0.001, style: { width: 80 } }}
