@@ -150,6 +150,7 @@ class Form extends Component {
             let id = "";
             let entity = "";
             let in_sg = 0;
+            let duedate = 7;
 
             for (let j = 0; j < data.length; j++) {
               if (data[j].client_name === clients[i]) {
@@ -163,6 +164,7 @@ class Form extends Component {
                 idb = data[j].idb;
                 entity = data[j].entity;
                 in_sg = data[j].in_sg;
+                duedate = data[j].duedate;
               }
             }
             clientsObj.push({
@@ -176,7 +178,8 @@ class Form extends Component {
               idb: idb,
               id: id,
               entity: entity,
-              in_sg: in_sg
+              in_sg: in_sg,
+              duedate: duedate
             });
           }
           this.setState({ value: clientsObj });
