@@ -454,7 +454,7 @@ class Client extends Component {
           <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <TextField
             className={classes.textControl}
-            label="USDSGD"
+            label="SGD/USD"
             name="exrate"
             type="number"
             inputProps={{ step: 0.001, style: { width: 80 } }}
