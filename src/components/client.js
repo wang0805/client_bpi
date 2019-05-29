@@ -277,7 +277,7 @@ class Client extends Component {
       .then(() => axios.get("/getpdf", { responseType: "blob" }))
       .then(res => {
         const pdfBlob = new Blob([res.data], { type: "application.pdf" });
-        saveAs(pdfBlob, "new.pdf");
+        saveAs(pdfBlob, `${this.state.invoiceNo}.pdf`);
       });
   };
 
