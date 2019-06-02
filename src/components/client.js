@@ -58,7 +58,8 @@ class Client extends Component {
     toM: "",
     year: "2019",
     exrate: 0.7246,
-    invoiceNo: "BPI"
+    invoiceNo: "BPI",
+    disabled: true
   };
 
   componentDidMount() {
@@ -163,7 +164,11 @@ class Client extends Component {
         break;
       }
     }
-    await this.setState({ clients: [...clients] });
+    await this.setState({
+      clients: [...clients],
+      disabled: true,
+      invoiceNo: "BPI"
+    });
 
     const { transactions } = this.context;
 
@@ -278,6 +283,7 @@ class Client extends Component {
       .then(res => {
         const pdfBlob = new Blob([res.data], { type: "application.pdf" });
         saveAs(pdfBlob, `${this.state.invoiceNo}.pdf`);
+        this.setState({ disabled: false });
       });
   };
 
@@ -287,26 +293,36 @@ class Client extends Component {
       invoice_emails: this.state.clientarr[0].invoice_emails,
       client: this.state.clientarr[0].client
     };
-    fetch("/sendpdf", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    })
-      .then(() => {
-        alert("Email successfully sent");
+    if (
+      window.confirm(
+        `
+        Please ensure that Invoice Number is correct
+        `
+      )
+    ) {
+      fetch("/sendpdf", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
       })
-      .catch(error => {
-        console.error("error: ", error);
-        alert("Error in sending email, please try again");
-      });
+        .then(() => {
+          alert("Email successfully sent");
+        })
+        .catch(error => {
+          console.error("error: ", error);
+          alert("Error in sending email, please try again");
+        });
+    }
   };
 
   render() {
     const { classes } = this.props;
     const { clients } = this.state;
+
+    const disabled = this.state.disabled;
 
     let headers = [
       "Id",
@@ -466,7 +482,7 @@ class Client extends Component {
             className={classes.textControl}
             label="Invoice No."
             name="invoiceNo"
-            inputProps={{style: { width: 100 } }}
+            inputProps={{ style: { width: 100 } }}
             value={this.state.invoiceNo}
             onChange={this.handleChange1}
             variant="outlined"
@@ -486,6 +502,7 @@ class Client extends Component {
               variant="contained"
               color="secondary"
               onClick={this.sendPdf}
+              disabled={disabled}
             >
               Send PDF
             </Button>
