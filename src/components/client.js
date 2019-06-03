@@ -58,7 +58,7 @@ class Client extends Component {
     toM: "",
     year: "2019",
     exrate: 0.7246,
-    invoiceNo: "BPI",
+    invoiceNo: "",
     disabled: true
   };
 
@@ -97,8 +97,8 @@ class Client extends Component {
 
     this.setState({
       labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
-      toM: this.revMon(new Date().getMonth()),
-      fromM: this.revMon(new Date().getMonth()),
+      toM: this.revMon(new Date().getMonth()-1),
+      fromM: this.revMon(new Date().getMonth()-1),
       year: new Date().getFullYear()
     });
 
@@ -167,7 +167,7 @@ class Client extends Component {
     await this.setState({
       clients: [...clients],
       disabled: true,
-      invoiceNo: "BPI"
+      invoiceNo: ""
     });
 
     const { transactions } = this.context;
@@ -177,6 +177,7 @@ class Client extends Component {
       this.getMon(this.state.toM)
     );
     // set a new array for clientarr to go into pdf
+    console.log(this.state.clients,"checkinggggg")
     let clientarr = [];
     for (let i = 0; i < this.state.clients.length; i++) {
       if (this.state.clients[i].checked === true) {
@@ -203,7 +204,7 @@ class Client extends Component {
             transac.duedate = clients[i].duedate;
             transac.invoice_emails = clients[i].invoice_emails;
             transac.trade_date = date;
-            transac.client = transactions[j].b_client;
+            transac.client = clients[i].client;
             transac.product = transactions[j].product;
             transac.instrument = transactions[j].instrument;
             transac.bs = "Buy";
@@ -239,7 +240,7 @@ class Client extends Component {
             transac.duedate = clients[i].duedate;
             transac.invoice_emails = clients[i].invoice_emails;
             transac.trade_date = date;
-            transac.client = transactions[j].s_client;
+            transac.client = clients[i].client;
             transac.product = transactions[j].product;
             transac.instrument = transactions[j].instrument;
             transac.bs = "Sell";
@@ -262,6 +263,11 @@ class Client extends Component {
       }
     }
     this.setState({ clientarr });
+    try {
+      this.setState({invoiceNo: clientarr[0].entity})
+    } catch(e){
+      console.log(e, "invoice entity")
+    }
   };
 
   handleChange1 = e => {
@@ -281,7 +287,7 @@ class Client extends Component {
       .post("/createpdf", dataState)
       .then(() => axios.get("/getpdf", { responseType: "blob" }))
       .then(res => {
-        const pdfBlob = new Blob([res.data], { type: "application.pdf" });
+        const pdfBlob = new Blob([res.data], { type: "application/pdf" });
         saveAs(pdfBlob, `${this.state.invoiceNo}.pdf`);
         this.setState({ disabled: false });
       });
