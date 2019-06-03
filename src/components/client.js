@@ -57,48 +57,53 @@ class Client extends Component {
     fromM: "",
     toM: "",
     year: "2019",
-    exrate: 0.7246,
+    exrate: 0.72,
     invoiceNo: "",
     disabled: true
   };
 
   componentDidMount() {
-    fetch(
-      `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=SGD&to_symbol=USD&apikey=${
-        process.env.REACT_APP_AVAPI
-      }`
-    )
+    // fetch(
+    //   `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=SGD&to_symbol=USD&apikey=${
+    //     process.env.REACT_APP_AVAPI
+    //   }`
+    // )
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     let date = new Date();
+    //     let month;
+    //     let day;
+    //     if (date.getMonth() + 1 < 10) {
+    //       month = "0" + (date.getMonth() + 1);
+    //     } else {
+    //       month = date.getMonth() + 1;
+    //     }
+    //     if (date.getDate() < 10) {
+    //       day = "0" + date.getDate();
+    //     } else {
+    //       day = date.getDate() - 1;
+    //     }
+    //     let dateformatted = date.getFullYear() + "-" + month + "-" + day;
+    //     try {
+    //       this.setState({
+    //         exrate: parseFloat(
+    //           data["Time Series FX (Daily)"][dateformatted]["4. close"]
+    //         )
+    //       });
+    //     } catch (e) {
+    //       console.log(e, "error");
+    //     }
+    //   });
+    fetch("/api/invoice")
       .then(res => res.json())
       .then(data => {
-        let date = new Date();
-        let month;
-        let day;
-        if (date.getMonth() + 1 < 10) {
-          month = "0" + (date.getMonth() + 1);
-        } else {
-          month = date.getMonth() + 1;
-        }
-        if (date.getDate() < 10) {
-          day = "0" + date.getDate();
-        } else {
-          day = date.getDate() - 1;
-        }
-        let dateformatted = date.getFullYear() + "-" + month + "-" + day;
-        try {
-          this.setState({
-            exrate: parseFloat(
-              data["Time Series FX (Daily)"][dateformatted]["4. close"]
-            )
-          });
-        } catch (e) {
-          console.log(e, "error");
-        }
+        console.log(data, "data from invoice");
       });
 
     this.setState({
       labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
-      toM: this.revMon(new Date().getMonth()-1),
-      fromM: this.revMon(new Date().getMonth()-1),
+      toM: this.revMon(new Date().getMonth() - 1),
+      fromM: this.revMon(new Date().getMonth() - 1),
       year: new Date().getFullYear()
     });
 
@@ -177,7 +182,6 @@ class Client extends Component {
       this.getMon(this.state.toM)
     );
     // set a new array for clientarr to go into pdf
-    console.log(this.state.clients,"checkinggggg")
     let clientarr = [];
     for (let i = 0; i < this.state.clients.length; i++) {
       if (this.state.clients[i].checked === true) {
@@ -264,10 +268,25 @@ class Client extends Component {
     }
     this.setState({ clientarr });
     try {
-      this.setState({invoiceNo: clientarr[0].entity})
-    } catch(e){
-      console.log(e, "invoice entity")
+      fetch("/api/invoice")
+        .then(res => res.json())
+        .then(data => {
+          for (let i = 0; i < data.length; i++) {
+            try {
+              if (data[i].entity === clientarr[0].entity) {
+                this.setState({
+                  invoiceNo: `${data[i].number}`
+                });
+              }
+            } catch (e) {
+              console.log(e, "invoice entity === false");
+            }
+          }
+        });
+    } catch (e) {
+      console.log(e, "invoice entity");
     }
+    //invoice no.
   };
 
   handleChange1 = e => {
@@ -290,6 +309,24 @@ class Client extends Component {
         const pdfBlob = new Blob([res.data], { type: "application/pdf" });
         saveAs(pdfBlob, `${this.state.invoiceNo}.pdf`);
         this.setState({ disabled: false });
+        let entity = 1;
+        if (this.state.clientarr[0].entity === "SG") {
+          entity = 2;
+        }
+        let data = {
+          entity: entity,
+          number: parseInt(this.state.invoiceNo) + 1
+        };
+        fetch("/api/invoice", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        }).then(() => {
+          console.log("successful in updating invoice");
+        });
       });
   };
 
@@ -297,7 +334,9 @@ class Client extends Component {
     let data = {
       invoiceNo: this.state.invoiceNo,
       invoice_emails: this.state.clientarr[0].invoice_emails,
-      client: this.state.clientarr[0].client
+      client: this.state.clientarr[0].client,
+      toM: this.state.toM,
+      year: this.state.year
     };
     if (
       window.confirm(
