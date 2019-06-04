@@ -102,8 +102,8 @@ class Client extends Component {
 
     this.setState({
       labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
-      toM: this.revMon(new Date().getMonth() - 1),
-      fromM: this.revMon(new Date().getMonth() - 1),
+      toM: this.revMon(new Date().getMonth()),
+      fromM: this.revMon(new Date().getMonth()),
       year: new Date().getFullYear()
     });
 
