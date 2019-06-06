@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { MyContext } from "../components/store/createContext";
+
 import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -62,14 +64,18 @@ class Blotter extends Component {
       "Product",
       "Instrument",
       "Client Buy",
+      "Client Entity",
       "Comms Buy",
       "Client Sell",
+      "Client Entity",
       "Comms Sell",
       "Contract",
       "Strike",
       "Price",
       "Quantity",
       "Quantity(MT)",
+      "Buy Tcomms",
+      "Sell Tcomms",
       "Total Comms",
       "Deal Id",
       "Created By"
@@ -90,6 +96,18 @@ class Blotter extends Component {
         size * parseFloat(this.state.data[i].b_commission) +
         size * parseFloat(this.state.data[i].s_commission);
 
+      let entityS = "";
+      let entityB = "";
+      for (let j = 0; j < this.context.clients.length; j++) {
+        if (this.context.clients[j].id === this.state.data[i].b_clientid) {
+          entityB = this.context.clients[j].entity;
+        } else if (
+          this.context.clients[j].id === this.state.data[i].s_clientid
+        ) {
+          entityS = this.context.clients[j].entity;
+        }
+      }
+
       let array = [];
 
       array.push(this.state.data[i].trade_id);
@@ -98,14 +116,18 @@ class Blotter extends Component {
       array.push(this.state.data[i].product);
       array.push(this.state.data[i].instrument);
       array.push(this.state.data[i].b_client);
+      array.push(entityB);
       array.push(this.state.data[i].b_commission);
       array.push(this.state.data[i].s_client);
+      array.push(entityS);
       array.push(this.state.data[i].s_commission);
       array.push(this.state.data[i].contract);
       array.push(this.state.data[i].strike);
       array.push(this.state.data[i].price);
       array.push(this.state.data[i].qty);
       array.push(size);
+      array.push(size * parseFloat(this.state.data[i].b_commission));
+      array.push(size * parseFloat(this.state.data[i].s_commission));
       array.push(totalComms);
       array.push(this.state.data[i].deal_id);
       array.push(this.state.data[i].created_by);
@@ -121,6 +143,7 @@ class Blotter extends Component {
 
   render() {
     const { classes } = this.props;
+    console.log(this.state.data, this.context, "data to be sent");
 
     return (
       <React.Fragment>
@@ -138,14 +161,18 @@ class Blotter extends Component {
                 <CustomTableCell align="center">Product</CustomTableCell>
                 <CustomTableCell align="center">Instrument</CustomTableCell>
                 <CustomTableCell align="center">Client buy</CustomTableCell>
+                <CustomTableCell align="center">Client entity</CustomTableCell>
                 <CustomTableCell align="center">Comms buy</CustomTableCell>
                 <CustomTableCell align="center">Client sell</CustomTableCell>
+                <CustomTableCell align="center">Client entity</CustomTableCell>
                 <CustomTableCell align="center">Comms sell</CustomTableCell>
                 <CustomTableCell align="center">Contract</CustomTableCell>
                 <CustomTableCell align="center">Strike</CustomTableCell>
                 <CustomTableCell align="center">Price</CustomTableCell>
                 <CustomTableCell align="center">Quantity</CustomTableCell>
                 <CustomTableCell align="center">Quantity(MT)</CustomTableCell>
+                <CustomTableCell align="center">Buy Tcomms</CustomTableCell>
+                <CustomTableCell align="center">Sell Tcomms</CustomTableCell>
                 <CustomTableCell align="center">
                   Total Commissions
                 </CustomTableCell>
@@ -172,6 +199,15 @@ class Blotter extends Component {
                   } else {
                     size = row.qty * 100 * row.consmonth;
                   }
+                  let entityS = "";
+                  let entityB = "";
+                  for (let i = 0; i < this.context.clients.length; i++) {
+                    if (this.context.clients[i].id === row.b_clientid) {
+                      entityB = this.context.clients[i].entity;
+                    } else if (this.context.clients[i].id === row.s_clientid) {
+                      entityS = this.context.clients[i].entity;
+                    }
+                  }
                   return (
                     <TableRow key={row.trade_id}>
                       <CustomTableCell
@@ -197,10 +233,16 @@ class Blotter extends Component {
                         {row.b_client}
                       </CustomTableCell>
                       <CustomTableCell align="center">
+                        {entityB}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
                         {row.b_commission}
                       </CustomTableCell>
                       <CustomTableCell align="center">
                         {row.s_client}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {entityS}
                       </CustomTableCell>
                       <CustomTableCell align="center">
                         {row.s_commission}
@@ -218,6 +260,12 @@ class Blotter extends Component {
                         {row.qty}
                       </CustomTableCell>
                       <CustomTableCell align="center">{size}</CustomTableCell>
+                      <CustomTableCell align="center">
+                        {size * parseFloat(row.b_commission)}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {size * parseFloat(row.s_commission)}
+                      </CustomTableCell>
                       <CustomTableCell align="center">
                         {size * parseFloat(row.b_commission) +
                           size * parseFloat(row.s_commission)}
@@ -251,6 +299,8 @@ class Blotter extends Component {
     );
   }
 }
+
+Blotter.contextType = MyContext;
 
 Blotter.propTypes = {
   classes: PropTypes.object.isRequired

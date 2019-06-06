@@ -97,7 +97,7 @@ class Client extends Component {
     fetch("/api/invoice")
       .then(res => res.json())
       .then(data => {
-        console.log(data, "data from invoice");
+        console.log("success");
       });
 
     this.setState({
