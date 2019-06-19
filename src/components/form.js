@@ -45,8 +45,8 @@ class Form extends Component {
     s_broker: "",
     b_accounts: [],
     s_accounts: [],
-    s_comms: 0.0,
-    b_comms: 0.0,
+    s_comms: "",
+    b_comms: "",
     s_idb: "",
     b_idb: "",
     s_recap: "",
@@ -307,43 +307,40 @@ class Form extends Component {
   };
 
   allege = entity => {
-    // this.setState({
-    //   b_client: "",
-    //   b_trader: "",
-    //   b_accounts: ""
-    // });
-
-    // if (entity === "SG") {
-    //   this.setState({ b_idb: "S674" });
-    // } else if (entity === "HK") {
-    //   this.setState({ b_idb: "S664" });
-    // }
     if (this.state.b_idb === "S664" && entity === "HK") {
       this.setState({
         b_client: "",
         b_trader: "",
-        b_accounts: ""
+        b_accounts: "",
+        b_recap: "",
+        b_comms: ""
       });
     }
     if (this.state.s_idb === "S664" && entity === "HK") {
       this.setState({
         s_client: "",
         s_trader: "",
-        s_accounts: ""
+        s_accounts: "",
+        s_recap: "",
+        s_comms: ""
       });
     }
     if (this.state.b_idb === "S674" && entity === "SG") {
       this.setState({
         b_client: "",
         b_trader: "",
-        b_accounts: ""
+        b_accounts: "",
+        b_recap: "",
+        b_comms: ""
       });
     }
     if (this.state.s_idb === "S674" && entity === "SG") {
       this.setState({
         s_client: "",
         s_trader: "",
-        s_accounts: ""
+        s_accounts: "",
+        s_recap: "",
+        s_comms: ""
       });
     }
   };
@@ -867,6 +864,7 @@ class Form extends Component {
             <TextField
               className={classes.textControl}
               label="Commission"
+              required={true}
               name="b_comms"
               type="number"
               inputProps={{
@@ -1101,6 +1099,7 @@ class Form extends Component {
             <TextField
               className={classes.textControl}
               label="Commission"
+              required={true}
               name="s_comms"
               type="number"
               inputProps={{
@@ -1129,6 +1128,7 @@ class Form extends Component {
               label="Price"
               name="price"
               type="number"
+              required={true}
               inputProps={{
                 step: 0.05,
                 style: { fontSize: 13, lineHeight: 1 }
