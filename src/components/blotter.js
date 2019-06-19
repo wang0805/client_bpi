@@ -51,9 +51,9 @@ class Blotter extends Component {
     }
   }
 
-  //   updatePost = id => {
-  //     this.props.history.push("/updateid/" + id);
-  //   };
+  updatePost = id => {
+    this.props.history.push("/updateid/" + id);
+  };
 
   download = () => {
     let arrayCsv = [];
@@ -181,7 +181,7 @@ class Blotter extends Component {
                 <CustomTableCell align="center">
                   Created at (GMT +8)
                 </CustomTableCell>
-                {/* <CustomTableCell align="center">Edit</CustomTableCell> */}
+                <CustomTableCell align="center">Edit</CustomTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -279,16 +279,16 @@ class Blotter extends Component {
                       <CustomTableCell align="center">
                         {date_time}
                       </CustomTableCell>
-                      {/* <CustomTableCell align="center">
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => this.updatePost(row.trade_id)}
-                      >
-                        Edit
-                      </Button>
-                    </CustomTableCell> */}
+                      <CustomTableCell align="center">
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => this.updatePost(row.trade_id)}
+                        >
+                          Edit
+                        </Button>
+                      </CustomTableCell>
                     </TableRow>
                   );
                 })}

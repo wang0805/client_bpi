@@ -273,7 +273,7 @@ class Fdashboard extends React.Component {
           {this.state.openForm && <Form />}
           {this.state.openTrans && <Transactions {...this.props} />}
           {this.state.openTrades && <Client />}
-          {this.state.openBlotter && <Blotter />}
+          {this.state.openBlotter && <Blotter {...this.props} />}
           {this.state.openManual && <Manualinput />}
         </main>
       </div>

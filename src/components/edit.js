@@ -8,6 +8,8 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
+import axios from "axios";
+import { saveAs } from "file-saver";
 
 const styles = theme => ({
   root: {
@@ -55,6 +57,26 @@ class Edit extends Component {
 
   return = () => {
     this.props.history.push("/");
+  };
+
+  createPdf = () => {
+    let data = {
+      ...this.state.data,
+      tradeid: this.state.data.id,
+      b_comms: this.state.data.b_commission,
+      s_comms: this.state.data.s_commission,
+      product_code: this.state.data.product,
+      b_accounts: this.state.data.b_account,
+      s_accounts: this.state.data.s_account,
+      consMonth: this.state.data.consmonth
+    };
+    axios
+      .post("/createrecappdf", data)
+      .then(() => axios.get("/getrecappdf", { responseType: "blob" }))
+      .then(res => {
+        const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+        // saveAs(pdfBlob, `testing.pdf`);
+      });
   };
 
   handleSubmit = e => {
@@ -131,10 +153,13 @@ class Edit extends Component {
               </Typography>
             </CardContent>
             <CardActions>
+              <Button color="primary" onClick={this.createPdf}>
+                Regenerate Recap
+              </Button>
+              <Button onClick={this.return}>back</Button>
               <Button color="primary" type="submit">
                 Submit
               </Button>
-              <Button onClick={this.return}>back</Button>
             </CardActions>
           </form>
         </Card>
