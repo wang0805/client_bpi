@@ -66,7 +66,8 @@ class Form extends Component {
     execDate: "",
     dealGroup: 1,
     arrayCsv: [],
-    created_byid: ""
+    created_byid: "",
+    deal_id: ""
   };
 
   componentDidMount() {
