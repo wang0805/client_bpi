@@ -9,7 +9,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
-import { saveAs } from "file-saver";
+// import { saveAs } from "file-saver";
 
 const styles = theme => ({
   root: {
@@ -74,7 +74,7 @@ class Edit extends Component {
       .post("/createrecappdf", data)
       .then(() => axios.get("/getrecappdf", { responseType: "blob" }))
       .then(res => {
-        const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+        // const pdfBlob = new Blob([res.data], { type: "application/pdf" });
         // saveAs(pdfBlob, `testing.pdf`);
       });
   };
