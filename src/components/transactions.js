@@ -94,7 +94,11 @@ class Transactions extends Component {
                 let date_time =
                   date.toLocaleDateString() + " " + date.toLocaleTimeString();
                 let trade_date = new Date(row.trade_date).toLocaleDateString();
-                if (date.getDate() === now.getDate()) {
+                // make sure date and month of creation same
+                if (
+                  date.getDate() === now.getDate() &&
+                  date.getMonth() === now.getMonth()
+                ) {
                   return (
                     <TableRow key={row.trade_id}>
                       <CustomTableCell
@@ -170,6 +174,8 @@ class Transactions extends Component {
                       </CustomTableCell>
                     </TableRow>
                   );
+                } else {
+                  return null;
                 }
               })}
           </TableBody>
