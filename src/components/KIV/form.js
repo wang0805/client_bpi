@@ -257,7 +257,7 @@ class Form extends Component {
       contract = "Q4'" + this.state.year;
     } else if (fromM === 1 && consMonth === 6) {
       contract = "1H'" + this.state.year;
-    } else if (fromM === 6 && consMonth === 6) {
+    } else if (fromM === 7 && consMonth === 6) {
       contract = "2H'" + this.state.year;
     } else if (fromM === 1 && consMonth === 12) {
       contract = "CAL'" + this.state.year;
