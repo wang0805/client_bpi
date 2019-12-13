@@ -511,8 +511,23 @@ class Form extends Component {
       contract = "Q3'" + this.state.year;
     } else if (fromM === 10 && consMonth === 3) {
       contract = "Q4'" + this.state.year;
-    } else {
+    } else if (fromM === 1 && consMonth === 6) {
+      contract = "1H'" + this.state.year;
+    } else if (fromM === 6 && consMonth === 6) {
+      contract = "2H'" + this.state.year;
+    } else if (fromM === 1 && consMonth === 12) {
+      contract = "CAL'" + this.state.year;
+    } else if (fromM === toM) {
       contract = this.state.fromM + "'" + this.state.year;
+    } else {
+      contract =
+        this.state.fromM +
+        "'" +
+        this.state.year +
+        " - " +
+        this.state.toM +
+        "'" +
+        this.state.year;
     }
 
     if (
