@@ -66,9 +66,11 @@ class Blotter extends Component {
       "Client Buy",
       "Client Entity",
       "Comms Buy",
+      "Buy Broker",
       "Client Sell",
       "Client Entity",
       "Comms Sell",
+      "Sell Broker",
       "Contract",
       "Strike",
       "Price",
@@ -118,9 +120,11 @@ class Blotter extends Component {
       array.push(this.state.data[i].b_client);
       array.push(entityB);
       array.push(this.state.data[i].b_commission);
+      array.push(this.state.data[i].b_user);
       array.push(this.state.data[i].s_client);
       array.push(entityS);
       array.push(this.state.data[i].s_commission);
+      array.push(this.state.data[i].s_user);
       array.push(this.state.data[i].contract);
       array.push(this.state.data[i].strike);
       array.push(this.state.data[i].price);
@@ -163,9 +167,11 @@ class Blotter extends Component {
                 <CustomTableCell align="center">Client buy</CustomTableCell>
                 <CustomTableCell align="center">Client entity</CustomTableCell>
                 <CustomTableCell align="center">Comms buy</CustomTableCell>
+                <CustomTableCell align="center">Buy broker</CustomTableCell>
                 <CustomTableCell align="center">Client sell</CustomTableCell>
                 <CustomTableCell align="center">Client entity</CustomTableCell>
                 <CustomTableCell align="center">Comms sell</CustomTableCell>
+                <CustomTableCell align="center">Sell broker</CustomTableCell>
                 <CustomTableCell align="center">Contract</CustomTableCell>
                 <CustomTableCell align="center">Strike</CustomTableCell>
                 <CustomTableCell align="center">Price</CustomTableCell>
@@ -239,6 +245,9 @@ class Blotter extends Component {
                         {row.b_commission}
                       </CustomTableCell>
                       <CustomTableCell align="center">
+                        {row.b_user}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
                         {row.s_client}
                       </CustomTableCell>
                       <CustomTableCell align="center">
@@ -246,6 +255,9 @@ class Blotter extends Component {
                       </CustomTableCell>
                       <CustomTableCell align="center">
                         {row.s_commission}
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
+                        {row.s_user}
                       </CustomTableCell>
                       <CustomTableCell align="center">
                         {row.contract}
