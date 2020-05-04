@@ -67,7 +67,8 @@ class Form extends Component {
     dealGroup: 1,
     arrayCsv: [],
     created_byid: "",
-    deal_id: ""
+    deal_id: "",
+    brokers: []
   };
 
   componentDidMount() {
@@ -196,6 +197,11 @@ class Form extends Component {
         .then(res => res.json())
         .then(data => {
           this.setState({ instruObj: data });
+        });
+      fetch("/api/users")
+        .then(res => res.json())
+        .then(data => {
+          this.setState({ brokers: data }, () => {});
         });
     } catch (e) {
       console.log(e, "error getting clients due to permissions");
@@ -680,7 +686,7 @@ class Form extends Component {
             <span>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </span>
-            <TextField
+            {/* <TextField
               className={classes.textControl}
               label="Buy Broker"
               name="b_broker"
@@ -690,8 +696,42 @@ class Form extends Component {
                 style: { fontSize: 13, lineHeight: 1 }
               }}
               variant="outlined"
-            />
-            <TextField
+            /> */}
+
+            <FormControl className={classes.formControl} variant="outlined">
+              <InputLabel
+                ref={ref => {
+                  this.InputLabelRef = ref;
+                }}
+              >
+                Buy Broker
+              </InputLabel>
+              <Select
+                inputProps={{
+                  classes: {
+                    select: classes.resize
+                  }
+                }}
+                native
+                name="b_broker"
+                value={this.state.b_broker}
+                onChange={this.handleChange}
+                input={
+                  <OutlinedInput
+                    name="b_Broker"
+                    labelWidth={this.state.labelWidth}
+                  />
+                }
+              >
+                {this.state.brokers.map((broker, index) => (
+                  <option key={index} value={broker.name}>
+                    {broker.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* <TextField
               className={classes.textControl}
               label="Sell Broker"
               name="s_broker"
@@ -701,7 +741,40 @@ class Form extends Component {
                 style: { fontSize: 13, lineHeight: 1 }
               }}
               variant="outlined"
-            />
+            /> */}
+
+            <FormControl className={classes.formControl} variant="outlined">
+              <InputLabel
+                ref={ref => {
+                  this.InputLabelRef = ref;
+                }}
+              >
+                Sell Broker
+              </InputLabel>
+              <Select
+                inputProps={{
+                  classes: {
+                    select: classes.resize
+                  }
+                }}
+                native
+                name="s_broker"
+                value={this.state.s_broker}
+                onChange={this.handleChange}
+                input={
+                  <OutlinedInput
+                    name="s_broker"
+                    labelWidth={this.state.labelWidth}
+                  />
+                }
+              >
+                {this.state.brokers.map((broker, index) => (
+                  <option key={index} value={broker.name}>
+                    {broker.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
           </div>
           <br />
           <div className={classes.midbutton}>

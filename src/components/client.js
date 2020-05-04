@@ -56,7 +56,7 @@ class Client extends Component {
     clientarr: [],
     fromM: "",
     toM: "",
-    year: "2019",
+    year: 2020,
     exrate: 0.72,
     invoiceNo: "",
     disabled: true
@@ -183,14 +183,18 @@ class Client extends Component {
     );
     // set a new array for clientarr to go into pdf
     let clientarr = [];
+
     for (let i = 0; i < this.state.clients.length; i++) {
       if (this.state.clients[i].checked === true) {
         for (let j = 0; j < transactions.length; j++) {
           let transac = {};
           let dateMonth = new Date(transactions[j].trade_date).getMonth() + 1;
+          let dateYear = new Date(transactions[j].trade_date).getFullYear();
+
           if (
             transactions[j].b_clientid === clients[i].id &&
-            rangearr.includes(dateMonth)
+            rangearr.includes(dateMonth) &&
+            dateYear === this.state.year
           ) {
             let size = transactions[j].qty;
             if (transactions[j].instrument === "S") {
@@ -226,7 +230,8 @@ class Client extends Component {
           }
           if (
             transactions[j].s_clientid === clients[i].id &&
-            rangearr.includes(dateMonth)
+            rangearr.includes(dateMonth) &&
+            dateYear === this.state.year
           ) {
             let size = transactions[j].qty;
             if (transactions[j].instrument === "S") {
@@ -290,7 +295,9 @@ class Client extends Component {
   };
 
   handleChange1 = e => {
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      console.log(".");
+    });
   };
 
   createPdf = () => {
@@ -405,9 +412,7 @@ class Client extends Component {
             <OutlinedInput name="year" labelWidth={this.state.labelWidth} />
           }
         >
-          <option value="2019" defaultValue>
-            2019
-          </option>
+          <option value="2019">2019</option>
           <option value="2020">2020</option>
           <option value="2021">2021</option>
           <option value="2022">2022</option>
