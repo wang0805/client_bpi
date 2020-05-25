@@ -24,11 +24,6 @@ import MonetizationOn from "@material-ui/icons/MonetizationOn";
 import TouchApp from "@material-ui/icons/TouchApp";
 import { Link } from "react-router-dom";
 
-import Form from "../form";
-import Client from "../client";
-import Blotter from "../blotter";
-import Manualinput from "../manualinput";
-
 const drawerWidth = 240;
 
 const styles = (theme) => ({
@@ -91,46 +86,6 @@ const styles = (theme) => ({
 class Fdashboard extends React.Component {
   state = {
     open: false,
-    openForm: true,
-    openTrades: false,
-    openBlotter: false,
-    openManual: false,
-  };
-
-  handleFormOpen = () => {
-    this.setState({
-      openForm: true,
-      openTrades: false,
-      openBlotter: false,
-      openManual: false,
-    });
-  };
-
-  handleTradesOpen = () => {
-    this.setState({
-      openForm: false,
-      openTrades: true,
-      openBlotter: false,
-      openManual: false,
-    });
-  };
-
-  handleBlotterOpen = () => {
-    this.setState({
-      openForm: false,
-      openTrades: false,
-      openBlotter: true,
-      openManual: false,
-    });
-  };
-
-  handleManualOpen = () => {
-    this.setState({
-      openForm: false,
-      openTrades: false,
-      openBlotter: false,
-      openManual: true,
-    });
   };
 
   handleDrawerOpen = () => {
@@ -206,7 +161,6 @@ class Fdashboard extends React.Component {
               </ListItemIcon>
               <ListItemText primary={"Form"} />
             </ListItem>
-            {/* <ListItem button component={Link} to="/transactions"> */}
             <ListItem button component={Link} to="/transactions">
               <ListItemIcon>
                 <Archive />
@@ -216,7 +170,7 @@ class Fdashboard extends React.Component {
           </List>
           <Divider />
           <List>
-            <ListItem button onClick={this.handleManualOpen}>
+            <ListItem button component={Link} to="/manualinput">
               <ListItemIcon>
                 <LibraryAdd />
               </ListItemIcon>
@@ -224,7 +178,7 @@ class Fdashboard extends React.Component {
             </ListItem>
           </List>
           <List>
-            <ListItem button onClick={this.handleBlotterOpen}>
+            <ListItem button component={Link} to="/blotter">
               <ListItemIcon>
                 <FileCopy />
               </ListItemIcon>
@@ -232,7 +186,7 @@ class Fdashboard extends React.Component {
             </ListItem>
           </List>
           <List>
-            <ListItem button onClick={this.handleTradesOpen}>
+            <ListItem button component={Link} to="/invoice">
               <ListItemIcon>
                 <MonetizationOn />
               </ListItemIcon>
@@ -254,10 +208,6 @@ class Fdashboard extends React.Component {
           })}
         >
           <div className={classes.drawerHeader} />
-          {/* {this.state.openForm && <Form />} */}
-          {this.state.openTrades && <Client />}
-          {this.state.openBlotter && <Blotter {...this.props} />}
-          {this.state.openManual && <Manualinput />}
           {this.props.children}
         </main>
       </div>

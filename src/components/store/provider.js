@@ -6,10 +6,10 @@ import { Provider } from "./createContext";
 // Feel free to abstract actions and state away from this file.
 class AppProvider extends Component {
   state = {
-    clients: [],
+    clients: JSON.parse(localStorage.getItem("clientsObj")),
     transactions: [],
     clientsdata: [],
-    setClients: (clients) => this.setState({ clients }),
+    // setClients: (clients) => this.setState({ clients }),
     // fullcart: [],
     // setFullCart: items => this.setState({ fullcart: items }),
     // addToFullCart: this.addToFullCart.bind(this),
@@ -87,6 +87,7 @@ class AppProvider extends Component {
             });
           }
           this.setState({ clients: clientsObj });
+          localStorage.setItem("clientsObj", JSON.stringify(clientsObj));
         });
     } catch (e) {
       console.log(e, "error getting transactions due to permissions");

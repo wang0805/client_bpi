@@ -24,30 +24,32 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
+import Fdashboard from "./dashboard/fdashboard";
+
 const CustomTableCell = withStyles(() => ({
   head: {
     fontSize: 12,
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
   },
   body: {
     fontSize: 10,
     paddingLeft: 10,
-    paddingRight: 10
-  }
+    paddingRight: 10,
+  },
 }))(TableCell);
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
-    display: "flex"
+    display: "flex",
   },
   formControl: {
-    margin: theme.spacing.unit * 3
+    margin: theme.spacing.unit * 3,
   },
   dateControl: {
     minWidth: 120,
-    maxWidth: 150
-  }
+    maxWidth: 150,
+  },
 });
 
 class Client extends Component {
@@ -59,7 +61,7 @@ class Client extends Component {
     year: 2020,
     exrate: 0.72,
     invoiceNo: "",
-    disabled: true
+    disabled: true,
   };
 
   componentDidMount() {
@@ -95,8 +97,8 @@ class Client extends Component {
     //     }
     //   });
     fetch("/api/invoice")
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         console.log("success");
       });
 
@@ -104,7 +106,7 @@ class Client extends Component {
       labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
       toM: this.revMon(new Date().getMonth()),
       fromM: this.revMon(new Date().getMonth()),
-      year: new Date().getFullYear()
+      year: new Date().getFullYear(),
     });
 
     let array = [...this.context.clients];
@@ -139,7 +141,7 @@ class Client extends Component {
     return ans;
   };
 
-  revMon = month => {
+  revMon = (month) => {
     let date = [
       "Jan",
       "Feb",
@@ -152,16 +154,16 @@ class Client extends Component {
       "Sep",
       "Oct",
       "Nov",
-      "Dec"
+      "Dec",
     ];
     return date[month];
   };
 
-  getMon = month => {
+  getMon = (month) => {
     return "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(month) / 3 + 1;
   };
 
-  handleChange = name => async event => {
+  handleChange = (name) => async (event) => {
     let clients = [...this.state.clients];
     for (let i = 0; i < clients.length; i++) {
       if (clients[i].id === name.id) {
@@ -172,7 +174,7 @@ class Client extends Component {
     await this.setState({
       clients: [...clients],
       disabled: true,
-      invoiceNo: ""
+      invoiceNo: "",
     });
 
     const { transactions } = this.context;
@@ -191,10 +193,11 @@ class Client extends Component {
           let dateMonth = new Date(transactions[j].trade_date).getMonth() + 1;
           let dateYear = new Date(transactions[j].trade_date).getFullYear();
 
+          console.log(typeof dateYear);
           if (
             transactions[j].b_clientid === clients[i].id &&
             rangearr.includes(dateMonth) &&
-            dateYear === this.state.year
+            dateYear === parseInt(this.state.year)
           ) {
             let size = transactions[j].qty;
             if (transactions[j].instrument === "S") {
@@ -231,7 +234,7 @@ class Client extends Component {
           if (
             transactions[j].s_clientid === clients[i].id &&
             rangearr.includes(dateMonth) &&
-            dateYear === this.state.year
+            dateYear === parseInt(this.state.year)
           ) {
             let size = transactions[j].qty;
             if (transactions[j].instrument === "S") {
@@ -274,13 +277,13 @@ class Client extends Component {
     this.setState({ clientarr });
     try {
       fetch("/api/invoice")
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           for (let i = 0; i < data.length; i++) {
             try {
               if (data[i].entity === clientarr[0].entity) {
                 this.setState({
-                  invoiceNo: `${data[i].number}`
+                  invoiceNo: `${data[i].number}`,
                 });
               }
             } catch (e) {
@@ -294,7 +297,7 @@ class Client extends Component {
     //invoice no.
   };
 
-  handleChange1 = e => {
+  handleChange1 = (e) => {
     this.setState({ [e.target.name]: e.target.value }, () => {
       console.log(".");
     });
@@ -307,12 +310,12 @@ class Client extends Component {
       invoiceNo: this.state.invoiceNo,
       fromM: this.state.fromM,
       toM: this.state.toM,
-      year: this.state.year
+      year: this.state.year,
     };
     axios
       .post("/createpdf", dataState)
       .then(() => axios.get("/getpdf", { responseType: "blob" }))
-      .then(res => {
+      .then((res) => {
         const pdfBlob = new Blob([res.data], { type: "application/pdf" });
         saveAs(pdfBlob, `${this.state.invoiceNo}.pdf`);
         this.setState({ disabled: false });
@@ -322,15 +325,15 @@ class Client extends Component {
         }
         let data = {
           entity: entity,
-          number: parseInt(this.state.invoiceNo) + 1
+          number: parseInt(this.state.invoiceNo) + 1,
         };
         fetch("/api/invoice", {
           method: "POST",
           headers: {
             Accept: "application/json",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(data)
+          body: JSON.stringify(data),
         }).then(() => {
           console.log("successful in updating invoice");
         });
@@ -343,7 +346,7 @@ class Client extends Component {
       invoice_emails: this.state.clientarr[0].invoice_emails,
       client: this.state.clientarr[0].client,
       toM: this.state.toM,
-      year: this.state.year
+      year: this.state.year,
     };
     if (
       window.confirm(
@@ -356,14 +359,14 @@ class Client extends Component {
         method: "POST",
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       })
         .then(() => {
           alert("Email successfully sent");
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("error: ", error);
           alert("Error in sending email, please try again");
         });
@@ -391,13 +394,13 @@ class Client extends Component {
       "Trader",
       "Comms",
       "Total Comms",
-      "Deal Id"
+      "Deal Id",
     ];
 
     let year = (
       <FormControl className={classes.dateControl} variant="outlined">
         <InputLabel
-          ref={ref => {
+          ref={(ref) => {
             this.InputLabelRef = ref;
           }}
         >
@@ -424,209 +427,214 @@ class Client extends Component {
     );
 
     return (
-      <div className={classes.root}>
-        <FormControl component="fieldset" className={classes.formControl}>
-          <FormLabel component="legend">Select Clients</FormLabel>
-          <FormGroup>
-            {clients.map((client, index) => {
-              return (
-                <FormControlLabel
-                  key={index}
-                  control={
-                    <Checkbox
-                      checked={client.checked}
-                      onChange={this.handleChange(client)}
-                      value={client.client}
-                    />
-                  }
-                  label={client.client}
-                />
-              );
-            })}
-          </FormGroup>
-          <FormHelperText>Select only 1 client please</FormHelperText>
-        </FormControl>
+      <Fdashboard>
+        <div className={classes.root}>
+          <FormControl component="fieldset" className={classes.formControl}>
+            <FormLabel component="legend">Select Clients</FormLabel>
+            <FormGroup>
+              {clients.map((client, index) => {
+                return (
+                  <FormControlLabel
+                    key={index}
+                    control={
+                      <Checkbox
+                        checked={client.checked}
+                        onChange={this.handleChange(client)}
+                        value={client.client}
+                      />
+                    }
+                    label={client.client}
+                  />
+                );
+              })}
+            </FormGroup>
+            <FormHelperText>Select only 1 client please</FormHelperText>
+          </FormControl>
 
-        <div>
-          <br />
-          <br />
-          <FormControl className={classes.dateControl} variant="outlined">
-            <InputLabel
-              ref={ref => {
-                this.InputLabelRef = ref;
-              }}
-            >
-              From Month
-            </InputLabel>
-            <Select
-              native
-              name="fromM"
-              value={this.state.fromM}
-              onChange={this.handleChange1}
-              input={
-                <OutlinedInput
-                  name="fromM"
-                  labelWidth={this.state.labelWidth}
-                />
-              }
-            >
-              <option value="Jan">Jan</option>
-              <option value="Feb">Feb</option>
-              <option value="Mar">Mar</option>
-              <option value="Apr">Apr</option>
-              <option value="May">May</option>
-              <option value="Jun">Jun</option>
-              <option value="Jul">Jul</option>
-              <option value="Aug">Aug</option>
-              <option value="Sep">Sep</option>
-              <option value="Oct">Oct</option>
-              <option value="Nov">Nov</option>
-              <option value="Dec">Dec</option>
-            </Select>
-          </FormControl>
-          {year}
-          <FormControl className={classes.dateControl} variant="outlined">
-            <InputLabel
-              ref={ref => {
-                this.InputLabelRef = ref;
-              }}
-            >
-              To Month
-            </InputLabel>
-            <Select
-              native
-              name="toM"
-              value={this.state.toM}
-              onChange={this.handleChange1}
-              input={
-                <OutlinedInput name="toM" labelWidth={this.state.labelWidth} />
-              }
-            >
-              <option value="Jan">Jan</option>
-              <option value="Feb">Feb</option>
-              <option value="Mar">Mar</option>
-              <option value="Apr">Apr</option>
-              <option value="May">May</option>
-              <option value="Jun">Jun</option>
-              <option value="Jul">Jul</option>
-              <option value="Aug">Aug</option>
-              <option value="Sep">Sep</option>
-              <option value="Oct">Oct</option>
-              <option value="Nov">Nov</option>
-              <option value="Dec">Dec</option>
-            </Select>
-          </FormControl>
-          {year}
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          <TextField
-            className={classes.textControl}
-            label="SGD/USD"
-            name="exrate"
-            type="number"
-            inputProps={{ step: 0.001, style: { width: 80 } }}
-            value={this.state.exrate}
-            onChange={this.handleChange1}
-            variant="outlined"
-          />
-          <TextField
-            className={classes.textControl}
-            label="Invoice No."
-            name="invoiceNo"
-            inputProps={{ style: { width: 100 } }}
-            value={this.state.invoiceNo}
-            onChange={this.handleChange1}
-            variant="outlined"
-          />
-          <br />
-          <br />
           <div>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={this.createPdf}
-            >
-              Create PDF
-            </Button>
-            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={this.sendPdf}
-              disabled={disabled}
-            >
-              Send PDF
-            </Button>
+            <br />
+            <br />
+            <FormControl className={classes.dateControl} variant="outlined">
+              <InputLabel
+                ref={(ref) => {
+                  this.InputLabelRef = ref;
+                }}
+              >
+                From Month
+              </InputLabel>
+              <Select
+                native
+                name="fromM"
+                value={this.state.fromM}
+                onChange={this.handleChange1}
+                input={
+                  <OutlinedInput
+                    name="fromM"
+                    labelWidth={this.state.labelWidth}
+                  />
+                }
+              >
+                <option value="Jan">Jan</option>
+                <option value="Feb">Feb</option>
+                <option value="Mar">Mar</option>
+                <option value="Apr">Apr</option>
+                <option value="May">May</option>
+                <option value="Jun">Jun</option>
+                <option value="Jul">Jul</option>
+                <option value="Aug">Aug</option>
+                <option value="Sep">Sep</option>
+                <option value="Oct">Oct</option>
+                <option value="Nov">Nov</option>
+                <option value="Dec">Dec</option>
+              </Select>
+            </FormControl>
+            {year}
+            <FormControl className={classes.dateControl} variant="outlined">
+              <InputLabel
+                ref={(ref) => {
+                  this.InputLabelRef = ref;
+                }}
+              >
+                To Month
+              </InputLabel>
+              <Select
+                native
+                name="toM"
+                value={this.state.toM}
+                onChange={this.handleChange1}
+                input={
+                  <OutlinedInput
+                    name="toM"
+                    labelWidth={this.state.labelWidth}
+                  />
+                }
+              >
+                <option value="Jan">Jan</option>
+                <option value="Feb">Feb</option>
+                <option value="Mar">Mar</option>
+                <option value="Apr">Apr</option>
+                <option value="May">May</option>
+                <option value="Jun">Jun</option>
+                <option value="Jul">Jul</option>
+                <option value="Aug">Aug</option>
+                <option value="Sep">Sep</option>
+                <option value="Oct">Oct</option>
+                <option value="Nov">Nov</option>
+                <option value="Dec">Dec</option>
+              </Select>
+            </FormControl>
+            {year}
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <TextField
+              className={classes.textControl}
+              label="SGD/USD"
+              name="exrate"
+              type="number"
+              inputProps={{ step: 0.001, style: { width: 80 } }}
+              value={this.state.exrate}
+              onChange={this.handleChange1}
+              variant="outlined"
+            />
+            <TextField
+              className={classes.textControl}
+              label="Invoice No."
+              name="invoiceNo"
+              inputProps={{ style: { width: 100 } }}
+              value={this.state.invoiceNo}
+              onChange={this.handleChange1}
+              variant="outlined"
+            />
+            <br />
+            <br />
+            <div>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.createPdf}
+              >
+                Create PDF
+              </Button>
+              <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={this.sendPdf}
+                disabled={disabled}
+              >
+                Send PDF
+              </Button>
+            </div>
+            <br />
+            <br />
+            <Paper className={classes.root}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    {headers.map((field, index) => (
+                      <CustomTableCell align="center" key={index}>
+                        {field}
+                      </CustomTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {this.state.clientarr.map((client, index) => {
+                    return (
+                      <TableRow key={index}>
+                        <CustomTableCell align="center">
+                          {client.id}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.trade_date}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.client}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.product}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.instrument}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.bs}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.contract}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.price}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.strike}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.size}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.account}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.trader}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.comms}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.tcomms}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {client.deal_id}
+                        </CustomTableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </Paper>
           </div>
-          <br />
-          <br />
-          <Paper className={classes.root}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {headers.map((field, index) => (
-                    <CustomTableCell align="center" key={index}>
-                      {field}
-                    </CustomTableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {this.state.clientarr.map((client, index) => {
-                  return (
-                    <TableRow key={index}>
-                      <CustomTableCell align="center">
-                        {client.id}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.trade_date}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.client}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.product}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.instrument}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.bs}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.contract}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.price}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.strike}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.size}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.account}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.trader}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.comms}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.tcomms}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {client.deal_id}
-                      </CustomTableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </Paper>
         </div>
-      </div>
+      </Fdashboard>
     );
   }
 }
@@ -634,7 +642,7 @@ class Client extends Component {
 Client.contextType = MyContext;
 
 Client.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(Client);
