@@ -10,25 +10,25 @@ import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
-const styles = theme => ({
+const styles = (theme) => ({
   formControl: {
     // margin: theme.spacing.unit,
-    minWidth: 120
+    minWidth: 120,
   },
   dateControl: {
-    maxWidth: 120
+    maxWidth: 120,
   },
   textControl: {
-    maxWidth: 120
+    maxWidth: 120,
   },
   resize: {
     fontSize: 13,
-    lineHeight: 1
+    lineHeight: 1,
   },
   midbutton: {
     display: "flex",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 });
 
 class Form extends Component {
@@ -68,7 +68,7 @@ class Form extends Component {
     arrayCsv: [],
     created_byid: "",
     deal_id: "",
-    brokers: []
+    brokers: [],
   };
 
   componentDidMount() {
@@ -103,9 +103,9 @@ class Form extends Component {
           "Party2 IDB",
           "Party2 GCM",
           "Party2 A/C",
-          "Party2 Comment"
-        ]
-      ]
+          "Party2 Comment",
+        ],
+      ],
     });
     let date = new Date();
     let month;
@@ -124,17 +124,17 @@ class Form extends Component {
     this.setState({ execDate: exec_date });
     const options = { hour12: false };
     this.setState({
-      execTime: date.toLocaleTimeString("en-US", options).substring(0, 5)
+      execTime: date.toLocaleTimeString("en-US", options).substring(0, 5),
     });
     try {
       fetch("/api/clients", {
         method: "GET",
         headers: {
-          Authorization: localStorage.getItem("token")
-        }
+          Authorization: localStorage.getItem("token"),
+        },
       })
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           let clients = [" "];
           let clientsObj = [];
           for (let i = 0; i < data.length; i++) {
@@ -181,26 +181,26 @@ class Form extends Component {
               id: id,
               entity: entity,
               in_sg: in_sg,
-              duedate: duedate
+              duedate: duedate,
             });
           }
           this.setState({ value: clientsObj });
           this.setState({ clients });
-          this.context.setClients(clientsObj);
+          // this.context.setClients(clientsObj);
         });
       fetch("/api/products")
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           this.setState({ productsObj: data });
         });
       fetch("/api/instruments")
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           this.setState({ instruObj: data });
         });
       fetch("/api/users")
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           this.setState({ brokers: data }, () => {});
         });
     } catch (e) {
@@ -208,12 +208,12 @@ class Form extends Component {
     }
   }
 
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
     // console.log("Fired");
   };
 
-  handleChangeB = x => e => {
+  handleChangeB = (x) => (e) => {
     this.setState({ [x]: e.target.value });
     let client = e.target.value;
     for (let i = 0; i < this.state.value.length; i++) {
@@ -224,13 +224,13 @@ class Form extends Component {
           b_accounts: this.state.value[i].accounts[0],
           b_comms: this.state.value[i].commission,
           b_recap: this.state.value[i].recap_emails,
-          b_idb: this.state.value[i].idb
+          b_idb: this.state.value[i].idb,
         });
       }
     }
   };
 
-  handleChangeS = x => e => {
+  handleChangeS = (x) => (e) => {
     this.setState({ [x]: e.target.value });
     let client = e.target.value;
     for (let i = 0; i < this.state.value.length; i++) {
@@ -241,7 +241,7 @@ class Form extends Component {
           s_accounts: this.state.value[i].accounts[0],
           s_comms: this.state.value[i].commission,
           s_recap: this.state.value[i].recap_emails,
-          s_idb: this.state.value[i].idb
+          s_idb: this.state.value[i].idb,
         });
       }
     }
@@ -291,11 +291,11 @@ class Form extends Component {
     }
   }
   //get month in number
-  getMon = month => {
+  getMon = (month) => {
     return "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(month) / 3 + 1;
   };
 
-  revMon = month => {
+  revMon = (month) => {
     let date = [
       "Jan",
       "Feb",
@@ -308,19 +308,19 @@ class Form extends Component {
       "Sep",
       "Oct",
       "Nov",
-      "Dec"
+      "Dec",
     ];
     return date[month];
   };
 
-  allege = entity => {
+  allege = (entity) => {
     if (this.state.b_idb === "S664" && entity === "HK") {
       this.setState({
         b_client: "",
         b_trader: "",
         b_accounts: "",
         b_recap: "",
-        b_comms: ""
+        b_comms: "",
       });
     }
     if (this.state.s_idb === "S664" && entity === "HK") {
@@ -329,7 +329,7 @@ class Form extends Component {
         s_trader: "",
         s_accounts: "",
         s_recap: "",
-        s_comms: ""
+        s_comms: "",
       });
     }
     if (this.state.b_idb === "S674" && entity === "SG") {
@@ -338,7 +338,7 @@ class Form extends Component {
         b_trader: "",
         b_accounts: "",
         b_recap: "",
-        b_comms: ""
+        b_comms: "",
       });
     }
     if (this.state.s_idb === "S674" && entity === "SG") {
@@ -347,7 +347,7 @@ class Form extends Component {
         s_trader: "",
         s_accounts: "",
         s_recap: "",
-        s_comms: ""
+        s_comms: "",
       });
     }
   };
@@ -386,7 +386,7 @@ class Form extends Component {
       s_client_id: b_client_id,
       b_client_id: s_client_id,
       b_recap: s_recap,
-      s_recap: b_recap
+      s_recap: b_recap,
     });
   };
 
@@ -407,7 +407,7 @@ class Form extends Component {
       price: "",
       fromM: this.revMon(new Date().getMonth()),
       toM: this.revMon(new Date().getMonth()),
-      year: new Date().getFullYear()
+      year: new Date().getFullYear(),
     });
   };
 
@@ -428,7 +428,7 @@ class Form extends Component {
     this.setState({ toM: "Dec" });
   };
 
-  spreadComms = dir => {
+  spreadComms = (dir) => {
     if (dir === "buyer") {
       this.setState({ b_comms: this.state.b_comms / 2 });
     } else if (dir === "seller") {
@@ -484,24 +484,24 @@ class Form extends Component {
       this.state.b_idb,
       gcmB,
       this.state.b_accounts,
-      ""
+      "",
     ];
     //append csv
     this.setState({
       arrayCsv: [...this.state.arrayCsv, rows],
-      dealGroup: parseInt(this.state.dealGroup) + 1
+      dealGroup: parseInt(this.state.dealGroup) + 1,
     });
   };
 
   download = () => {
     let csvContent =
       "data:text/csv;charset=utf-8," +
-      this.state.arrayCsv.map(e => e.join(",")).join("\n");
+      this.state.arrayCsv.map((e) => e.join(",")).join("\n");
     var encodedUri = encodeURI(csvContent);
     window.open(encodedUri);
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
 
     let toM = this.getMon(this.state.toM);
@@ -563,19 +563,19 @@ class Form extends Component {
       const dataState = {
         ...this.state,
         consMonth: consMonth,
-        contract: contract
+        contract: contract,
       };
       // post to transaction
       fetch("/api/transactions", {
         method: "POST",
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(dataState)
+        body: JSON.stringify(dataState),
       })
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           console.log("this is a success on transactions!!");
           const newData = { ...dataState, tradeid: data[0].id };
           //post to email
@@ -583,15 +583,15 @@ class Form extends Component {
             method: "POST",
             headers: {
               Accept: "application/json",
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify(newData)
+            body: JSON.stringify(newData),
           })
             .then(() => {
               console.log("this is a success to email");
               alert("Email successfully sent");
             })
-            .catch(error => {
+            .catch((error) => {
               console.error("error: ", error);
               alert("Error in sending email, please try again");
             });
@@ -614,7 +614,7 @@ class Form extends Component {
     let year = (
       <FormControl className={classes.dateControl} variant="outlined">
         <InputLabel
-          ref={ref => {
+          ref={(ref) => {
             this.InputLabelRef = ref;
           }}
         >
@@ -624,8 +624,8 @@ class Form extends Component {
           native
           inputProps={{
             classes: {
-              select: classes.resize
-            }
+              select: classes.resize,
+            },
           }}
           name="year"
           value={this.state.year}
@@ -666,7 +666,7 @@ class Form extends Component {
               name="execDate"
               type="date"
               inputProps={{
-                style: { fontSize: 13, lineHeight: 1 }
+                style: { fontSize: 13, lineHeight: 1 },
               }}
               value={this.state.execDate}
               onChange={this.handleChange}
@@ -677,7 +677,7 @@ class Form extends Component {
               name="execTime"
               type="time"
               inputProps={{
-                style: { fontSize: 13, lineHeight: 1 }
+                style: { fontSize: 13, lineHeight: 1 },
               }}
               value={this.state.execTime}
               onChange={this.handleChange}
@@ -700,7 +700,7 @@ class Form extends Component {
 
             <FormControl className={classes.formControl} variant="outlined">
               <InputLabel
-                ref={ref => {
+                ref={(ref) => {
                   this.InputLabelRef = ref;
                 }}
               >
@@ -709,8 +709,8 @@ class Form extends Component {
               <Select
                 inputProps={{
                   classes: {
-                    select: classes.resize
-                  }
+                    select: classes.resize,
+                  },
                 }}
                 native
                 name="b_broker"
@@ -745,7 +745,7 @@ class Form extends Component {
 
             <FormControl className={classes.formControl} variant="outlined">
               <InputLabel
-                ref={ref => {
+                ref={(ref) => {
                   this.InputLabelRef = ref;
                 }}
               >
@@ -754,8 +754,8 @@ class Form extends Component {
               <Select
                 inputProps={{
                   classes: {
-                    select: classes.resize
-                  }
+                    select: classes.resize,
+                  },
                 }}
                 native
                 name="s_broker"
@@ -780,7 +780,7 @@ class Form extends Component {
           <div className={classes.midbutton}>
             <FormControl className={classes.formControl} variant="outlined">
               <InputLabel
-                ref={ref => {
+                ref={(ref) => {
                   this.InputLabelRef = ref;
                 }}
               >
@@ -789,8 +789,8 @@ class Form extends Component {
               <Select
                 inputProps={{
                   classes: {
-                    select: classes.resize
-                  }
+                    select: classes.resize,
+                  },
                 }}
                 native
                 name="product_code"
@@ -813,7 +813,7 @@ class Form extends Component {
 
             <FormControl className={classes.formControl} variant="outlined">
               <InputLabel
-                ref={ref => {
+                ref={(ref) => {
                   this.InputLabelRef = ref;
                 }}
               >
@@ -832,8 +832,8 @@ class Form extends Component {
                 }
                 inputProps={{
                   classes: {
-                    select: classes.resize
-                  }
+                    select: classes.resize,
+                  },
                 }}
               >
                 {this.state.instruObj.map((code, index) => (
@@ -848,7 +848,7 @@ class Form extends Component {
           <div className={classes.midbutton}>
             <FormControl className={classes.formControl} variant="outlined">
               <InputLabel
-                ref={ref => {
+                ref={(ref) => {
                   this.InputLabelRef = ref;
                 }}
               >
@@ -857,8 +857,8 @@ class Form extends Component {
               <Select
                 inputProps={{
                   classes: {
-                    select: classes.resize
-                  }
+                    select: classes.resize,
+                  },
                 }}
                 native
                 value={this.state.b_client}
@@ -887,7 +887,7 @@ class Form extends Component {
               value={this.state.b_idb}
               onChange={this.handleChange}
               inputProps={{
-                style: { fontSize: 13, lineHeight: 1 }
+                style: { fontSize: 13, lineHeight: 1 },
               }}
               variant="outlined"
             />
@@ -896,7 +896,7 @@ class Form extends Component {
           <div className={classes.midbutton}>
             <FormControl className={classes.formControl} variant="outlined">
               <InputLabel
-                ref={ref => {
+                ref={(ref) => {
                   this.InputLabelRef = ref;
                 }}
               >
@@ -905,8 +905,8 @@ class Form extends Component {
               <Select
                 inputProps={{
                   classes: {
-                    select: classes.resize
-                  }
+                    select: classes.resize,
+                  },
                 }}
                 native
                 name="b_trader"
@@ -919,12 +919,12 @@ class Form extends Component {
                   />
                 }
               >
-                {b_traders.map(trader => trader)}
+                {b_traders.map((trader) => trader)}
               </Select>
             </FormControl>
             <FormControl className={classes.formControl} variant="outlined">
               <InputLabel
-                ref={ref => {
+                ref={(ref) => {
                   this.InputLabelRef = ref;
                 }}
               >
@@ -933,8 +933,8 @@ class Form extends Component {
               <Select
                 inputProps={{
                   classes: {
-                    select: classes.resize
-                  }
+                    select: classes.resize,
+                  },
                 }}
                 native
                 name="b_accounts"
@@ -947,7 +947,7 @@ class Form extends Component {
                   />
                 }
               >
-                {b_accounts.map(account => account)}
+                {b_accounts.map((account) => account)}
               </Select>
             </FormControl>
             <TextField
@@ -958,7 +958,7 @@ class Form extends Component {
               type="number"
               inputProps={{
                 step: 0.01,
-                style: { fontSize: 13, lineHeight: 1 }
+                style: { fontSize: 13, lineHeight: 1 },
               }}
               value={this.state.b_comms}
               onChange={this.handleChange}
@@ -979,7 +979,7 @@ class Form extends Component {
           <div className={classes.midbutton}>
             <FormControl className={classes.dateControl} variant="outlined">
               <InputLabel
-                ref={ref => {
+                ref={(ref) => {
                   this.InputLabelRef = ref;
                 }}
               >
@@ -988,8 +988,8 @@ class Form extends Component {
               <Select
                 inputProps={{
                   classes: {
-                    select: classes.resize
-                  }
+                    select: classes.resize,
+                  },
                 }}
                 native
                 name="fromM"
@@ -1024,7 +1024,7 @@ class Form extends Component {
             </span>
             <FormControl className={classes.dateControl} variant="outlined">
               <InputLabel
-                ref={ref => {
+                ref={(ref) => {
                   this.InputLabelRef = ref;
                 }}
               >
@@ -1033,8 +1033,8 @@ class Form extends Component {
               <Select
                 inputProps={{
                   classes: {
-                    select: classes.resize
-                  }
+                    select: classes.resize,
+                  },
                 }}
                 native
                 name="toM"
@@ -1083,7 +1083,7 @@ class Form extends Component {
           <div className={classes.midbutton}>
             <FormControl className={classes.formControl} variant="outlined">
               <InputLabel
-                ref={ref => {
+                ref={(ref) => {
                   this.InputLabelRef = ref;
                 }}
               >
@@ -1092,8 +1092,8 @@ class Form extends Component {
               <Select
                 inputProps={{
                   classes: {
-                    select: classes.resize
-                  }
+                    select: classes.resize,
+                  },
                 }}
                 native
                 value={this.state.s_client}
@@ -1122,7 +1122,7 @@ class Form extends Component {
               value={this.state.s_idb}
               onChange={this.handleChange}
               inputProps={{
-                style: { fontSize: 13, lineHeight: 1 }
+                style: { fontSize: 13, lineHeight: 1 },
               }}
               variant="outlined"
             />
@@ -1131,7 +1131,7 @@ class Form extends Component {
           <div className={classes.midbutton}>
             <FormControl className={classes.formControl} variant="outlined">
               <InputLabel
-                ref={ref => {
+                ref={(ref) => {
                   this.InputLabelRef = ref;
                 }}
               >
@@ -1140,8 +1140,8 @@ class Form extends Component {
               <Select
                 inputProps={{
                   classes: {
-                    select: classes.resize
-                  }
+                    select: classes.resize,
+                  },
                 }}
                 native
                 name="s_trader"
@@ -1154,12 +1154,12 @@ class Form extends Component {
                   />
                 }
               >
-                {s_traders.map(trader => trader)}
+                {s_traders.map((trader) => trader)}
               </Select>
             </FormControl>
             <FormControl className={classes.formControl} variant="outlined">
               <InputLabel
-                ref={ref => {
+                ref={(ref) => {
                   this.InputLabelRef = ref;
                 }}
               >
@@ -1168,8 +1168,8 @@ class Form extends Component {
               <Select
                 inputProps={{
                   classes: {
-                    select: classes.resize
-                  }
+                    select: classes.resize,
+                  },
                 }}
                 native
                 name="s_accounts"
@@ -1182,7 +1182,7 @@ class Form extends Component {
                   />
                 }
               >
-                {s_accounts.map(account => account)}
+                {s_accounts.map((account) => account)}
               </Select>
             </FormControl>
             <TextField
@@ -1193,7 +1193,7 @@ class Form extends Component {
               type="number"
               inputProps={{
                 step: 0.01,
-                style: { fontSize: 13, lineHeight: 1 }
+                style: { fontSize: 13, lineHeight: 1 },
               }}
               value={this.state.s_comms}
               onChange={this.handleChange}
@@ -1220,7 +1220,7 @@ class Form extends Component {
               required={true}
               inputProps={{
                 step: 0.05,
-                style: { fontSize: 13, lineHeight: 1 }
+                style: { fontSize: 13, lineHeight: 1 },
               }}
               value={this.state.price}
               onChange={this.handleChange}
@@ -1243,7 +1243,7 @@ class Form extends Component {
               type="number"
               inputProps={{
                 step: 0.05,
-                style: { fontSize: 13, lineHeight: 1 }
+                style: { fontSize: 13, lineHeight: 1 },
               }}
               value={this.state.strike}
               onChange={this.handleChange}

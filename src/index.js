@@ -7,6 +7,7 @@ import * as serviceWorker from "./serviceWorker";
 import Login from "./components/login";
 import Edit from "./components/edit";
 import Transactions from "./components/transactions";
+import Form from "./components/form";
 
 const Routing = (props) => (
   <BrowserRouter>
@@ -14,6 +15,7 @@ const Routing = (props) => (
       <Switch>
         <Route exact path="/" component={App} />
         <Route path="/login" render={() => <Login />} />
+        <Route path="/form" component={Form} />
         <Route path="/transactions" component={Transactions} />
         <Route path="/updateid/:id" component={Edit} />
       </Switch>

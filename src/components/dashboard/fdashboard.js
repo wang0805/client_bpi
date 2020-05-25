@@ -200,7 +200,7 @@ class Fdashboard extends React.Component {
                 <ListItemText primary={"Login"} />
               </ListItem>
             )}
-            <ListItem button onClick={this.handleFormOpen}>
+            <ListItem button component={Link} to="/form">
               <ListItemIcon>
                 <AddCircle />
               </ListItemIcon>
@@ -254,7 +254,7 @@ class Fdashboard extends React.Component {
           })}
         >
           <div className={classes.drawerHeader} />
-          {this.state.openForm && <Form />}
+          {/* {this.state.openForm && <Form />} */}
           {this.state.openTrades && <Client />}
           {this.state.openBlotter && <Blotter {...this.props} />}
           {this.state.openManual && <Manualinput />}

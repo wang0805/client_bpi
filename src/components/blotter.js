@@ -15,20 +15,20 @@ const CustomTableCell = withStyles(() => ({
   head: {
     fontSize: 12,
     paddingLeft: 8,
-    paddingRight: 8
+    paddingRight: 8,
   },
   body: {
     fontSize: 11,
     paddingLeft: 8,
-    paddingRight: 8
-  }
+    paddingRight: 8,
+  },
 }))(TableCell);
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     marginTop: theme.spacing.unit * 3,
-    overflowX: "auto"
-  }
+    overflowX: "auto",
+  },
 });
 
 class Blotter extends Component {
@@ -39,11 +39,11 @@ class Blotter extends Component {
       await fetch("/api/transactionss", {
         method: "GET",
         headers: {
-          Authorization: localStorage.getItem("token")
-        }
+          Authorization: localStorage.getItem("token"),
+        },
       })
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           this.setState({ data });
         });
     } catch (e) {
@@ -51,7 +51,7 @@ class Blotter extends Component {
     }
   }
 
-  updatePost = id => {
+  updatePost = (id) => {
     this.props.history.push("/updateid/" + id);
   };
 
@@ -80,7 +80,7 @@ class Blotter extends Component {
       "Sell Tcomms",
       "Total Comms",
       "Deal Id",
-      "Created By"
+      "Created By",
     ];
     arrayCsv.push(header);
 
@@ -140,14 +140,14 @@ class Blotter extends Component {
     }
     let csvContent =
       "data:text/csv;charset=utf-8," +
-      arrayCsv.map(e => e.join(",")).join("\n");
+      arrayCsv.map((e) => e.join(",")).join("\n");
     var encodedUri = encodeURI(csvContent);
     window.open(encodedUri);
   };
 
   render() {
     const { classes } = this.props;
-    console.log(this.state.data, this.context, "data to be sent");
+    console.log("data to be sent");
 
     return (
       <React.Fragment>
@@ -192,7 +192,7 @@ class Blotter extends Component {
             </TableHead>
             <TableBody>
               {this.state.data.length > 0 &&
-                this.state.data.map(row => {
+                this.state.data.map((row) => {
                   let date = new Date(row.created_at);
                   let date_time =
                     date.toLocaleDateString() + " " + date.toLocaleTimeString();
@@ -315,7 +315,7 @@ class Blotter extends Component {
 Blotter.contextType = MyContext;
 
 Blotter.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(Blotter);
