@@ -9,54 +9,75 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
+
+import { MyContext } from "./store/createContext";
 // import { saveAs } from "file-saver";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   card: {
     minWidth: 280,
-    marginTop: 50
+    marginTop: 50,
   },
   bullet: {
     display: "inline-block",
     margin: "0 2px",
-    transform: "scale(0.8)"
+    transform: "scale(0.8)",
   },
   title: {
-    fontSize: 14
+    fontSize: 14,
   },
   pos: {
-    marginBottom: 12
+    marginBottom: 12,
   },
   textField: {
     marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit
-  }
+    marginRight: theme.spacing.unit,
+  },
 });
 
 class Edit extends Component {
   state = { data: "", tradeid: "", dealid: "" };
 
   async componentDidMount() {
+    console.log(this.context.clients);
     await fetch(`/api/transactions/${this.props.match.params.id}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
+        data["tradeid"] = data.id;
+        data["product_code"] = data.product;
+        data["consMonth"] = data.consmonth;
+        if (data.strike === "NaN") {
+          data.strike = "";
+        }
+        data["b_accounts"] = data.b_account;
+        data["s_accounts"] = data.s_account;
+        data["b_comms"] = data.b_commission;
+        data["s_comms"] = data.s_commission;
+
+        for (let i = 0; i < this.context.clients.length; i++) {
+          if (data.b_clientid === this.context.clients[i].id) {
+            data["b_recap"] = this.context.clients[i].recap_emails;
+          } else if (data.s_clientid === this.context.clients[i].id) {
+            data["s_recap"] = this.context.clients[i].recap_emails;
+          }
+        }
         this.setState({ data });
         this.setState({ tradeid: data.id });
         this.setState({ dealid: data.deal_id });
       });
   }
 
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
   return = () => {
-    this.props.history.push("/");
+    this.props.history.push("/transactions");
   };
 
   createPdf = () => {
@@ -68,18 +89,60 @@ class Edit extends Component {
       product_code: this.state.data.product,
       b_accounts: this.state.data.b_account,
       s_accounts: this.state.data.s_account,
-      consMonth: this.state.data.consmonth
+      consMonth: this.state.data.consmonth,
     };
     axios
       .post("/createrecappdf", data)
       .then(() => axios.get("/getrecappdf", { responseType: "blob" }))
-      .then(res => {
+      .then((res) => {
         // const pdfBlob = new Blob([res.data], { type: "application/pdf" });
         // saveAs(pdfBlob, `testing.pdf`);
       });
   };
 
-  handleSubmit = e => {
+  resendSeller = () => {
+    console.log("resend email", this.state.data);
+
+    fetch("/sendSeller", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(this.state.data),
+    })
+      .then(() => {
+        console.log("this is a success to email");
+        alert("Email successfully sent");
+      })
+      .catch((error) => {
+        console.error("error: ", error);
+        alert("Error in sending email, please try again");
+      });
+  };
+
+  resendBuyer = () => {
+    console.log("resend email", this.state.data);
+
+    fetch("/sendBuyer", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(this.state.data),
+    })
+      .then(() => {
+        console.log("this is a success to email");
+        alert("Email successfully sent");
+      })
+      .catch((error) => {
+        console.error("error: ", error);
+        alert("Error in sending email, please try again");
+      });
+  };
+
+  handleSubmit = (e) => {
     e.preventDefault();
 
     const data = { ...this.state };
@@ -87,12 +150,12 @@ class Edit extends Component {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     }).then(() => {
       console.log("success posting deal_id");
-      this.props.history.push("/");
+      this.props.history.push("/transactions");
     });
   };
 
@@ -143,7 +206,7 @@ class Edit extends Component {
                     className={classes.textField}
                     value={this.state.dealid}
                     inputProps={{
-                      style: { fontSize: 14, lineHeight: 1 }
+                      style: { fontSize: 14, lineHeight: 1 },
                     }}
                     onChange={this.handleChange}
                     margin="normal"
@@ -153,8 +216,11 @@ class Edit extends Component {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button color="primary" onClick={this.createPdf}>
-                Regenerate Recap
+              <Button color="primary" onClick={this.resendBuyer}>
+                Resend Buyer
+              </Button>
+              <Button color="primary" onClick={this.resendSeller}>
+                Resend Seller
               </Button>
               <Button onClick={this.return}>back</Button>
               <Button color="primary" type="submit">
@@ -195,7 +261,9 @@ class Edit extends Component {
 }
 
 Edit.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
+
+Edit.contextType = MyContext;
 
 export default withStyles(styles)(Edit);

@@ -11,24 +11,27 @@ import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 
+import Fdashboard from "./dashboard/fdashboard";
+import { withRouter } from "react-router-dom";
+
 const CustomTableCell = withStyles(() => ({
   head: {
     fontSize: 12,
     paddingLeft: 8,
-    paddingRight: 8
+    paddingRight: 8,
   },
   body: {
     fontSize: 11,
     paddingLeft: 8,
-    paddingRight: 8
-  }
+    paddingRight: 8,
+  },
 }))(TableCell);
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     marginTop: theme.spacing.unit * 3,
-    overflowX: "auto"
-  }
+    overflowX: "auto",
+  },
 });
 
 class Blotter extends Component {
@@ -39,11 +42,11 @@ class Blotter extends Component {
       await fetch("/api/transactionss", {
         method: "GET",
         headers: {
-          Authorization: localStorage.getItem("token")
-        }
+          Authorization: localStorage.getItem("token"),
+        },
       })
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           this.setState({ data });
         });
     } catch (e) {
@@ -51,7 +54,7 @@ class Blotter extends Component {
     }
   }
 
-  updatePost = id => {
+  updatePost = (id) => {
     this.props.history.push("/updateid/" + id);
   };
 
@@ -80,7 +83,7 @@ class Blotter extends Component {
       "Sell Tcomms",
       "Total Comms",
       "Deal Id",
-      "Created By"
+      "Created By",
     ];
     arrayCsv.push(header);
 
@@ -140,173 +143,182 @@ class Blotter extends Component {
     }
     let csvContent =
       "data:text/csv;charset=utf-8," +
-      arrayCsv.map(e => e.join(",")).join("\n");
+      arrayCsv.map((e) => e.join(",")).join("\n");
     var encodedUri = encodeURI(csvContent);
     window.open(encodedUri);
   };
 
   render() {
     const { classes } = this.props;
-    console.log(this.state.data, this.context, "data to be sent");
 
     return (
       <React.Fragment>
-        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <Button onClick={this.download} variant="contained" color="primary">
-          Download CSV
-        </Button>
-        <Paper className={classes.root}>
-          <Table style={{ width: 2500 }}>
-            <TableHead>
-              <TableRow>
-                <CustomTableCell align="center">Trade Id</CustomTableCell>
-                <CustomTableCell align="center">Trade date</CustomTableCell>
-                <CustomTableCell align="center">Trade time</CustomTableCell>
-                <CustomTableCell align="center">Product</CustomTableCell>
-                <CustomTableCell align="center">Instrument</CustomTableCell>
-                <CustomTableCell align="center">Client buy</CustomTableCell>
-                <CustomTableCell align="center">Client entity</CustomTableCell>
-                <CustomTableCell align="center">Comms buy</CustomTableCell>
-                <CustomTableCell align="center">Buy broker</CustomTableCell>
-                <CustomTableCell align="center">Client sell</CustomTableCell>
-                <CustomTableCell align="center">Client entity</CustomTableCell>
-                <CustomTableCell align="center">Comms sell</CustomTableCell>
-                <CustomTableCell align="center">Sell broker</CustomTableCell>
-                <CustomTableCell align="center">Contract</CustomTableCell>
-                <CustomTableCell align="center">Strike</CustomTableCell>
-                <CustomTableCell align="center">Price</CustomTableCell>
-                <CustomTableCell align="center">Quantity</CustomTableCell>
-                <CustomTableCell align="center">Quantity(MT)</CustomTableCell>
-                <CustomTableCell align="center">Buy Tcomms</CustomTableCell>
-                <CustomTableCell align="center">Sell Tcomms</CustomTableCell>
-                <CustomTableCell align="center">
-                  Total Commissions
-                </CustomTableCell>
-                <CustomTableCell align="center">Deal Id</CustomTableCell>
-                <CustomTableCell align="center">Created by</CustomTableCell>
-                <CustomTableCell align="center">
-                  Created at (GMT +8)
-                </CustomTableCell>
-                <CustomTableCell align="center">Edit</CustomTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.state.data.length > 0 &&
-                this.state.data.map(row => {
-                  let date = new Date(row.created_at);
-                  let date_time =
-                    date.toLocaleDateString() + " " + date.toLocaleTimeString();
-                  let trade_date = new Date(
-                    row.trade_date
-                  ).toLocaleDateString();
-                  let size = row.qty;
-                  if (row.instrument === "S") {
-                    size = row.qty * 500 * row.consmonth;
-                  } else {
-                    size = row.qty * 100 * row.consmonth;
-                  }
-                  let entityS = "";
-                  let entityB = "";
-                  for (let i = 0; i < this.context.clients.length; i++) {
-                    if (this.context.clients[i].id === row.b_clientid) {
-                      entityB = this.context.clients[i].entity;
-                    } else if (this.context.clients[i].id === row.s_clientid) {
-                      entityS = this.context.clients[i].entity;
+        <Fdashboard>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <Button onClick={this.download} variant="contained" color="primary">
+            Download CSV
+          </Button>
+          <Paper className={classes.root}>
+            <Table style={{ width: 2500 }}>
+              <TableHead>
+                <TableRow>
+                  <CustomTableCell align="center">Trade Id</CustomTableCell>
+                  <CustomTableCell align="center">Trade date</CustomTableCell>
+                  <CustomTableCell align="center">Trade time</CustomTableCell>
+                  <CustomTableCell align="center">Product</CustomTableCell>
+                  <CustomTableCell align="center">Instrument</CustomTableCell>
+                  <CustomTableCell align="center">Client buy</CustomTableCell>
+                  <CustomTableCell align="center">
+                    Client entity
+                  </CustomTableCell>
+                  <CustomTableCell align="center">Comms buy</CustomTableCell>
+                  <CustomTableCell align="center">Buy broker</CustomTableCell>
+                  <CustomTableCell align="center">Client sell</CustomTableCell>
+                  <CustomTableCell align="center">
+                    Client entity
+                  </CustomTableCell>
+                  <CustomTableCell align="center">Comms sell</CustomTableCell>
+                  <CustomTableCell align="center">Sell broker</CustomTableCell>
+                  <CustomTableCell align="center">Contract</CustomTableCell>
+                  <CustomTableCell align="center">Strike</CustomTableCell>
+                  <CustomTableCell align="center">Price</CustomTableCell>
+                  <CustomTableCell align="center">Quantity</CustomTableCell>
+                  <CustomTableCell align="center">Quantity(MT)</CustomTableCell>
+                  <CustomTableCell align="center">Buy Tcomms</CustomTableCell>
+                  <CustomTableCell align="center">Sell Tcomms</CustomTableCell>
+                  <CustomTableCell align="center">
+                    Total Commissions
+                  </CustomTableCell>
+                  <CustomTableCell align="center">Deal Id</CustomTableCell>
+                  <CustomTableCell align="center">Created by</CustomTableCell>
+                  <CustomTableCell align="center">
+                    Created at (GMT +8)
+                  </CustomTableCell>
+                  <CustomTableCell align="center">Edit</CustomTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.state.data.length > 0 &&
+                  this.state.data.map((row) => {
+                    let date = new Date(row.created_at);
+                    let date_time =
+                      date.toLocaleDateString() +
+                      " " +
+                      date.toLocaleTimeString();
+                    let trade_date = new Date(
+                      row.trade_date
+                    ).toLocaleDateString();
+                    let size = row.qty;
+                    if (row.instrument === "S") {
+                      size = row.qty * 500 * row.consmonth;
+                    } else {
+                      size = row.qty * 100 * row.consmonth;
                     }
-                  }
-                  return (
-                    <TableRow key={row.trade_id}>
-                      <CustomTableCell
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        {row.trade_id}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {trade_date}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.trade_time}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.product}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.instrument}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.b_client}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {entityB}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.b_commission}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.b_user}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.s_client}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {entityS}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.s_commission}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.s_user}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.contract}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.strike}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.price}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.qty}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">{size}</CustomTableCell>
-                      <CustomTableCell align="center">
-                        {size * parseFloat(row.b_commission)}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {size * parseFloat(row.s_commission)}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {size * parseFloat(row.b_commission) +
-                          size * parseFloat(row.s_commission)}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.deal_id}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {row.created_by}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        {date_time}
-                      </CustomTableCell>
-                      <CustomTableCell align="center">
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          color="primary"
-                          onClick={() => this.updatePost(row.trade_id)}
+                    let entityS = "";
+                    let entityB = "";
+                    for (let i = 0; i < this.context.clients.length; i++) {
+                      if (this.context.clients[i].id === row.b_clientid) {
+                        entityB = this.context.clients[i].entity;
+                      } else if (
+                        this.context.clients[i].id === row.s_clientid
+                      ) {
+                        entityS = this.context.clients[i].entity;
+                      }
+                    }
+                    return (
+                      <TableRow key={row.trade_id}>
+                        <CustomTableCell
+                          align="center"
+                          component="th"
+                          scope="row"
                         >
-                          Edit
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </Paper>
+                          {row.trade_id}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {trade_date}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.trade_time}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.product}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.instrument}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.b_client}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {entityB}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.b_commission}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.b_user}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.s_client}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {entityS}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.s_commission}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.s_user}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.contract}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.strike}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.price}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.qty}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">{size}</CustomTableCell>
+                        <CustomTableCell align="center">
+                          {size * parseFloat(row.b_commission)}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {size * parseFloat(row.s_commission)}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {size * parseFloat(row.b_commission) +
+                            size * parseFloat(row.s_commission)}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.deal_id}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {row.created_by}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          {date_time}
+                        </CustomTableCell>
+                        <CustomTableCell align="center">
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => this.updatePost(row.trade_id)}
+                          >
+                            Edit
+                          </Button>
+                        </CustomTableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </Paper>
+        </Fdashboard>
       </React.Fragment>
     );
   }
@@ -315,7 +327,7 @@ class Blotter extends Component {
 Blotter.contextType = MyContext;
 
 Blotter.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Blotter);
+export default withRouter(withStyles(styles)(Blotter));
