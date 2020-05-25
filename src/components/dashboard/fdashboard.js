@@ -25,127 +25,111 @@ import TouchApp from "@material-ui/icons/TouchApp";
 import { Link } from "react-router-dom";
 
 import Form from "../form";
-import Transactions from "../transactions";
 import Client from "../client";
 import Blotter from "../blotter";
 import Manualinput from "../manualinput";
 
 const drawerWidth = 240;
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
-    display: "flex"
+    display: "flex",
   },
   appBar: {
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
+      duration: theme.transitions.duration.leavingScreen,
+    }),
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    })
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   menuButton: {
     marginLeft: 12,
-    marginRight: 20
+    marginRight: 20,
   },
   hide: {
-    display: "none"
+    display: "none",
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0
+    flexShrink: 0,
   },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
   },
   drawerHeader: {
     display: "flex",
     alignItems: "center",
     padding: "0 8px",
     ...theme.mixins.toolbar,
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
+      duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: -drawerWidth
+    marginLeft: -drawerWidth,
   },
   contentShift: {
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
+      duration: theme.transitions.duration.enteringScreen,
     }),
-    marginLeft: 0
-  }
+    marginLeft: 0,
+  },
 });
 
 class Fdashboard extends React.Component {
   state = {
     open: false,
     openForm: true,
-    openTrans: false,
     openTrades: false,
     openBlotter: false,
-    openManual: false
+    openManual: false,
   };
 
   handleFormOpen = () => {
     this.setState({
       openForm: true,
-      openTrans: false,
       openTrades: false,
       openBlotter: false,
-      openManual: false
-    });
-  };
-
-  handleTransOpen = () => {
-    this.setState({
-      openForm: false,
-      openTrans: true,
-      openTrades: false,
-      openBlotter: false,
-      openManual: false
+      openManual: false,
     });
   };
 
   handleTradesOpen = () => {
     this.setState({
       openForm: false,
-      openTrans: false,
       openTrades: true,
       openBlotter: false,
-      openManual: false
+      openManual: false,
     });
   };
 
   handleBlotterOpen = () => {
     this.setState({
       openForm: false,
-      openTrans: false,
       openTrades: false,
       openBlotter: true,
-      openManual: false
+      openManual: false,
     });
   };
 
   handleManualOpen = () => {
     this.setState({
       openForm: false,
-      openTrans: false,
       openTrades: false,
       openBlotter: false,
-      openManual: true
+      openManual: true,
     });
   };
 
@@ -171,7 +155,7 @@ class Fdashboard extends React.Component {
         <AppBar
           position="fixed"
           className={classNames(classes.appBar, {
-            [classes.appBarShift]: open
+            [classes.appBarShift]: open,
           })}
         >
           <Toolbar disableGutters={!open}>
@@ -194,7 +178,7 @@ class Fdashboard extends React.Component {
           anchor="left"
           open={open}
           classes={{
-            paper: classes.drawerPaper
+            paper: classes.drawerPaper,
           }}
         >
           <div className={classes.drawerHeader}>
@@ -223,7 +207,7 @@ class Fdashboard extends React.Component {
               <ListItemText primary={"Form"} />
             </ListItem>
             {/* <ListItem button component={Link} to="/transactions"> */}
-            <ListItem button onClick={this.handleTransOpen}>
+            <ListItem button component={Link} to="/transactions">
               <ListItemIcon>
                 <Archive />
               </ListItemIcon>
@@ -266,15 +250,15 @@ class Fdashboard extends React.Component {
         </Drawer>
         <main
           className={classNames(classes.content, {
-            [classes.contentShift]: open
+            [classes.contentShift]: open,
           })}
         >
           <div className={classes.drawerHeader} />
           {this.state.openForm && <Form />}
-          {this.state.openTrans && <Transactions {...this.props} />}
           {this.state.openTrades && <Client />}
           {this.state.openBlotter && <Blotter {...this.props} />}
           {this.state.openManual && <Manualinput />}
+          {this.props.children}
         </main>
       </div>
     );
@@ -283,7 +267,7 @@ class Fdashboard extends React.Component {
 
 Fdashboard.propTypes = {
   classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(Fdashboard);

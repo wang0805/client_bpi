@@ -11,31 +11,31 @@ import TextField from "@material-ui/core/TextField";
 import axios from "axios";
 // import { saveAs } from "file-saver";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   card: {
     minWidth: 280,
-    marginTop: 50
+    marginTop: 50,
   },
   bullet: {
     display: "inline-block",
     margin: "0 2px",
-    transform: "scale(0.8)"
+    transform: "scale(0.8)",
   },
   title: {
-    fontSize: 14
+    fontSize: 14,
   },
   pos: {
-    marginBottom: 12
+    marginBottom: 12,
   },
   textField: {
     marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit
-  }
+    marginRight: theme.spacing.unit,
+  },
 });
 
 class Edit extends Component {
@@ -43,15 +43,15 @@ class Edit extends Component {
 
   async componentDidMount() {
     await fetch(`/api/transactions/${this.props.match.params.id}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         this.setState({ data });
         this.setState({ tradeid: data.id });
         this.setState({ dealid: data.deal_id });
       });
   }
 
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
@@ -68,18 +68,18 @@ class Edit extends Component {
       product_code: this.state.data.product,
       b_accounts: this.state.data.b_account,
       s_accounts: this.state.data.s_account,
-      consMonth: this.state.data.consmonth
+      consMonth: this.state.data.consmonth,
     };
     axios
       .post("/createrecappdf", data)
       .then(() => axios.get("/getrecappdf", { responseType: "blob" }))
-      .then(res => {
+      .then((res) => {
         // const pdfBlob = new Blob([res.data], { type: "application/pdf" });
         // saveAs(pdfBlob, `testing.pdf`);
       });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
 
     const data = { ...this.state };
@@ -87,12 +87,12 @@ class Edit extends Component {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     }).then(() => {
       console.log("success posting deal_id");
-      this.props.history.push("/");
+      this.props.history.push("/transactions");
     });
   };
 
@@ -143,7 +143,7 @@ class Edit extends Component {
                     className={classes.textField}
                     value={this.state.dealid}
                     inputProps={{
-                      style: { fontSize: 14, lineHeight: 1 }
+                      style: { fontSize: 14, lineHeight: 1 },
                     }}
                     onChange={this.handleChange}
                     margin="normal"
@@ -195,7 +195,7 @@ class Edit extends Component {
 }
 
 Edit.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(Edit);

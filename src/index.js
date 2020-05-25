@@ -6,13 +6,15 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 import Login from "./components/login";
 import Edit from "./components/edit";
+import Transactions from "./components/transactions";
 
-const Routing = props => (
+const Routing = (props) => (
   <BrowserRouter>
     <React.Fragment>
       <Switch>
         <Route exact path="/" component={App} />
         <Route path="/login" render={() => <Login />} />
+        <Route path="/transactions" component={Transactions} />
         <Route path="/updateid/:id" component={Edit} />
       </Switch>
     </React.Fragment>
