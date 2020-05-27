@@ -22,7 +22,8 @@ import Archive from "@material-ui/icons/Archive";
 import LibraryAdd from "@material-ui/icons/LibraryAdd";
 import MonetizationOn from "@material-ui/icons/MonetizationOn";
 import TouchApp from "@material-ui/icons/TouchApp";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+import { MyContext } from "../store/createContext";
 
 const drawerWidth = 240;
 
@@ -86,6 +87,14 @@ const styles = (theme) => ({
 class Fdashboard extends React.Component {
   state = {
     open: false,
+    loggedin: false,
+  };
+
+  logout = () => {
+    localStorage.clear();
+    this.context.loggedOut();
+    this.setState({ loggedin: localStorage.getItem("isLoggedin") });
+    this.props.history.push("/");
   };
 
   handleDrawerOpen = () => {
@@ -99,6 +108,9 @@ class Fdashboard extends React.Component {
   // componentWillUnmount() {
   //   localStorage.clear();
   // }
+  componentDidMount() {
+    this.setState({ loggedin: localStorage.getItem("isLoggedin") });
+  }
 
   render() {
     const { classes, theme } = this.props;
@@ -147,7 +159,14 @@ class Fdashboard extends React.Component {
           </div>
           <Divider />
           <List>
-            {!localStorage.token && (
+            {this.state.loggedin === "true" ? (
+              <ListItem button onClick={this.logout}>
+                <ListItemIcon>
+                  <TouchApp />
+                </ListItemIcon>
+                <ListItemText primary={"Logout"} />
+              </ListItem>
+            ) : (
               <ListItem button component={Link} to="/login">
                 <ListItemIcon>
                   <TouchApp />
@@ -155,6 +174,7 @@ class Fdashboard extends React.Component {
                 <ListItemText primary={"Login"} />
               </ListItem>
             )}
+
             <ListItem button component={Link} to="/form">
               <ListItemIcon>
                 <AddCircle />
@@ -220,4 +240,6 @@ Fdashboard.propTypes = {
   theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(Fdashboard);
+Fdashboard.contextType = MyContext;
+
+export default withRouter(withStyles(styles, { withTheme: true })(Fdashboard));
