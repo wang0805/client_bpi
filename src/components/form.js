@@ -14,7 +14,6 @@ import Fdashboard from "./dashboard/fdashboard";
 
 const styles = (theme) => ({
   formControl: {
-    // margin: theme.spacing.unit,
     minWidth: 120,
   },
   dateControl: {
@@ -150,7 +149,7 @@ class Form extends Component {
             let recap_emails = "";
             let invoice_emails = "";
             let commission = 0;
-            let commission_lp = 0;
+            let commission_lpf = 0;
             let idb = "";
             let id = "";
             let entity = "";
@@ -166,7 +165,7 @@ class Form extends Component {
                 recap_emails = data[j].recap_emails;
                 invoice_emails = data[j].invoice_emails;
                 commission = data[j].commission;
-                commission_lp = data[j].commission_lp;
+                commission_lpf = data[j].commission_lpf;
                 idb = data[j].idb;
                 entity = data[j].entity;
                 in_sg = data[j].in_sg;
@@ -179,7 +178,7 @@ class Form extends Component {
               accounts: [...new Set(accounts)],
               traders: [...new Set(traders)],
               commission: commission,
-              commission_lp: commission_lp,
+              commission_lpf: commission_lpf,
               recap_emails: recap_emails,
               invoice_emails: invoice_emails,
               idb: idb,
@@ -214,62 +213,55 @@ class Form extends Component {
   }
 
   handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value }, () =>
-      console.log(this.state.product_code)
-    );
+    this.setState({ [e.target.name]: e.target.value });
   };
 
   handleChangeB = (x) => (e) => {
     this.setState({ [x]: e.target.value });
     let client = e.target.value;
+    let product_code_lower = this.state.product_code.toLowerCase();
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.value[i].clients === client) {
-        console.log(this.state.value[i]);
-        if (this.state.product_code === "LPF") {
+        this.setState({
+          b_client_id: this.state.value[i].id,
+          b_trader: this.state.value[i].traders[0],
+          b_accounts: this.state.value[i].accounts[0],
+          b_recap: this.state.value[i].recap_emails,
+          b_idb: this.state.value[i].idb,
+        });
+        if (this.state.value[i][`commission_${product_code_lower}`]) {
           this.setState({
-            b_client_id: this.state.value[i].id,
-            b_trader: this.state.value[i].traders[0],
-            b_accounts: this.state.value[i].accounts[0],
-            b_comms: this.state.value[i].commission_lp,
-            b_recap: this.state.value[i].recap_emails,
-            b_idb: this.state.value[i].idb,
+            b_comms: this.state.value[i][`commission_${product_code_lower}`],
           });
         } else {
           this.setState({
-            b_client_id: this.state.value[i].id,
-            b_trader: this.state.value[i].traders[0],
-            b_accounts: this.state.value[i].accounts[0],
             b_comms: this.state.value[i].commission,
-            b_recap: this.state.value[i].recap_emails,
-            b_idb: this.state.value[i].idb,
           });
         }
       }
     }
   };
-
+  //commission to set as commission_productcode
   handleChangeS = (x) => (e) => {
     this.setState({ [x]: e.target.value });
     let client = e.target.value;
+    let product_code_lower = this.state.product_code.toLowerCase();
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.value[i].clients === client) {
-        if (this.state.product_code === "LPF") {
+        this.setState({
+          s_trader: this.state.value[i].traders[0],
+          s_client_id: this.state.value[i].id,
+          s_accounts: this.state.value[i].accounts[0],
+          s_recap: this.state.value[i].recap_emails,
+          s_idb: this.state.value[i].idb,
+        });
+        if (this.state.value[i][`commission_${product_code_lower}`]) {
           this.setState({
-            s_trader: this.state.value[i].traders[0],
-            s_client_id: this.state.value[i].id,
-            s_accounts: this.state.value[i].accounts[0],
-            s_comms: this.state.value[i].commission_lp,
-            s_recap: this.state.value[i].recap_emails,
-            s_idb: this.state.value[i].idb,
+            s_comms: this.state.value[i][`commission_${product_code_lower}`],
           });
         } else {
           this.setState({
-            s_trader: this.state.value[i].traders[0],
-            s_client_id: this.state.value[i].id,
-            s_accounts: this.state.value[i].accounts[0],
             s_comms: this.state.value[i].commission,
-            s_recap: this.state.value[i].recap_emails,
-            s_idb: this.state.value[i].idb,
           });
         }
       }
@@ -1340,7 +1332,7 @@ class Form extends Component {
               Clear
             </Button>
           </div>
-          <br />
+          {/* <br />
           <br />
           <div>
             <table>
@@ -1354,7 +1346,7 @@ class Form extends Component {
                 ))}
               </tbody>
             </table>
-          </div>
+          </div> */}
         </div>
       </Fdashboard>
     );

@@ -14,7 +14,6 @@ import Fdashboard from "./dashboard/fdashboard";
 
 const styles = (theme) => ({
   formControl: {
-    // margin: theme.spacing.unit,
     minWidth: 120,
   },
   dateControl: {
@@ -150,6 +149,7 @@ class ManualInput extends Component {
             let recap_emails = "";
             let invoice_emails = "";
             let commission = 0;
+            let commission_lpf = 0;
             let idb = "";
             let id = "";
             let entity = "";
@@ -165,6 +165,7 @@ class ManualInput extends Component {
                 recap_emails = data[j].recap_emails;
                 invoice_emails = data[j].invoice_emails;
                 commission = data[j].commission;
+                commission_lpf = data[j].commission_lpf;
                 idb = data[j].idb;
                 entity = data[j].entity;
                 in_sg = data[j].in_sg;
@@ -177,6 +178,7 @@ class ManualInput extends Component {
               accounts: [...new Set(accounts)],
               traders: [...new Set(traders)],
               commission: commission,
+              commission_lpf: commission_lpf,
               recap_emails: recap_emails,
               invoice_emails: invoice_emails,
               idb: idb,
@@ -212,39 +214,56 @@ class ManualInput extends Component {
 
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
-    // console.log("Fired");
   };
 
   handleChangeB = (x) => (e) => {
     this.setState({ [x]: e.target.value });
     let client = e.target.value;
+    let product_code_lower = this.state.product_code.toLowerCase();
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.value[i].clients === client) {
         this.setState({
           b_client_id: this.state.value[i].id,
           b_trader: this.state.value[i].traders[0],
           b_accounts: this.state.value[i].accounts[0],
-          b_comms: this.state.value[i].commission,
           b_recap: this.state.value[i].recap_emails,
           b_idb: this.state.value[i].idb,
         });
+        if (this.state.value[i][`commission_${product_code_lower}`]) {
+          this.setState({
+            b_comms: this.state.value[i][`commission_${product_code_lower}`],
+          });
+        } else {
+          this.setState({
+            b_comms: this.state.value[i].commission,
+          });
+        }
       }
     }
   };
-
+  //commission to set as commission_productcode
   handleChangeS = (x) => (e) => {
     this.setState({ [x]: e.target.value });
     let client = e.target.value;
+    let product_code_lower = this.state.product_code.toLowerCase();
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.value[i].clients === client) {
         this.setState({
           s_trader: this.state.value[i].traders[0],
           s_client_id: this.state.value[i].id,
           s_accounts: this.state.value[i].accounts[0],
-          s_comms: this.state.value[i].commission,
           s_recap: this.state.value[i].recap_emails,
           s_idb: this.state.value[i].idb,
         });
+        if (this.state.value[i][`commission_${product_code_lower}`]) {
+          this.setState({
+            s_comms: this.state.value[i][`commission_${product_code_lower}`],
+          });
+        } else {
+          this.setState({
+            s_comms: this.state.value[i].commission,
+          });
+        }
       }
     }
   };
@@ -1295,6 +1314,21 @@ class ManualInput extends Component {
               Clear
             </Button>
           </div>
+          {/* <br />
+          <br />
+          <div>
+            <table>
+              <tbody>
+                {this.state.arrayCsv.map((row, index) => (
+                  <tr key={index}>
+                    {row.map((item, index) => (
+                      <td key={index}>{item}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div> */}
         </div>
       </Fdashboard>
     );
