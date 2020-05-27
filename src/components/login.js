@@ -19,7 +19,9 @@ import LockIcon from "@material-ui/icons/LockOutlined";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 
-const styles = theme => ({
+import { MyContext } from "./store/createContext";
+
+const styles = (theme) => ({
   main: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
@@ -28,28 +30,29 @@ const styles = theme => ({
     [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
       width: 400,
       marginLeft: "auto",
-      marginRight: "auto"
-    }
+      marginRight: "auto",
+    },
   },
   paper: {
     marginTop: theme.spacing.unit * 8,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${
+      theme.spacing.unit * 3
+    }px`,
   },
   avatar: {
     margin: theme.spacing.unit,
-    backgroundColor: theme.palette.secondary.main
+    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing.unit,
   },
   submit: {
-    marginTop: theme.spacing.unit * 3
-  }
+    marginTop: theme.spacing.unit * 3,
+  },
 });
 
 class Login extends Component {
@@ -61,7 +64,7 @@ class Login extends Component {
     this.state = {
       name: "",
       password: "",
-      showPassword: false
+      showPassword: false,
     };
   }
 
@@ -76,7 +79,7 @@ class Login extends Component {
   }
 
   handleClickShowPassword() {
-    this.setState(state => ({ showPassword: !state.showPassword }));
+    this.setState((state) => ({ showPassword: !state.showPassword }));
   }
 
   handleSubmit(event) {
@@ -84,7 +87,7 @@ class Login extends Component {
 
     const data = {
       name: this.state.name,
-      password: this.state.password
+      password: this.state.password,
     };
     // for remmeber me
     localStorage.setItem("username", this.state.name);
@@ -93,15 +96,21 @@ class Login extends Component {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user_id", data.user_id);
-        this.props.history.push("/"); //props are inherent from router
+        if (data.token) {
+          this.context.loggedIn();
+          this.props.history.push("/form"); //props are inherent from router
+        } else {
+          alert("Wrong Password");
+          this.setState({ password: "" });
+        }
       });
   }
   render() {
@@ -152,7 +161,7 @@ class Login extends Component {
                         )}
                       </IconButton>
                     </InputAdornment>
-                  )
+                  ),
                 }}
               />
             </FormControl>
@@ -173,7 +182,8 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
+Login.contextType = MyContext;
 
 export default withRouter(withStyles(styles)(Login));
