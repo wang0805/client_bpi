@@ -104,7 +104,8 @@ class Transactions extends Component {
                   // make sure date and month of creation same
                   if (
                     date.getDate() === now.getDate() &&
-                    date.getMonth() === now.getMonth()
+                    date.getMonth() === now.getMonth() &&
+                    date.getFullYear() === now.getFullYear()
                   ) {
                     return (
                       <TableRow key={row.trade_id}>
