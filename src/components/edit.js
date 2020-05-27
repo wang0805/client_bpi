@@ -1,38 +1,39 @@
 import React, { Component } from "react";
-
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
+// import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import axios from "axios";
+//unable to import props from index.js so have to use withRouter
+import { withRouter } from "react-router-dom";
+import Fdashboard from "./dashboard/fdashboard";
 
 import { MyContext } from "./store/createContext";
-// import { saveAs } from "file-saver";
+import axios from "axios";
+
+const CustomTableCell = withStyles(() => ({
+  head: {
+    fontSize: 12,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  body: {
+    fontSize: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+}))(TableCell);
 
 const styles = (theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-  },
-  card: {
-    minWidth: 280,
-    marginTop: 50,
-  },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
   },
   textField: {
     marginLeft: theme.spacing.unit,
@@ -41,13 +42,24 @@ const styles = (theme) => ({
 });
 
 class Edit extends Component {
-  state = { data: "", tradeid: "", dealid: "" };
+  state = {
+    data: "",
+    tradeid: "",
+    deal_id: "",
+    b_commission: "",
+    s_commission: "",
+    qty: "",
+    product_code: "",
+    price: "",
+    productsObj: [],
+    instruObj: [],
+  };
 
   async componentDidMount() {
-    console.log(this.context.clients);
     await fetch(`/api/transactions/${this.props.match.params.id}`)
       .then((res) => res.json())
       .then((data) => {
+        //poor naming convention thus requiring renaming some variables
         data["tradeid"] = data.id;
         data["product_code"] = data.product;
         data["consMonth"] = data.consmonth;
@@ -66,9 +78,28 @@ class Edit extends Component {
             data["s_recap"] = this.context.clients[i].recap_emails;
           }
         }
+        //for making a select dropdown for product_code
+        fetch("/api/products")
+          .then((res) => res.json())
+          .then((data) => {
+            this.setState({ productsObj: data });
+          });
+        fetch("/api/instruments")
+          .then((res) => res.json())
+          .then((data) => {
+            this.setState({ instruObj: data });
+          });
+
         this.setState({ data });
-        this.setState({ tradeid: data.id });
-        this.setState({ dealid: data.deal_id });
+        this.setState({
+          tradeid: data.id,
+          deal_id: data.deal_id,
+          qty: data.qty,
+          b_commission: data.b_comms,
+          s_commission: data.s_comms,
+          product_code: data.product_code,
+          price: data.price,
+        });
       });
   }
 
@@ -161,101 +192,210 @@ class Edit extends Component {
 
   render() {
     const { classes } = this.props;
-    let data = this.state.data;
-    // console.log(typeof data.trade_date);
-    let date = new Date(data.trade_date).toLocaleDateString();
+    const { data } = this.state;
+    console.log(data);
+    let date = new Date(data.created_at);
+    let trade_date = new Date(data.trade_date).toLocaleDateString();
+    let date_time = date.toLocaleDateString() + " " + date.toLocaleTimeString();
 
     return (
-      <div className={classes.root}>
-        <Card className={classes.card}>
-          <form onSubmit={this.handleSubmit}>
-            <CardContent>
-              <Typography component="h3">
-                <div>Trade id: {data.id}</div>
-                <div>Trade date: {date}</div>
-                <div>Trade time: {data.trade_time}</div>
-                <div>Client buy: {data.b_client}</div>
-                <div>Account buy: {data.b_account}</div>
-                <div>Trader buy: {data.b_trader}</div>
-                <div>Comms buy: {data.b_commission}</div>
-                <br />
-                <div>Client sell: {data.s_client}</div>
-                <div>Account sell: {data.s_account}</div>
-                <div>Trader sell: {data.s_trader}</div>
-                <div>Comms sell: {data.s_commission}</div>
-                <br />
-                <div>Contract: {data.contract}</div>
-                <div>Price: {data.price}</div>
-                <div>Strike: {data.strike}</div>
-                <div>Instrument: {data.instrument}</div>
-                <div>Quantity: {data.qty}</div>
-
-                <div>
-                  {/* <label>Deal id:</label> */}
-                  {/* <input
-                    type="number"
-                    name="dealid"
-                    value={this.state.dealid}
-                    onChange={this.handleChange}
-                  /> */}
+      <Fdashboard>
+        {/* <Paper className={classes.root}> */}
+        <form onSubmit={this.handleSubmit}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <CustomTableCell align="center">Trade Id</CustomTableCell>
+                <CustomTableCell align="center">Trade date</CustomTableCell>
+                <CustomTableCell align="center">Product</CustomTableCell>
+                <CustomTableCell align="center">Instrument</CustomTableCell>
+                <CustomTableCell align="center">Client buy</CustomTableCell>
+                <CustomTableCell align="center">Acct buy</CustomTableCell>
+                <CustomTableCell align="center">Trader buy</CustomTableCell>
+                <CustomTableCell align="center">Comms buy</CustomTableCell>
+                <CustomTableCell align="center">Client sell</CustomTableCell>
+                <CustomTableCell align="center">Acct sell</CustomTableCell>
+                <CustomTableCell align="center">Trader sell</CustomTableCell>
+                <CustomTableCell align="center">Comms sell</CustomTableCell>
+                <CustomTableCell align="center">Strike</CustomTableCell>
+                <CustomTableCell align="center">Price</CustomTableCell>
+                <CustomTableCell align="center">Quantity</CustomTableCell>
+                <CustomTableCell align="center">Contract</CustomTableCell>
+                <CustomTableCell align="center">Deal Id</CustomTableCell>
+                <CustomTableCell align="center">Created by</CustomTableCell>
+                <CustomTableCell align="center">
+                  Created at (GMT +8)
+                </CustomTableCell>
+                <CustomTableCell align="center">Edit</CustomTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow key={data.trade_id}>
+                <CustomTableCell align="center" component="th" scope="row">
+                  {data.id}
+                </CustomTableCell>
+                <CustomTableCell align="center">{trade_date}</CustomTableCell>
+                <CustomTableCell align="center">
                   <TextField
-                    error
-                    type="number"
-                    name="dealid"
-                    label="Deal id"
+                    name="product_code"
+                    label="Product"
                     className={classes.textField}
-                    value={this.state.dealid}
+                    value={this.state.product_code}
                     inputProps={{
-                      style: { fontSize: 14, lineHeight: 1 },
+                      style: { fontSize: 11, width: 80 },
                     }}
                     onChange={this.handleChange}
-                    margin="normal"
+                    // margin="normal"
                     variant="outlined"
                   />
-                </div>
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button color="primary" onClick={this.resendBuyer}>
-                Resend Buyer
-              </Button>
-              <Button color="primary" onClick={this.resendSeller}>
-                Resend Seller
-              </Button>
-              <Button onClick={this.return}>back</Button>
-              <Button color="primary" type="submit">
-                Submit
-              </Button>
-            </CardActions>
-          </form>
-        </Card>
-      </div>
-      //    <Paper className={classes.root}>
-      //    <Table className={classes.table}>
-      //      <TableHead>
-      //        <TableRow>
-      //          <TableCell>Trade_id</TableCell>
-      //          <TableCell align="right">Trade_date</TableCell>
-      //          <TableCell align="right">Trade_time</TableCell>
-      //          <TableCell align="right">Client_buy</TableCell>
-      //          <TableCell align="right">Account_buy</TableCell>
-      //        </TableRow>
-      //      </TableHead>
-      //      <TableBody>
-      //        {rows.map(row => (
-      //          <TableRow key={row.id}>
-      //            <TableCell component="th" scope="row">
-      //              {row.name}
-      //            </TableCell>
-      //            <TableCell align="right">{row.calories}</TableCell>
-      //            <TableCell align="right">{row.fat}</TableCell>
-      //            <TableCell align="right">{row.carbs}</TableCell>
-      //            <TableCell align="right">{row.protein}</TableCell>
-      //          </TableRow>
-      //        ))}
-      //      </TableBody>
-      //    </Table>
-      //  </Paper>
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  {data.instrument}
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  {data.b_client}
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  {data.b_account}
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  {data.b_trader}
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  <TextField
+                    type="number"
+                    name="b_commission"
+                    label="Buy_Comms"
+                    className={classes.textField}
+                    value={this.state.b_commission}
+                    inputProps={{
+                      step: 0.01,
+                      style: { fontSize: 11, width: 80 },
+                    }}
+                    onChange={this.handleChange}
+                    // margin="normal"
+                    variant="outlined"
+                  />
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  {data.s_client}
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  {data.s_account}
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  {data.s_trader}
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  <TextField
+                    type="number"
+                    name="s_commission"
+                    label="Sell_Comms"
+                    className={classes.textField}
+                    value={this.state.s_commission}
+                    inputProps={{
+                      step: 0.01,
+                      style: { fontSize: 11, width: 80 },
+                    }}
+                    onChange={this.handleChange}
+                    // margin="normal"
+                    variant="outlined"
+                  />
+                </CustomTableCell>
+                <CustomTableCell align="center">{data.strike}</CustomTableCell>
+                <CustomTableCell align="center">
+                  <TextField
+                    type="number"
+                    name="price"
+                    label="Price"
+                    className={classes.textField}
+                    value={this.state.price}
+                    inputProps={{
+                      style: { fontSize: 11, width: 80 },
+                    }}
+                    onChange={this.handleChange}
+                    // margin="normal"
+                    variant="outlined"
+                  />
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  <TextField
+                    type="number"
+                    name="qty"
+                    label="Quantity"
+                    className={classes.textField}
+                    value={this.state.qty}
+                    inputProps={{
+                      style: { fontSize: 11, width: 50 },
+                    }}
+                    onChange={this.handleChange}
+                    // margin="normal"
+                    variant="outlined"
+                  />
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  {data.contract}
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  <TextField
+                    type="number"
+                    name="deal_id"
+                    label="Deal id"
+                    className={classes.textField}
+                    value={this.state.deal_id}
+                    inputProps={{
+                      style: { fontSize: 11, width: 80 },
+                    }}
+                    onChange={this.handleChange}
+                    // margin="normal"
+                    variant="outlined"
+                  />
+                </CustomTableCell>
+                <CustomTableCell align="center">
+                  {data.created_by}
+                </CustomTableCell>
+                <CustomTableCell align="center">{date_time}</CustomTableCell>
+                <CustomTableCell align="center">
+                  <Button
+                    size="medium"
+                    variant="outlined"
+                    color="primary"
+                    type="submit"
+                  >
+                    Submit
+                  </Button>
+                </CustomTableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </form>
+        <br />
+        <Button
+          color="primary"
+          margin="normal"
+          variant="outlined"
+          onClick={this.resendBuyer}
+        >
+          Resend Buyer
+        </Button>
+        &nbsp;&nbsp;
+        <Button
+          color="primary"
+          margin="normal"
+          variant="outlined"
+          onClick={this.resendSeller}
+        >
+          Resend Seller
+        </Button>
+        &nbsp;&nbsp;
+        <Button variant="outlined" margin="normal" onClick={this.return}>
+          back
+        </Button>
+        {/* </Paper> */}
+        <br />
+        <br />
+        *Please submit changes before resending recaps
+      </Fdashboard>
     );
   }
 }
@@ -266,4 +406,4 @@ Edit.propTypes = {
 
 Edit.contextType = MyContext;
 
-export default withStyles(styles)(Edit);
+export default withRouter(withStyles(styles)(Edit));
