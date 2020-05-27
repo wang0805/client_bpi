@@ -137,7 +137,6 @@ class Form extends Component {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data, "form data");
           let clients = [" "];
           let clientsObj = [];
           for (let i = 0; i < data.length; i++) {
