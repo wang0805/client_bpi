@@ -53,6 +53,7 @@ class AppProvider extends Component {
             let recap_emails = "";
             let invoice_emails = "";
             let commission = 0;
+            let commission_lp = 0;
             let idb = "";
             let id = "";
             let entity = "";
@@ -68,6 +69,7 @@ class AppProvider extends Component {
                 recap_emails = data[j].recap_emails;
                 invoice_emails = data[j].invoice_emails;
                 commission = data[j].commission;
+                commission_lp = data[j].commission_lp;
                 idb = data[j].idb;
                 entity = data[j].entity;
                 in_sg = data[j].in_sg;
@@ -80,6 +82,7 @@ class AppProvider extends Component {
               accounts: [...new Set(accounts)],
               traders: [...new Set(traders)],
               commission: commission,
+              commission_lp: commission_lp,
               recap_emails: recap_emails,
               invoice_emails: invoice_emails,
               idb: idb,

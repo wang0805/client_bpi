@@ -150,6 +150,7 @@ class Form extends Component {
             let recap_emails = "";
             let invoice_emails = "";
             let commission = 0;
+            let commission_lp = 0;
             let idb = "";
             let id = "";
             let entity = "";
@@ -165,6 +166,7 @@ class Form extends Component {
                 recap_emails = data[j].recap_emails;
                 invoice_emails = data[j].invoice_emails;
                 commission = data[j].commission;
+                commission_lp = data[j].commission_lp;
                 idb = data[j].idb;
                 entity = data[j].entity;
                 in_sg = data[j].in_sg;
@@ -177,6 +179,7 @@ class Form extends Component {
               accounts: [...new Set(accounts)],
               traders: [...new Set(traders)],
               commission: commission,
+              commission_lp: commission_lp,
               recap_emails: recap_emails,
               invoice_emails: invoice_emails,
               idb: idb,
@@ -211,8 +214,9 @@ class Form extends Component {
   }
 
   handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-    // console.log("Fired");
+    this.setState({ [e.target.name]: e.target.value }, () =>
+      console.log(this.state.product_code)
+    );
   };
 
   handleChangeB = (x) => (e) => {
@@ -220,14 +224,26 @@ class Form extends Component {
     let client = e.target.value;
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.value[i].clients === client) {
-        this.setState({
-          b_client_id: this.state.value[i].id,
-          b_trader: this.state.value[i].traders[0],
-          b_accounts: this.state.value[i].accounts[0],
-          b_comms: this.state.value[i].commission,
-          b_recap: this.state.value[i].recap_emails,
-          b_idb: this.state.value[i].idb,
-        });
+        console.log(this.state.value[i]);
+        if (this.state.product_code === "LPF") {
+          this.setState({
+            b_client_id: this.state.value[i].id,
+            b_trader: this.state.value[i].traders[0],
+            b_accounts: this.state.value[i].accounts[0],
+            b_comms: this.state.value[i].commission_lp,
+            b_recap: this.state.value[i].recap_emails,
+            b_idb: this.state.value[i].idb,
+          });
+        } else {
+          this.setState({
+            b_client_id: this.state.value[i].id,
+            b_trader: this.state.value[i].traders[0],
+            b_accounts: this.state.value[i].accounts[0],
+            b_comms: this.state.value[i].commission,
+            b_recap: this.state.value[i].recap_emails,
+            b_idb: this.state.value[i].idb,
+          });
+        }
       }
     }
   };
@@ -237,14 +253,25 @@ class Form extends Component {
     let client = e.target.value;
     for (let i = 0; i < this.state.value.length; i++) {
       if (this.state.value[i].clients === client) {
-        this.setState({
-          s_trader: this.state.value[i].traders[0],
-          s_client_id: this.state.value[i].id,
-          s_accounts: this.state.value[i].accounts[0],
-          s_comms: this.state.value[i].commission,
-          s_recap: this.state.value[i].recap_emails,
-          s_idb: this.state.value[i].idb,
-        });
+        if (this.state.product_code === "LPF") {
+          this.setState({
+            s_trader: this.state.value[i].traders[0],
+            s_client_id: this.state.value[i].id,
+            s_accounts: this.state.value[i].accounts[0],
+            s_comms: this.state.value[i].commission_lp,
+            s_recap: this.state.value[i].recap_emails,
+            s_idb: this.state.value[i].idb,
+          });
+        } else {
+          this.setState({
+            s_trader: this.state.value[i].traders[0],
+            s_client_id: this.state.value[i].id,
+            s_accounts: this.state.value[i].accounts[0],
+            s_comms: this.state.value[i].commission,
+            s_recap: this.state.value[i].recap_emails,
+            s_idb: this.state.value[i].idb,
+          });
+        }
       }
     }
   };

@@ -37,7 +37,6 @@ class Transactions extends Component {
   state = { data: "" };
 
   async componentDidMount() {
-    console.log(this.props, "props of transactions");
     try {
       await fetch("/api/transactions", {
         method: "GET",
