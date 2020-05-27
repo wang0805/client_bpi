@@ -193,10 +193,7 @@ class Edit extends Component {
   render() {
     const { classes } = this.props;
     const { data } = this.state;
-    console.log(data);
-    let date = new Date(data.created_at);
     let trade_date = new Date(data.trade_date).toLocaleDateString();
-    let date_time = date.toLocaleDateString() + " " + date.toLocaleTimeString();
 
     return (
       <Fdashboard>
@@ -222,11 +219,7 @@ class Edit extends Component {
                 <CustomTableCell align="center">Quantity</CustomTableCell>
                 <CustomTableCell align="center">Contract</CustomTableCell>
                 <CustomTableCell align="center">Deal Id</CustomTableCell>
-                <CustomTableCell align="center">Created by</CustomTableCell>
-                <CustomTableCell align="center">
-                  Created at (GMT +8)
-                </CustomTableCell>
-                <CustomTableCell align="center">Edit</CustomTableCell>
+                <CustomTableCell align="center">Submit</CustomTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -351,10 +344,7 @@ class Edit extends Component {
                     variant="outlined"
                   />
                 </CustomTableCell>
-                <CustomTableCell align="center">
-                  {data.created_by}
-                </CustomTableCell>
-                <CustomTableCell align="center">{date_time}</CustomTableCell>
+
                 <CustomTableCell align="center">
                   <Button
                     size="medium"
