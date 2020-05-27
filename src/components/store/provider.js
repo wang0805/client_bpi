@@ -6,17 +6,12 @@ import { Provider } from "./createContext";
 // Feel free to abstract actions and state away from this file.
 class AppProvider extends Component {
   state = {
-    clients: JSON.parse(localStorage.getItem("clientsObj")),
     transactions: [],
-    clientsdata: [],
+    clients: JSON.parse(localStorage.getItem("clientsObj")),
+    clientsdata: JSON.parse(localStorage.getItem("clients")),
     isLoggedin: localStorage.getItem("isLoggedin"),
     loggedIn: () => localStorage.setItem("isLoggedin", true),
     loggedOut: () => localStorage.setItem("isLoggedin", false),
-    // setClients: (clients) => this.setState({ clients }),
-    // fullcart: [],
-    // setFullCart: items => this.setState({ fullcart: items }),
-    // addToFullCart: this.addToFullCart.bind(this),
-    // remove: this.remove.bind(this),
   };
 
   async componentDidMount() {
@@ -94,6 +89,7 @@ class AppProvider extends Component {
           }
           this.setState({ clients: clientsObj });
           localStorage.setItem("clientsObj", JSON.stringify(clientsObj));
+          localStorage.setItem("clients", JSON.stringify(clients));
         });
     } catch (e) {
       console.log(e, "error getting transactions due to permissions");
