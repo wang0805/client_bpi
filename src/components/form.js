@@ -68,7 +68,7 @@ class Form extends Component {
     dealGroup: 1,
     arrayCsv: [],
     created_byid: "",
-    deal_id: "",
+    deal_id: null,
     brokers: [],
   };
 
