@@ -1290,7 +1290,23 @@ class Form extends Component {
                 onChange={this.handleChange}
                 variant="outlined"
               />
+              <TextField
+                className={classes.textControl}
+                label="Deal Id"
+                name="deal_id"
+                type="number"
+                inputProps={{
+                  step: 0.05,
+                  style: { fontSize: 13, lineHeight: 1 },
+                }}
+                value={this.state.deal_id}
+                onChange={this.handleChange}
+                variant="outlined"
+              />
               <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </div>
+            <br />
+            <div className={classes.midbutton}>
               <Button onClick={() => this.allege("HK")} variant="contained">
                 Allege HK
               </Button>
