@@ -45,7 +45,7 @@ class Edit extends Component {
   state = {
     data: "",
     tradeid: "",
-    deal_id: "",
+    deal_id: null,
     b_commission: "",
     s_commission: "",
     qty: "",

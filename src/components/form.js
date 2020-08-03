@@ -150,6 +150,7 @@ class Form extends Component {
             let invoice_emails = "";
             let commission = 0;
             let commission_lpf = 0;
+            let commission_acf = 0;
             let idb = "";
             let id = "";
             let entity = "";
@@ -166,6 +167,7 @@ class Form extends Component {
                 invoice_emails = data[j].invoice_emails;
                 commission = data[j].commission;
                 commission_lpf = data[j].commission_lpf;
+                commission_acf = data[j].commission_acf;
                 idb = data[j].idb;
                 entity = data[j].entity;
                 in_sg = data[j].in_sg;
@@ -179,6 +181,7 @@ class Form extends Component {
               traders: [...new Set(traders)],
               commission: commission,
               commission_lpf: commission_lpf,
+              commission_acf: commission_acf,
               recap_emails: recap_emails,
               invoice_emails: invoice_emails,
               idb: idb,
