@@ -25,6 +25,8 @@ import TouchApp from "@material-ui/icons/TouchApp";
 import { Link, withRouter } from "react-router-dom";
 import { MyContext } from "../store/createContext";
 
+import { connect } from "react-redux";
+
 const drawerWidth = 240;
 
 const styles = (theme) => ({
@@ -90,10 +92,10 @@ class Fdashboard extends React.Component {
     loggedin: false,
   };
 
-  logout = () => {
+  logout = async () => {
     localStorage.clear();
-    this.context.loggedOut();
-    this.setState({ loggedin: localStorage.getItem("isLoggedin") });
+    await localStorage.setItem("isLoggedin", false);
+    await this.setState({ loggedin: localStorage.getItem("isLoggedin") });
     this.props.history.push("/");
   };
 
@@ -242,4 +244,10 @@ Fdashboard.propTypes = {
 
 Fdashboard.contextType = MyContext;
 
-export default withRouter(withStyles(styles, { withTheme: true })(Fdashboard));
+const mapStateToProps = (state) => ({
+  isAuth: state.clients.isAuth,
+});
+
+export default connect(mapStateToProps)(
+  withRouter(withStyles(styles, { withTheme: true })(Fdashboard))
+);

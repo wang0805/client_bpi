@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { MyContext } from "../components/store/createContext";
 import axios from "axios";
 import { saveAs } from "file-saver";
 
@@ -25,6 +24,9 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
 import Fdashboard from "./dashboard/fdashboard";
+
+import { connect } from "react-redux";
+import { fetchClients } from "../components/store/actions";
 
 const CustomTableCell = withStyles(() => ({
   head: {
@@ -62,9 +64,10 @@ class Client extends Component {
     exrate: 0.72,
     invoiceNo: 0,
     disabled: true,
+    transactions: [],
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     // fetch(
     //   `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=SGD&to_symbol=USD&apikey=${
     //     process.env.REACT_APP_AVAPI
@@ -96,20 +99,29 @@ class Client extends Component {
     //       console.log(e, "error");
     //     }
     //   });
+    await this.props.dispatch(fetchClients());
     fetch("/api/invoice")
       .then((res) => res.json())
       .then((data) => {
         console.log("success");
       });
-
+    await fetch("/api/transactionss", {
+      method: "GET",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+      .then((res) => res.json())
+      .then((transactions) => {
+        this.setState({ transactions });
+      });
     this.setState({
       labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
       toM: this.revMon(new Date().getMonth()),
       fromM: this.revMon(new Date().getMonth()),
       year: new Date().getFullYear(),
     });
-
-    let array = [...this.context.clients];
+    let array = [...this.props.clientsObj];
     let output = [];
     array.shift();
     for (let i = 0; i < array.length; i++) {
@@ -126,12 +138,6 @@ class Client extends Component {
     }
     this.setState({ clients: [...output] });
   }
-
-  //   componentDidUpdate(prevProps, prevState) {
-  //     if (this.state.clientarr !== prevState.clientarr) {
-  //       this.fetchData(this.state.clientarr);
-  //     }
-  //   }
 
   range = (start, end) => {
     var ans = [];
@@ -179,7 +185,7 @@ class Client extends Component {
 
   submit = async () => {
     const { clients } = this.state;
-    const { transactions } = this.context;
+    const { transactions } = this.state;
 
     let rangearr = this.range(
       this.getMon(this.state.fromM),
@@ -673,10 +679,14 @@ class Client extends Component {
   }
 }
 
-Client.contextType = MyContext;
-
 Client.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Client);
+const mapStateToProps = (state) => ({
+  clientsObj: state.clients.clientsObj,
+  loading: state.clients.loading,
+  error: state.clients.error,
+});
+
+export default connect(mapStateToProps)(withStyles(styles)(Client));
