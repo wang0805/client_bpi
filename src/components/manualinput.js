@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { MyContext } from "../components/store/createContext";
 
 import { withStyles } from "@material-ui/core/styles";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
@@ -193,7 +192,6 @@ class ManualInput extends Component {
           }
           this.setState({ value: clientsObj });
           this.setState({ clients });
-          // this.context.setClients(clientsObj);
         });
       fetch("/api/products")
         .then((res) => res.json())
@@ -1353,7 +1351,5 @@ class ManualInput extends Component {
     );
   }
 }
-
-ManualInput.contextType = MyContext;
 
 export default withStyles(styles)(ManualInput);

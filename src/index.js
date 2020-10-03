@@ -32,9 +32,9 @@ const Routing = (props) => (
         <Route path="/form" component={Form} />
         <Route path="/blotter" component={Blotter} />
         <Route path="/invoice" component={Client2} />
+        <Route path="/transactions/:id" component={Edit} />
         <Route path="/transactions" component={Transactions} />
         <Route path="/manualinput" component={Manualinput} />
-        <Route path="/transactions/:id" component={Edit} />
       </Switch>
     </BrowserRouter>
   </Provider>

@@ -54,7 +54,7 @@ class Transactions extends Component {
   }
 
   updatePost = (id) => {
-    this.props.history.push("/updateid/" + id);
+    this.props.history.push("/transactions/" + id);
   };
 
   render() {
