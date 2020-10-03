@@ -13,8 +13,10 @@ import TextField from "@material-ui/core/TextField";
 import { withRouter } from "react-router-dom";
 import Fdashboard from "./dashboard/fdashboard";
 
-import { MyContext } from "./store/createContext";
 import axios from "axios";
+
+import { connect } from "react-redux";
+import { fetchClients } from "../components/store/actions";
 
 const CustomTableCell = withStyles(() => ({
   head: {
@@ -56,6 +58,8 @@ class Edit extends Component {
   };
 
   async componentDidMount() {
+    await this.props.dispatch(fetchClients());
+
     await fetch(`/api/transactions/${this.props.match.params.id}`)
       .then((res) => res.json())
       .then((data) => {
@@ -71,11 +75,11 @@ class Edit extends Component {
         data["b_comms"] = data.b_commission;
         data["s_comms"] = data.s_commission;
 
-        for (let i = 0; i < this.context.clients.length; i++) {
-          if (data.b_clientid === this.context.clients[i].id) {
-            data["b_recap"] = this.context.clients[i].recap_emails;
-          } else if (data.s_clientid === this.context.clients[i].id) {
-            data["s_recap"] = this.context.clients[i].recap_emails;
+        for (let i = 0; i < this.props.clientsObj.length; i++) {
+          if (data.b_clientid === this.props.clientsObj[i].id) {
+            data["b_recap"] = this.props.clientsObj[i].recap_emails;
+          } else if (data.s_clientid === this.props.clientsObj[i].id) {
+            data["s_recap"] = this.props.clientsObj[i].recap_emails;
           }
         }
         //for making a select dropdown for product_code
@@ -394,6 +398,10 @@ Edit.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-Edit.contextType = MyContext;
+const mapStateToProps = (state) => ({
+  clientsObj: state.clients.clientsObj,
+  loading: state.clients.loading,
+  error: state.clients.error,
+});
 
-export default withRouter(withStyles(styles)(Edit));
+export default connect(mapStateToProps)(withRouter(withStyles(styles)(Edit)));

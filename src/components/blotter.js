@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { MyContext } from "../components/store/createContext";
+// import { MyContext } from "../components/store/createContext";
 
 import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -13,6 +13,9 @@ import Paper from "@material-ui/core/Paper";
 
 import Fdashboard from "./dashboard/fdashboard";
 import { withRouter } from "react-router-dom";
+
+import { connect } from "react-redux";
+import { fetchClients } from "../components/store/actions";
 
 const CustomTableCell = withStyles(() => ({
   head: {
@@ -38,6 +41,7 @@ class Blotter extends Component {
   state = { data: "" };
 
   async componentDidMount() {
+    await this.props.dispatch(fetchClients());
     try {
       await fetch("/api/transactionss", {
         method: "GET",
@@ -55,7 +59,7 @@ class Blotter extends Component {
   }
 
   updatePost = (id) => {
-    this.props.history.push("/updateid/" + id);
+    this.props.history.push("/transactions/" + id);
   };
 
   download = () => {
@@ -103,13 +107,13 @@ class Blotter extends Component {
 
       let entityS = "";
       let entityB = "";
-      for (let j = 0; j < this.context.clients.length; j++) {
-        if (this.context.clients[j].id === this.state.data[i].b_clientid) {
-          entityB = this.context.clients[j].entity;
+      for (let j = 0; j < this.props.clientsObj.length; j++) {
+        if (this.props.clientsObj[j].id === this.state.data[i].b_clientid) {
+          entityB = this.props.clientsObj[j].entity;
         } else if (
-          this.context.clients[j].id === this.state.data[i].s_clientid
+          this.props.clientsObj[j].id === this.state.data[i].s_clientid
         ) {
-          entityS = this.context.clients[j].entity;
+          entityS = this.props.clientsObj[j].entity;
         }
       }
 
@@ -216,13 +220,13 @@ class Blotter extends Component {
                     }
                     let entityS = "";
                     let entityB = "";
-                    for (let i = 0; i < this.context.clients.length; i++) {
-                      if (this.context.clients[i].id === row.b_clientid) {
-                        entityB = this.context.clients[i].entity;
+                    for (let i = 0; i < this.props.clientsObj.length; i++) {
+                      if (this.props.clientsObj[i].id === row.b_clientid) {
+                        entityB = this.props.clientsObj[i].entity;
                       } else if (
-                        this.context.clients[i].id === row.s_clientid
+                        this.props.clientsObj[i].id === row.s_clientid
                       ) {
-                        entityS = this.context.clients[i].entity;
+                        entityS = this.props.clientsObj[i].entity;
                       }
                     }
                     return (
@@ -324,10 +328,16 @@ class Blotter extends Component {
   }
 }
 
-Blotter.contextType = MyContext;
-
 Blotter.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withRouter(withStyles(styles)(Blotter));
+const mapStateToProps = (state) => ({
+  clientsObj: state.clients.clientsObj,
+  loading: state.clients.loading,
+  error: state.clients.error,
+});
+
+export default connect(mapStateToProps)(
+  withRouter(withStyles(styles)(Blotter))
+);
