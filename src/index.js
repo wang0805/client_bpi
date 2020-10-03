@@ -8,27 +8,37 @@ import Login from "./components/login";
 import Edit from "./components/edit";
 import Transactions from "./components/transactions";
 import Form from "./components/form";
-import Client from "./components/client";
+// import Client from "./components/client";
+import Client2 from "./components/client2";
+
 import Blotter from "./components/blotter";
 import Manualinput from "./components/manualinput";
 
-import AppProvider from "./components/store/provider";
+// import AppProvider from "./components/store/provider";
+import rootReducer from "../src/components/store/rootreducer";
+import thunk from "redux-thunk";
+import { createStore, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
+
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const Routing = (props) => (
-  <AppProvider>
+  // <AppProvider>
+  <Provider store={store}>
     <BrowserRouter>
       <Switch>
-        <Route exact path="/" component={App} />
+        <Route exact path="/" component={Login} />
         <Route path="/login" render={() => <Login />} />
         <Route path="/form" component={Form} />
         <Route path="/blotter" component={Blotter} />
-        <Route path="/invoice" component={Client} />
+        <Route path="/invoice" component={Client2} />
         <Route path="/transactions" component={Transactions} />
         <Route path="/manualinput" component={Manualinput} />
-        <Route path="/updateid/:id" component={Edit} />
+        <Route path="/transactions/:id" component={Edit} />
       </Switch>
     </BrowserRouter>
-  </AppProvider>
+  </Provider>
+  // </AppProvider>
 );
 
 ReactDOM.render(<Routing />, document.getElementById("root"));

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { MyContext } from "../components/store/createContext";
 
 import { withStyles } from "@material-ui/core/styles";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
@@ -11,6 +10,9 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
 import Fdashboard from "./dashboard/fdashboard";
+
+import { connect } from "react-redux";
+import { fetchClients } from "../components/store/actions";
 
 const styles = (theme) => ({
   formControl: {
@@ -34,8 +36,8 @@ const styles = (theme) => ({
 
 class Form extends Component {
   state = {
-    value: [], //full list clients in dictionary
-    clients: [], //clients array
+    //value: [], full list clients in dictionary
+    // clients: [], clients array
     b_client: [], //client select
     b_client_id: "",
     s_client: [], //client Sell select
@@ -73,6 +75,8 @@ class Form extends Component {
   };
 
   componentDidMount() {
+    this.props.dispatch(fetchClients());
+
     let created_byid = parseInt(localStorage.getItem("user_id"));
     this.setState({
       created_byid: created_byid,
@@ -128,73 +132,6 @@ class Form extends Component {
       execTime: date.toLocaleTimeString("en-US", options).substring(0, 5),
     });
     try {
-      fetch("/api/clients", {
-        method: "GET",
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          let clients = [" "];
-          let clientsObj = [];
-          for (let i = 0; i < data.length; i++) {
-            clients.push(data[i].client_name);
-          }
-          clients = [...new Set(clients)];
-          for (let i = 0; i < clients.length; i++) {
-            let address = "";
-            let traders = [];
-            let accounts = [];
-            let recap_emails = "";
-            let invoice_emails = "";
-            let commission = 0;
-            let commission_lpf = 0;
-            let commission_acf = 0;
-            let idb = "";
-            let id = "";
-            let entity = "";
-            let in_sg = 0;
-            let duedate = 7;
-
-            for (let j = 0; j < data.length; j++) {
-              if (data[j].client_name === clients[i]) {
-                address = data[j].address;
-                id = data[j].id;
-                traders.push(data[j].trader_name);
-                accounts.push(data[j].account);
-                recap_emails = data[j].recap_emails;
-                invoice_emails = data[j].invoice_emails;
-                commission = data[j].commission;
-                commission_lpf = data[j].commission_lpf;
-                commission_acf = data[j].commission_acf;
-                idb = data[j].idb;
-                entity = data[j].entity;
-                in_sg = data[j].in_sg;
-                duedate = data[j].duedate;
-              }
-            }
-            clientsObj.push({
-              clients: clients[i],
-              address: address,
-              accounts: [...new Set(accounts)],
-              traders: [...new Set(traders)],
-              commission: commission,
-              commission_lpf: commission_lpf,
-              commission_acf: commission_acf,
-              recap_emails: recap_emails,
-              invoice_emails: invoice_emails,
-              idb: idb,
-              id: id,
-              entity: entity,
-              in_sg: in_sg,
-              duedate: duedate,
-            });
-          }
-          this.setState({ value: clientsObj });
-          this.setState({ clients });
-          // this.context.setClients(clientsObj);
-        });
       fetch("/api/products")
         .then((res) => res.json())
         .then((data) => {
@@ -223,22 +160,24 @@ class Form extends Component {
     this.setState({ [x]: e.target.value });
     let client = e.target.value;
     let product_code_lower = this.state.product_code.toLowerCase();
-    for (let i = 0; i < this.state.value.length; i++) {
-      if (this.state.value[i].clients === client) {
+    for (let i = 0; i < this.props.clientsObj.length; i++) {
+      if (this.props.clientsObj[i].clients === client) {
         this.setState({
-          b_client_id: this.state.value[i].id,
-          b_trader: this.state.value[i].traders[0],
-          b_accounts: this.state.value[i].accounts[0],
-          b_recap: this.state.value[i].recap_emails,
-          b_idb: this.state.value[i].idb,
+          b_client_id: this.props.clientsObj[i].id,
+          b_trader: this.props.clientsObj[i].traders[0],
+          b_accounts: this.props.clientsObj[i].accounts[0],
+          b_recap: this.props.clientsObj[i].recap_emails,
+          b_idb: this.props.clientsObj[i].idb,
         });
-        if (this.state.value[i][`commission_${product_code_lower}`]) {
+        if (this.props.clientsObj[i][`commission_${product_code_lower}`]) {
           this.setState({
-            b_comms: this.state.value[i][`commission_${product_code_lower}`],
+            b_comms: this.props.clientsObj[i][
+              `commission_${product_code_lower}`
+            ],
           });
         } else {
           this.setState({
-            b_comms: this.state.value[i].commission,
+            b_comms: this.props.clientsObj[i].commission,
           });
         }
       }
@@ -249,22 +188,24 @@ class Form extends Component {
     this.setState({ [x]: e.target.value });
     let client = e.target.value;
     let product_code_lower = this.state.product_code.toLowerCase();
-    for (let i = 0; i < this.state.value.length; i++) {
-      if (this.state.value[i].clients === client) {
+    for (let i = 0; i < this.props.clientsObj.length; i++) {
+      if (this.props.clientsObj[i].clients === client) {
         this.setState({
-          s_trader: this.state.value[i].traders[0],
-          s_client_id: this.state.value[i].id,
-          s_accounts: this.state.value[i].accounts[0],
-          s_recap: this.state.value[i].recap_emails,
-          s_idb: this.state.value[i].idb,
+          s_trader: this.props.clientsObj[i].traders[0],
+          s_client_id: this.props.clientsObj[i].id,
+          s_accounts: this.props.clientsObj[i].accounts[0],
+          s_recap: this.props.clientsObj[i].recap_emails,
+          s_idb: this.props.clientsObj[i].idb,
         });
-        if (this.state.value[i][`commission_${product_code_lower}`]) {
+        if (this.props.clientsObj[i][`commission_${product_code_lower}`]) {
           this.setState({
-            s_comms: this.state.value[i][`commission_${product_code_lower}`],
+            s_comms: this.props.clientsObj[i][
+              `commission_${product_code_lower}`
+            ],
           });
         } else {
           this.setState({
-            s_comms: this.state.value[i].commission,
+            s_comms: this.props.clientsObj[i].commission,
           });
         }
       }
@@ -272,19 +213,23 @@ class Form extends Component {
   };
 
   loopFunc(x, y) {
-    for (let i = 0; i < this.state.value.length; i++) {
-      if (this.state.b_client === this.state.value[i].clients) {
-        for (let j = 0; j < this.state.value[i][x].length; j++) {
+    for (let i = 0; i < this.props.clientsObj.length; i++) {
+      if (this.state.b_client === this.props.clientsObj[i].clients) {
+        for (let j = 0; j < this.props.clientsObj[i][x].length; j++) {
           if (j === 0) {
             y.push(
-              <option defaultValue key={j} value={this.state.value[i][x][j]}>
-                {this.state.value[i][x][j]}
+              <option
+                defaultValue
+                key={j}
+                value={this.props.clientsObj[i][x][j]}
+              >
+                {this.props.clientsObj[i][x][j]}
               </option>
             );
           } else {
             y.push(
-              <option key={j} value={this.state.value[i][x][j]}>
-                {this.state.value[i][x][j]}
+              <option key={j} value={this.props.clientsObj[i][x][j]}>
+                {this.props.clientsObj[i][x][j]}
               </option>
             );
           }
@@ -294,19 +239,23 @@ class Form extends Component {
   }
 
   sloopFunc(x, y) {
-    for (let i = 0; i < this.state.value.length; i++) {
-      if (this.state.s_client === this.state.value[i].clients) {
-        for (let j = 0; j < this.state.value[i][x].length; j++) {
+    for (let i = 0; i < this.props.clientsObj.length; i++) {
+      if (this.state.s_client === this.props.clientsObj[i].clients) {
+        for (let j = 0; j < this.props.clientsObj[i][x].length; j++) {
           if (j === 0) {
             y.push(
-              <option defaultValue key={j} value={this.state.value[i][x][j]}>
-                {this.state.value[i][x][j]}
+              <option
+                defaultValue
+                key={j}
+                value={this.props.clientsObj[i][x][j]}
+              >
+                {this.props.clientsObj[i][x][j]}
               </option>
             );
           } else {
             y.push(
-              <option key={j} value={this.state.value[i][x][j]}>
-                {this.state.value[i][x][j]}
+              <option key={j} value={this.props.clientsObj[i][x][j]}>
+                {this.props.clientsObj[i][x][j]}
               </option>
             );
           }
@@ -895,7 +844,7 @@ class Form extends Component {
                     />
                   }
                 >
-                  {this.state.clients.map((client, index) => (
+                  {this.props.clients.map((client, index) => (
                     <option key={index} value={client}>
                       {client}
                     </option>
@@ -1146,7 +1095,7 @@ class Form extends Component {
                     />
                   }
                 >
-                  {this.state.clients.map((client, index) => (
+                  {this.props.clients.map((client, index) => (
                     <option key={index} value={client}>
                       {client}
                     </option>
@@ -1372,6 +1321,12 @@ class Form extends Component {
   }
 }
 
-Form.contextType = MyContext;
+const mapStateToProps = (state) => ({
+  clients: state.clients.clients,
+  clientsObj: state.clients.clientsObj,
+  loading: state.clients.loading,
+  error: state.clients.error,
+  isAuth: state.clients.isAuth,
+});
 
-export default withStyles(styles)(Form);
+export default connect(mapStateToProps)(withStyles(styles)(Form));

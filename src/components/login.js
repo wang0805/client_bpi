@@ -19,7 +19,8 @@ import LockIcon from "@material-ui/icons/LockOutlined";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 
-import { MyContext } from "./store/createContext";
+import { connect } from "react-redux";
+import { authUsers } from "../components/store/actions";
 
 const styles = (theme) => ({
   main: {
@@ -105,10 +106,13 @@ class Login extends Component {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user_id", data.user_id);
         if (data.token) {
-          this.context.loggedIn();
+          this.props.dispatch(authUsers(true));
+          localStorage.setItem("isLoggedin", true);
           this.props.history.push("/form"); //props are inherent from router
         } else {
           alert("Wrong Password");
+          this.props.dispatch(authUsers(false));
+          localStorage.setItem("isLoggedin", false);
           this.setState({ password: "" });
         }
       });
@@ -184,6 +188,5 @@ class Login extends Component {
 Login.propTypes = {
   classes: PropTypes.object.isRequired,
 };
-Login.contextType = MyContext;
 
-export default withRouter(withStyles(styles)(Login));
+export default connect()(withRouter(withStyles(styles)(Login)));
