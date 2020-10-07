@@ -1258,7 +1258,7 @@ class Form extends Component {
               <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
             </div>
             <br />
-            <div className={classes.midbutton}>
+            {/* <div className={classes.midbutton}>
               <Button onClick={() => this.allege("HK")} variant="contained">
                 Allege HK
               </Button>
@@ -1267,13 +1267,13 @@ class Form extends Component {
                 Allege SG
               </Button>
             </div>
-            <br />
+            <br /> */}
             <div className={classes.midbutton}>
               <Button type="submit" variant="contained" color="primary">
                 Submit Recap
               </Button>
               <span>&nbsp;&nbsp;</span>
-              <Button
+              {/* <Button
                 onClick={this.handleCsv}
                 variant="contained"
                 color="primary"
@@ -1287,7 +1287,7 @@ class Form extends Component {
                 color="primary"
               >
                 CSV download
-              </Button>
+              </Button> */}
             </div>
           </form>
           <br />
