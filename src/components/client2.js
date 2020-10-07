@@ -382,6 +382,7 @@ class Client extends Component {
               clientarr.push(transac);
             }
           }
+
           let invoiceNo = 0;
           if (clientarr[0].entity === "HK") {
             invoiceNo = this.state.invoiceNoHK;
@@ -445,6 +446,188 @@ class Client extends Component {
             });
           //   console.log(i, "next if");
         }
+      }
+    }
+  };
+
+  submitAll = async () => {
+    const { clients } = this.state;
+    const { transactions } = this.state;
+
+    let rangearr = this.range(
+      this.getMon(this.state.fromM),
+      this.getMon(this.state.toM)
+    );
+
+    if (
+      window.confirm(
+        `
+        Please confirm that you want to send all invoice
+        `
+      )
+    ) {
+      let clientarr = [];
+      let total = 0;
+      // set a new array for clientarr to go into pdf
+      console.log(this.state.clients);
+      for (let i = 0; i < this.state.clients.length; i++) {
+        clientarr = [];
+        total = 0;
+        for (let j = 0; j < transactions.length; j++) {
+          let transac = {};
+          let dateMonth = new Date(transactions[j].trade_date).getMonth() + 1;
+          let dateYear = new Date(transactions[j].trade_date).getFullYear();
+          if (
+            transactions[j].b_clientid === clients[i].id &&
+            rangearr.includes(dateMonth) &&
+            dateYear === parseInt(this.state.year)
+          ) {
+            let size = transactions[j].qty;
+            if (transactions[j].instrument === "S") {
+              size = transactions[j].qty * 500 * transactions[j].consmonth;
+            } else {
+              size = transactions[j].qty * 100 * transactions[j].consmonth;
+            }
+            let date = new Date(
+              transactions[j].trade_date
+            ).toLocaleDateString();
+            transac.id = transactions[j].trade_id;
+            transac.address = clients[i].address;
+            transac.entity = clients[i].entity;
+            transac.in_sg = clients[i].in_sg;
+            transac.duedate = clients[i].duedate;
+            transac.invoice_emails = clients[i].invoice_emails;
+            transac.trade_date = date;
+            transac.client = clients[i].client;
+            transac.product = transactions[j].product;
+            transac.instrument = transactions[j].instrument;
+            transac.bs = "Buy";
+            transac.account = transactions[j].b_account;
+            transac.idb = transactions[j].b_idb;
+            transac.trader = transactions[j].b_trader;
+            transac.comms = transactions[j].b_commission;
+            transac.tcomms = parseFloat(transactions[j].b_commission) * size;
+            transac.price = transactions[j].price;
+            transac.strike = transactions[j].strike;
+            transac.qty = transactions[j].qty;
+            transac.size = size;
+            transac.contract = transactions[j].contract;
+            transac.deal_id = transactions[j].deal_id;
+          }
+          if (
+            transactions[j].s_clientid === clients[i].id &&
+            rangearr.includes(dateMonth) &&
+            dateYear === parseInt(this.state.year)
+          ) {
+            let size = transactions[j].qty;
+            if (transactions[j].instrument === "S") {
+              size = transactions[j].qty * 500 * transactions[j].consmonth;
+            } else {
+              size = transactions[j].qty * 100 * transactions[j].consmonth;
+            }
+            let date = new Date(
+              transactions[j].trade_date
+            ).toLocaleDateString();
+            transac.id = transactions[j].trade_id;
+            transac.address = clients[i].address;
+            transac.entity = clients[i].entity;
+            transac.in_sg = clients[i].in_sg;
+            transac.duedate = clients[i].duedate;
+            transac.invoice_emails = clients[i].invoice_emails;
+            transac.trade_date = date;
+            transac.client = clients[i].client;
+            transac.product = transactions[j].product;
+            transac.instrument = transactions[j].instrument;
+            transac.bs = "Sell";
+            transac.account = transactions[j].s_account;
+            transac.idb = transactions[j].s_idb;
+            transac.trader = transactions[j].s_trader;
+            transac.comms = transactions[j].s_commission;
+            transac.tcomms = parseFloat(transactions[j].s_commission) * size;
+            transac.price = transactions[j].price;
+            transac.strike = transactions[j].strike;
+            transac.qty = transactions[j].qty;
+            transac.size = size;
+            transac.contract = transactions[j].contract;
+            transac.deal_id = transactions[j].deal_id;
+          }
+          if (Object.keys(transac).length) {
+            clientarr.push(transac);
+          }
+        }
+
+        for (let n = 0; n < clientarr.length; n++) {
+          total += clientarr[n].tcomms;
+        }
+        if (clientarr.length > 0 && total !== 0) {
+          console.log(total, this.state.clients[i].client);
+
+          let invoiceNo = 0;
+          if (clientarr[0].entity === "HK") {
+            invoiceNo = this.state.invoiceNoHK;
+          } else if (clientarr[0].entity === "SG") {
+            invoiceNo = this.state.invoiceNoSG;
+          }
+          //finish pushing all the transaction of 1 client
+          let dataState = {
+            client: [...clientarr],
+            exrate: this.state.exrate,
+            invoiceNo: invoiceNo,
+            fromM: this.state.fromM,
+            toM: this.state.toM,
+            year: this.state.year,
+          };
+
+          await axios
+            .post("/createpdf", dataState)
+            .then(() => axios.get("/getpdf", { responseType: "blob" }))
+            .then((res) => {
+              const pdfBlob = new Blob([res.data], {
+                type: "application/pdf",
+              });
+              saveAs(pdfBlob, `${invoiceNo}.pdf`);
+            });
+          let data = {
+            invoiceNo: invoiceNo,
+            invoice_emails: clientarr[0].invoice_emails,
+            client: clientarr[0].client,
+            toM: this.state.toM,
+            year: this.state.year,
+          };
+
+          await fetch("/sendpdf", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then(() => {
+              if (clientarr[0].entity === "HK") {
+                this.setState((prevState) => ({
+                  invoiceNoHK: parseInt(prevState.invoiceNoHK) + 1,
+                }));
+              } else if (clientarr[0].entity === "SG") {
+                this.setState((prevState) => ({
+                  invoiceNoSG: parseInt(prevState.invoiceNoSG) + 1,
+                }));
+              } else {
+                console.log("submit function cannot find entity");
+              }
+              //   this.setState((prevState) => ({
+              //     invoiceNo: parseInt(prevState.invoiceNo) + 1,
+              //   }));
+            })
+            .catch((error) => {
+              console.error("error: ", error);
+              alert("Error in sending email, please try again");
+            });
+        } else {
+          console.log(`no invoice for ${this.state.clients[i].client}`);
+        }
+
+        //   console.log(i, "next if");
       }
     }
   };
@@ -839,7 +1022,15 @@ class Client extends Component {
               </Button>
               <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
               <Button variant="contained" color="primary" onClick={this.submit}>
-                Send all
+                Send Multiple
+              </Button>
+              <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={this.submitAll}
+              >
+                Send All
               </Button>
             </div>
             <br />
