@@ -137,7 +137,7 @@ class Fdashboard extends React.Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" color="inherit" noWrap>
-              BPI
+              Bright Point Interdealer Broker
             </Typography>
           </Toolbar>
         </AppBar>
