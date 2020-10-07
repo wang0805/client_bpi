@@ -469,7 +469,6 @@ class Client extends Component {
       let clientarr = [];
       let total = 0;
       // set a new array for clientarr to go into pdf
-      console.log(this.state.clients);
       for (let i = 0; i < this.state.clients.length; i++) {
         clientarr = [];
         total = 0;
@@ -560,8 +559,6 @@ class Client extends Component {
           total += clientarr[n].tcomms;
         }
         if (clientarr.length > 0 && total !== 0) {
-          console.log(total, this.state.clients[i].client);
-
           let invoiceNo = 0;
           if (clientarr[0].entity === "HK") {
             invoiceNo = this.state.invoiceNoHK;
