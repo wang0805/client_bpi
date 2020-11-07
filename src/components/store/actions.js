@@ -23,7 +23,7 @@ export function fetchClients() {
           let commission = 0;
           let commission_lpf = 0;
           let commission_acf = 0;
-          let commission_m42 = 0;
+          let commission_m42f = 0;
           let idb = "";
           let id = "";
           let entity = "";
@@ -41,7 +41,7 @@ export function fetchClients() {
               commission = data[j].commission;
               commission_lpf = data[j].commission_lpf;
               commission_acf = data[j].commission_acf;
-              commission_m42 = data[j].commission_m42;
+              commission_m42f = data[j].commission_m42f;
               idb = data[j].idb;
               entity = data[j].entity;
               in_sg = data[j].in_sg;
@@ -56,7 +56,7 @@ export function fetchClients() {
             commission: commission,
             commission_lpf: commission_lpf,
             commission_acf: commission_acf,
-            commission_m42: commission_m42,
+            commission_m42f: commission_m42f,
             recap_emails: recap_emails,
             invoice_emails: invoice_emails,
             idb: idb,
