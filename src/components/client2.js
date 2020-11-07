@@ -201,12 +201,13 @@ class Client extends Component {
             rangearr.includes(dateMonth) &&
             dateYear === parseInt(this.state.year)
           ) {
-            let size = transactions[j].qty;
-            if (transactions[j].instrument === "S") {
-              size = transactions[j].qty * 500 * transactions[j].consmonth;
-            } else {
-              size = transactions[j].qty * 100 * transactions[j].consmonth;
-            }
+            let size = transactions[j].volume;
+            // let size = transactions[j].qty;
+            // if (transactions[j].instrument === "S") {
+            //   size = transactions[j].qty * 500 * transactions[j].consmonth;
+            // } else {
+            //   size = transactions[j].qty * 100 * transactions[j].consmonth;
+            // }
             let date = new Date(
               transactions[j].trade_date
             ).toLocaleDateString();
@@ -225,7 +226,10 @@ class Client extends Component {
             transac.idb = transactions[j].b_idb;
             transac.trader = transactions[j].b_trader;
             transac.comms = transactions[j].b_commission;
-            transac.tcomms = parseFloat(transactions[j].b_commission) * size;
+            transac.tcomms =
+              Math.round(
+                parseFloat(transactions[j].b_commission) * size * 100
+              ) / 100;
             transac.price = transactions[j].price;
             transac.strike = transactions[j].strike;
             transac.qty = transactions[j].qty;
@@ -238,12 +242,13 @@ class Client extends Component {
             rangearr.includes(dateMonth) &&
             dateYear === parseInt(this.state.year)
           ) {
-            let size = transactions[j].qty;
-            if (transactions[j].instrument === "S") {
-              size = transactions[j].qty * 500 * transactions[j].consmonth;
-            } else {
-              size = transactions[j].qty * 100 * transactions[j].consmonth;
-            }
+            let size = transactions[j].volume;
+            // let size = transactions[j].qty;
+            // if (transactions[j].instrument === "S") {
+            //   size = transactions[j].qty * 500 * transactions[j].consmonth;
+            // } else {
+            //   size = transactions[j].qty * 100 * transactions[j].consmonth;
+            // }
             let date = new Date(
               transactions[j].trade_date
             ).toLocaleDateString();
@@ -262,7 +267,10 @@ class Client extends Component {
             transac.idb = transactions[j].s_idb;
             transac.trader = transactions[j].s_trader;
             transac.comms = transactions[j].s_commission;
-            transac.tcomms = parseFloat(transactions[j].s_commission) * size;
+            transac.tcomms =
+              Math.round(
+                parseFloat(transactions[j].s_commission) * size * 100
+              ) / 100;
             transac.price = transactions[j].price;
             transac.strike = transactions[j].strike;
             transac.qty = transactions[j].qty;
@@ -309,12 +317,13 @@ class Client extends Component {
               rangearr.includes(dateMonth) &&
               dateYear === parseInt(this.state.year)
             ) {
-              let size = transactions[j].qty;
-              if (transactions[j].instrument === "S") {
-                size = transactions[j].qty * 500 * transactions[j].consmonth;
-              } else {
-                size = transactions[j].qty * 100 * transactions[j].consmonth;
-              }
+              let size = transactions[j].volume;
+              // let size = transactions[j].qty;
+              // if (transactions[j].instrument === "S") {
+              //   size = transactions[j].qty * 500 * transactions[j].consmonth;
+              // } else {
+              //   size = transactions[j].qty * 100 * transactions[j].consmonth;
+              // }
               let date = new Date(
                 transactions[j].trade_date
               ).toLocaleDateString();
@@ -333,7 +342,10 @@ class Client extends Component {
               transac.idb = transactions[j].b_idb;
               transac.trader = transactions[j].b_trader;
               transac.comms = transactions[j].b_commission;
-              transac.tcomms = parseFloat(transactions[j].b_commission) * size;
+              transac.tcomms =
+                Math.round(
+                  parseFloat(transactions[j].b_commission) * size * 100
+                ) / 100;
               transac.price = transactions[j].price;
               transac.strike = transactions[j].strike;
               transac.qty = transactions[j].qty;
@@ -346,12 +358,13 @@ class Client extends Component {
               rangearr.includes(dateMonth) &&
               dateYear === parseInt(this.state.year)
             ) {
-              let size = transactions[j].qty;
-              if (transactions[j].instrument === "S") {
-                size = transactions[j].qty * 500 * transactions[j].consmonth;
-              } else {
-                size = transactions[j].qty * 100 * transactions[j].consmonth;
-              }
+              let size = transactions[j].volume;
+              // let size = transactions[j].qty;
+              // if (transactions[j].instrument === "S") {
+              //   size = transactions[j].qty * 500 * transactions[j].consmonth;
+              // } else {
+              //   size = transactions[j].qty * 100 * transactions[j].consmonth;
+              // }
               let date = new Date(
                 transactions[j].trade_date
               ).toLocaleDateString();
@@ -370,7 +383,10 @@ class Client extends Component {
               transac.idb = transactions[j].s_idb;
               transac.trader = transactions[j].s_trader;
               transac.comms = transactions[j].s_commission;
-              transac.tcomms = parseFloat(transactions[j].s_commission) * size;
+              transac.tcomms =
+                Math.round(
+                  parseFloat(transactions[j].s_commission) * size * 100
+                ) / 100;
               transac.price = transactions[j].price;
               transac.strike = transactions[j].strike;
               transac.qty = transactions[j].qty;
@@ -481,12 +497,13 @@ class Client extends Component {
             rangearr.includes(dateMonth) &&
             dateYear === parseInt(this.state.year)
           ) {
-            let size = transactions[j].qty;
-            if (transactions[j].instrument === "S") {
-              size = transactions[j].qty * 500 * transactions[j].consmonth;
-            } else {
-              size = transactions[j].qty * 100 * transactions[j].consmonth;
-            }
+            let size = transactions[j].volume;
+            // let size = transactions[j].qty;
+            // if (transactions[j].instrument === "S") {
+            //   size = transactions[j].qty * 500 * transactions[j].consmonth;
+            // } else {
+            //   size = transactions[j].qty * 100 * transactions[j].consmonth;
+            // }
             let date = new Date(
               transactions[j].trade_date
             ).toLocaleDateString();
@@ -505,7 +522,10 @@ class Client extends Component {
             transac.idb = transactions[j].b_idb;
             transac.trader = transactions[j].b_trader;
             transac.comms = transactions[j].b_commission;
-            transac.tcomms = parseFloat(transactions[j].b_commission) * size;
+            transac.tcomms =
+              Math.round(
+                parseFloat(transactions[j].b_commission) * size * 100
+              ) / 100;
             transac.price = transactions[j].price;
             transac.strike = transactions[j].strike;
             transac.qty = transactions[j].qty;
@@ -518,12 +538,13 @@ class Client extends Component {
             rangearr.includes(dateMonth) &&
             dateYear === parseInt(this.state.year)
           ) {
-            let size = transactions[j].qty;
-            if (transactions[j].instrument === "S") {
-              size = transactions[j].qty * 500 * transactions[j].consmonth;
-            } else {
-              size = transactions[j].qty * 100 * transactions[j].consmonth;
-            }
+            let size = transactions[j].volume;
+            // let size = transactions[j].qty;
+            // if (transactions[j].instrument === "S") {
+            //   size = transactions[j].qty * 500 * transactions[j].consmonth;
+            // } else {
+            //   size = transactions[j].qty * 100 * transactions[j].consmonth;
+            // }
             let date = new Date(
               transactions[j].trade_date
             ).toLocaleDateString();
@@ -542,7 +563,10 @@ class Client extends Component {
             transac.idb = transactions[j].s_idb;
             transac.trader = transactions[j].s_trader;
             transac.comms = transactions[j].s_commission;
-            transac.tcomms = parseFloat(transactions[j].s_commission) * size;
+            transac.tcomms =
+              Math.round(
+                parseFloat(transactions[j].s_commission) * size * 100
+              ) / 100;
             transac.price = transactions[j].price;
             transac.strike = transactions[j].strike;
             transac.qty = transactions[j].qty;
@@ -658,12 +682,13 @@ class Client extends Component {
                 rangearr.includes(dateMonth) &&
                 dateYear === parseInt(this.state.year)
               ) {
-                let size = transactions[j].qty;
-                if (transactions[j].instrument === "S") {
-                  size = transactions[j].qty * 500 * transactions[j].consmonth;
-                } else {
-                  size = transactions[j].qty * 100 * transactions[j].consmonth;
-                }
+                let size = transactions[j].volume;
+                // let size = transactions[j].qty;
+                // if (transactions[j].instrument === "S") {
+                //   size = transactions[j].qty * 500 * transactions[j].consmonth;
+                // } else {
+                //   size = transactions[j].qty * 100 * transactions[j].consmonth;
+                // }
                 let date = new Date(
                   transactions[j].trade_date
                 ).toLocaleDateString();
@@ -683,7 +708,9 @@ class Client extends Component {
                 transac.trader = transactions[j].b_trader;
                 transac.comms = transactions[j].b_commission;
                 transac.tcomms =
-                  parseFloat(transactions[j].b_commission) * size;
+                  Math.round(
+                    parseFloat(transactions[j].b_commission) * size * 100
+                  ) / 100;
                 transac.price = transactions[j].price;
                 transac.strike = transactions[j].strike;
                 transac.qty = transactions[j].qty;
@@ -696,12 +723,13 @@ class Client extends Component {
                 rangearr.includes(dateMonth) &&
                 dateYear === parseInt(this.state.year)
               ) {
-                let size = transactions[j].qty;
-                if (transactions[j].instrument === "S") {
-                  size = transactions[j].qty * 500 * transactions[j].consmonth;
-                } else {
-                  size = transactions[j].qty * 100 * transactions[j].consmonth;
-                }
+                let size = transactions[j].volume;
+                // let size = transactions[j].qty;
+                // if (transactions[j].instrument === "S") {
+                //   size = transactions[j].qty * 500 * transactions[j].consmonth;
+                // } else {
+                //   size = transactions[j].qty * 100 * transactions[j].consmonth;
+                // }
                 let date = new Date(
                   transactions[j].trade_date
                 ).toLocaleDateString();
@@ -721,7 +749,9 @@ class Client extends Component {
                 transac.trader = transactions[j].s_trader;
                 transac.comms = transactions[j].s_commission;
                 transac.tcomms =
-                  parseFloat(transactions[j].s_commission) * size;
+                  Math.round(
+                    parseFloat(transactions[j].s_commission) * size * 100
+                  ) / 100;
                 transac.price = transactions[j].price;
                 transac.strike = transactions[j].strike;
                 transac.qty = transactions[j].qty;

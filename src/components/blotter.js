@@ -95,16 +95,17 @@ class Blotter extends Component {
       let trade_date = new Date(
         this.state.data[i].trade_date
       ).toLocaleDateString();
-      let size = this.state.data[i].qty;
-      if (this.state.data[i].instrument === "S") {
-        size = this.state.data[i].qty * 500 * this.state.data[i].consmonth;
-      } else {
-        size = this.state.data[i].qty * 100 * this.state.data[i].consmonth;
-      }
+      let size = this.state.data[i].volume;
+      // Old way of calculating volume
+      // let size = this.state.data[i].qty;
+      // if (this.state.data[i].instrument === "S") {
+      //   size = this.state.data[i].qty * 500 * this.state.data[i].consmonth;
+      // } else {
+      //   size = this.state.data[i].qty * 100 * this.state.data[i].consmonth;
+      // }
       let totalComms =
         size * parseFloat(this.state.data[i].b_commission) +
         size * parseFloat(this.state.data[i].s_commission);
-
       let entityS = "";
       let entityB = "";
       for (let j = 0; j < this.props.clientsObj.length; j++) {
@@ -118,7 +119,6 @@ class Blotter extends Component {
       }
 
       let array = [];
-
       array.push(this.state.data[i].trade_id);
       array.push(trade_date);
       array.push(this.state.data[i].trade_time);
@@ -212,12 +212,13 @@ class Blotter extends Component {
                     let trade_date = new Date(
                       row.trade_date
                     ).toLocaleDateString();
-                    let size = row.qty;
-                    if (row.instrument === "S") {
-                      size = row.qty * 500 * row.consmonth;
-                    } else {
-                      size = row.qty * 100 * row.consmonth;
-                    }
+                    let size = row.volume;
+                    // let size = row.qty;
+                    // if (row.instrument === "S") {
+                    //   size = row.qty * 500 * row.consmonth;
+                    // } else {
+                    //   size = row.qty * 100 * row.consmonth;
+                    // }
                     let entityS = "";
                     let entityB = "";
                     for (let i = 0; i < this.props.clientsObj.length; i++) {
@@ -288,14 +289,21 @@ class Blotter extends Component {
                         </CustomTableCell>
                         <CustomTableCell align="center">{size}</CustomTableCell>
                         <CustomTableCell align="center">
-                          {size * parseFloat(row.b_commission)}
+                          {Math.round(
+                            size * parseFloat(row.b_commission) * 100
+                          ) / 100}
                         </CustomTableCell>
                         <CustomTableCell align="center">
-                          {size * parseFloat(row.s_commission)}
+                          {Math.round(
+                            size * parseFloat(row.s_commission) * 100
+                          ) / 100}
                         </CustomTableCell>
                         <CustomTableCell align="center">
-                          {size * parseFloat(row.b_commission) +
-                            size * parseFloat(row.s_commission)}
+                          {Math.round(
+                            (size * parseFloat(row.b_commission) +
+                              size * parseFloat(row.s_commission)) *
+                              100
+                          ) / 100}
                         </CustomTableCell>
                         <CustomTableCell align="center">
                           {row.deal_id}

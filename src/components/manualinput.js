@@ -11,6 +11,9 @@ import Button from "@material-ui/core/Button";
 
 import Fdashboard from "./dashboard/fdashboard";
 
+import { connect } from "react-redux";
+import { fetchClients, fetchProducts } from "../components/store/actions";
+
 const styles = (theme) => ({
   formControl: {
     minWidth: 120,
@@ -33,8 +36,8 @@ const styles = (theme) => ({
 
 class ManualInput extends Component {
   state = {
-    value: [], //full list clients in dictionary
-    clients: [], //clients array
+    //value: [], full list clients in dictionary
+    // clients: [], clients array
     b_client: [], //client select
     b_client_id: "",
     s_client: [], //client Sell select
@@ -56,9 +59,9 @@ class ManualInput extends Component {
     instrument: "F",
     product_code: "FEF",
     products: "Iron ore TSI62 Futures",
-    fromM: "May",
-    toM: "May",
-    year: "2019",
+    fromM: "Jan",
+    toM: "Jan",
+    year: "2020",
     price: "",
     strike: "",
     qty: 50,
@@ -69,9 +72,13 @@ class ManualInput extends Component {
     created_byid: "",
     deal_id: null,
     brokers: [],
+    contract_size: 100,
   };
 
   componentDidMount() {
+    this.props.dispatch(fetchClients());
+    this.props.dispatch(fetchProducts());
+
     let created_byid = parseInt(localStorage.getItem("user_id"));
     this.setState({
       created_byid: created_byid,
@@ -127,72 +134,6 @@ class ManualInput extends Component {
       execTime: date.toLocaleTimeString("en-US", options).substring(0, 5),
     });
     try {
-      fetch("/api/clients", {
-        method: "GET",
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          let clients = [" "];
-          let clientsObj = [];
-          for (let i = 0; i < data.length; i++) {
-            clients.push(data[i].client_name);
-          }
-          clients = [...new Set(clients)];
-          for (let i = 0; i < clients.length; i++) {
-            let address = "";
-            let traders = [];
-            let accounts = [];
-            let recap_emails = "";
-            let invoice_emails = "";
-            let commission = 0;
-            let commission_lpf = 0;
-            let commission_acf = 0;
-            let idb = "";
-            let id = "";
-            let entity = "";
-            let in_sg = 0;
-            let duedate = 7;
-
-            for (let j = 0; j < data.length; j++) {
-              if (data[j].client_name === clients[i]) {
-                address = data[j].address;
-                id = data[j].id;
-                traders.push(data[j].trader_name);
-                accounts.push(data[j].account);
-                recap_emails = data[j].recap_emails;
-                invoice_emails = data[j].invoice_emails;
-                commission = data[j].commission;
-                commission_lpf = data[j].commission_lpf;
-                commission_acf = data[j].commission_acf;
-                idb = data[j].idb;
-                entity = data[j].entity;
-                in_sg = data[j].in_sg;
-                duedate = data[j].duedate;
-              }
-            }
-            clientsObj.push({
-              clients: clients[i],
-              address: address,
-              accounts: [...new Set(accounts)],
-              traders: [...new Set(traders)],
-              commission: commission,
-              commission_lpf: commission_lpf,
-              commission_acf: commission_acf,
-              recap_emails: recap_emails,
-              invoice_emails: invoice_emails,
-              idb: idb,
-              id: id,
-              entity: entity,
-              in_sg: in_sg,
-              duedate: duedate,
-            });
-          }
-          this.setState({ value: clientsObj });
-          this.setState({ clients });
-        });
       fetch("/api/products")
         .then((res) => res.json())
         .then((data) => {
@@ -214,29 +155,45 @@ class ManualInput extends Component {
   }
 
   handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
+    e.persist();
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      if (e.target.name === "product_code") {
+        for (let i = 0; i < this.props.productsObj.length; i++) {
+          if (this.props.productsObj[i].code === e.target.value) {
+            this.setState(
+              { contract_size: this.props.productsObj[i].consize },
+              () => {
+                // console.log(this.state.contract_size);
+              }
+            );
+          }
+        }
+      }
+    });
   };
 
   handleChangeB = (x) => (e) => {
     this.setState({ [x]: e.target.value });
     let client = e.target.value;
     let product_code_lower = this.state.product_code.toLowerCase();
-    for (let i = 0; i < this.state.value.length; i++) {
-      if (this.state.value[i].clients === client) {
+    for (let i = 0; i < this.props.clientsObj.length; i++) {
+      if (this.props.clientsObj[i].clients === client) {
         this.setState({
-          b_client_id: this.state.value[i].id,
-          b_trader: this.state.value[i].traders[0],
-          b_accounts: this.state.value[i].accounts[0],
-          b_recap: this.state.value[i].recap_emails,
-          b_idb: this.state.value[i].idb,
+          b_client_id: this.props.clientsObj[i].id,
+          b_trader: this.props.clientsObj[i].traders[0],
+          b_accounts: this.props.clientsObj[i].accounts[0],
+          b_recap: this.props.clientsObj[i].recap_emails,
+          b_idb: this.props.clientsObj[i].idb,
         });
-        if (this.state.value[i][`commission_${product_code_lower}`]) {
+        if (this.props.clientsObj[i][`commission_${product_code_lower}`]) {
           this.setState({
-            b_comms: this.state.value[i][`commission_${product_code_lower}`],
+            b_comms: this.props.clientsObj[i][
+              `commission_${product_code_lower}`
+            ],
           });
         } else {
           this.setState({
-            b_comms: this.state.value[i].commission,
+            b_comms: this.props.clientsObj[i].commission,
           });
         }
       }
@@ -247,22 +204,24 @@ class ManualInput extends Component {
     this.setState({ [x]: e.target.value });
     let client = e.target.value;
     let product_code_lower = this.state.product_code.toLowerCase();
-    for (let i = 0; i < this.state.value.length; i++) {
-      if (this.state.value[i].clients === client) {
+    for (let i = 0; i < this.props.clientsObj.length; i++) {
+      if (this.props.clientsObj[i].clients === client) {
         this.setState({
-          s_trader: this.state.value[i].traders[0],
-          s_client_id: this.state.value[i].id,
-          s_accounts: this.state.value[i].accounts[0],
-          s_recap: this.state.value[i].recap_emails,
-          s_idb: this.state.value[i].idb,
+          s_trader: this.props.clientsObj[i].traders[0],
+          s_client_id: this.props.clientsObj[i].id,
+          s_accounts: this.props.clientsObj[i].accounts[0],
+          s_recap: this.props.clientsObj[i].recap_emails,
+          s_idb: this.props.clientsObj[i].idb,
         });
-        if (this.state.value[i][`commission_${product_code_lower}`]) {
+        if (this.props.clientsObj[i][`commission_${product_code_lower}`]) {
           this.setState({
-            s_comms: this.state.value[i][`commission_${product_code_lower}`],
+            s_comms: this.props.clientsObj[i][
+              `commission_${product_code_lower}`
+            ],
           });
         } else {
           this.setState({
-            s_comms: this.state.value[i].commission,
+            s_comms: this.props.clientsObj[i].commission,
           });
         }
       }
@@ -270,19 +229,23 @@ class ManualInput extends Component {
   };
 
   loopFunc(x, y) {
-    for (let i = 0; i < this.state.value.length; i++) {
-      if (this.state.b_client === this.state.value[i].clients) {
-        for (let j = 0; j < this.state.value[i][x].length; j++) {
+    for (let i = 0; i < this.props.clientsObj.length; i++) {
+      if (this.state.b_client === this.props.clientsObj[i].clients) {
+        for (let j = 0; j < this.props.clientsObj[i][x].length; j++) {
           if (j === 0) {
             y.push(
-              <option defaultValue key={j} value={this.state.value[i][x][j]}>
-                {this.state.value[i][x][j]}
+              <option
+                defaultValue
+                key={j}
+                value={this.props.clientsObj[i][x][j]}
+              >
+                {this.props.clientsObj[i][x][j]}
               </option>
             );
           } else {
             y.push(
-              <option key={j} value={this.state.value[i][x][j]}>
-                {this.state.value[i][x][j]}
+              <option key={j} value={this.props.clientsObj[i][x][j]}>
+                {this.props.clientsObj[i][x][j]}
               </option>
             );
           }
@@ -292,19 +255,23 @@ class ManualInput extends Component {
   }
 
   sloopFunc(x, y) {
-    for (let i = 0; i < this.state.value.length; i++) {
-      if (this.state.s_client === this.state.value[i].clients) {
-        for (let j = 0; j < this.state.value[i][x].length; j++) {
+    for (let i = 0; i < this.props.clientsObj.length; i++) {
+      if (this.state.s_client === this.props.clientsObj[i].clients) {
+        for (let j = 0; j < this.props.clientsObj[i][x].length; j++) {
           if (j === 0) {
             y.push(
-              <option defaultValue key={j} value={this.state.value[i][x][j]}>
-                {this.state.value[i][x][j]}
+              <option
+                defaultValue
+                key={j}
+                value={this.props.clientsObj[i][x][j]}
+              >
+                {this.props.clientsObj[i][x][j]}
               </option>
             );
           } else {
             y.push(
-              <option key={j} value={this.state.value[i][x][j]}>
-                {this.state.value[i][x][j]}
+              <option key={j} value={this.props.clientsObj[i][x][j]}>
+                {this.props.clientsObj[i][x][j]}
               </option>
             );
           }
@@ -598,7 +565,7 @@ class ManualInput extends Component {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log("this is a success on transactions!!");
+          console.log("Success in inputting to database!");
         });
     }
   };
@@ -638,15 +605,15 @@ class ManualInput extends Component {
             <OutlinedInput name="year" labelWidth={this.state.labelWidth} />
           }
         >
-          <option value="2019" defaultValue>
-            2019
+          <option value="2020" defaultValue>
+            2020
           </option>
-          <option value="2020">2020</option>
           <option value="2021">2021</option>
           <option value="2022">2022</option>
           <option value="2023">2023</option>
           <option value="2024">2024</option>
           <option value="2025">2025</option>
+          <option value="2026">2026</option>
         </Select>
       </FormControl>
     );
@@ -808,7 +775,7 @@ class ManualInput extends Component {
                     />
                   }
                 >
-                  {this.state.productsObj.map((code, index) => (
+                  {this.props.productsObj.map((code, index) => (
                     <option key={index} value={code.code}>
                       {code.code}&nbsp;&nbsp;&nbsp;{code.name}
                     </option>
@@ -875,7 +842,7 @@ class ManualInput extends Component {
                     />
                   }
                 >
-                  {this.state.clients.map((client, index) => (
+                  {this.props.clients.map((client, index) => (
                     <option key={index} value={client}>
                       {client}
                     </option>
@@ -1126,7 +1093,7 @@ class ManualInput extends Component {
                     />
                   }
                 >
-                  {this.state.clients.map((client, index) => (
+                  {this.props.clients.map((client, index) => (
                     <option key={index} value={client}>
                       {client}
                     </option>
@@ -1289,7 +1256,7 @@ class ManualInput extends Component {
               <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
             </div>
             <br />
-            <div className={classes.midbutton}>
+            {/* <div className={classes.midbutton}>
               <Button onClick={() => this.allege("HK")} variant="contained">
                 Allege HK
               </Button>
@@ -1298,13 +1265,13 @@ class ManualInput extends Component {
                 Allege SG
               </Button>
             </div>
-            <br />
+            <br /> */}
             <div className={classes.midbutton}>
               <Button type="submit" variant="contained" color="primary">
-                Input Database
+                Submit Recap
               </Button>
               <span>&nbsp;&nbsp;</span>
-              <Button
+              {/* <Button
                 onClick={this.handleCsv}
                 variant="contained"
                 color="primary"
@@ -1318,7 +1285,7 @@ class ManualInput extends Component {
                 color="primary"
               >
                 CSV download
-              </Button>
+              </Button> */}
             </div>
           </form>
           <br />
@@ -1352,4 +1319,13 @@ class ManualInput extends Component {
   }
 }
 
-export default withStyles(styles)(ManualInput);
+const mapStateToProps = (state) => ({
+  clients: state.clients.clients,
+  clientsObj: state.clients.clientsObj,
+  loading: state.clients.loading,
+  error: state.clients.error,
+  isAuth: state.clients.isAuth,
+  productsObj: state.clients.productsObj,
+});
+
+export default connect(mapStateToProps)(withStyles(styles)(ManualInput));
