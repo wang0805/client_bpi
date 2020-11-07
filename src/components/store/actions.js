@@ -23,6 +23,7 @@ export function fetchClients() {
           let commission = 0;
           let commission_lpf = 0;
           let commission_acf = 0;
+          let commission_m42 = 0;
           let idb = "";
           let id = "";
           let entity = "";
@@ -40,6 +41,7 @@ export function fetchClients() {
               commission = data[j].commission;
               commission_lpf = data[j].commission_lpf;
               commission_acf = data[j].commission_acf;
+              commission_m42 = data[j].commission_m42;
               idb = data[j].idb;
               entity = data[j].entity;
               in_sg = data[j].in_sg;
@@ -54,6 +56,7 @@ export function fetchClients() {
             commission: commission,
             commission_lpf: commission_lpf,
             commission_acf: commission_acf,
+            commission_m42: commission_m42,
             recap_emails: recap_emails,
             invoice_emails: invoice_emails,
             idb: idb,
@@ -72,6 +75,22 @@ export function fetchClients() {
         };
       })
       .catch((error) => dispatch(fetchClientsFailure(error)));
+  };
+}
+
+export function fetchProducts() {
+  return (dispatch) => {
+    return fetch("/api/products")
+      .then(handleErrors)
+      .then((res) => res.json())
+      .then((data) => {
+        let productsObj = data;
+        dispatch(fetchProductsSuccess({ productsObj: productsObj }));
+        return {
+          productsObj: productsObj,
+        };
+      })
+      .catch((error) => console.log(error, "fetchproduct error"));
   };
 }
 
@@ -99,6 +118,8 @@ export const FETCH_CLIENTS_FAILURE = "FETCH_CLIENTS_FAILURE";
 
 export const AUTH_STATUS = "AUTH_STATUS";
 
+export const FETCH_PRODUCTS_SUCCESS = "FETCH_PRODUCTS_SUCCESS";
+
 export const fetchClientsBegin = () => ({
   type: FETCH_CLIENTS_BEGIN,
 });
@@ -116,4 +137,9 @@ export const fetchClientsFailure = (error) => ({
 export const authStatus = (status) => ({
   type: AUTH_STATUS,
   payload: status,
+});
+
+export const fetchProductsSuccess = (products) => ({
+  type: FETCH_PRODUCTS_SUCCESS,
+  payload: products,
 });

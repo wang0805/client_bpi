@@ -12,7 +12,7 @@ import Button from "@material-ui/core/Button";
 import Fdashboard from "./dashboard/fdashboard";
 
 import { connect } from "react-redux";
-import { fetchClients } from "../components/store/actions";
+import { fetchClients, fetchProducts } from "../components/store/actions";
 
 const styles = (theme) => ({
   formControl: {
@@ -59,9 +59,9 @@ class Form extends Component {
     instrument: "F",
     product_code: "FEF",
     products: "Iron ore TSI62 Futures",
-    fromM: "May",
-    toM: "May",
-    year: "2019",
+    fromM: "Jan",
+    toM: "Jan",
+    year: "2020",
     price: "",
     strike: "",
     qty: 50,
@@ -72,10 +72,12 @@ class Form extends Component {
     created_byid: "",
     deal_id: null,
     brokers: [],
+    contract_size: 100,
   };
 
   componentDidMount() {
     this.props.dispatch(fetchClients());
+    this.props.dispatch(fetchProducts());
 
     let created_byid = parseInt(localStorage.getItem("user_id"));
     this.setState({
@@ -153,7 +155,21 @@ class Form extends Component {
   }
 
   handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
+    e.persist();
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      if (e.target.name === "product_code") {
+        for (let i = 0; i < this.props.productsObj.length; i++) {
+          if (this.props.productsObj[i].code === e.target.value) {
+            this.setState(
+              { contract_size: this.props.productsObj[i].consize },
+              () => {
+                // console.log(this.state.contract_size);
+              }
+            );
+          }
+        }
+      }
+    });
   };
 
   handleChangeB = (x) => (e) => {
@@ -607,15 +623,15 @@ class Form extends Component {
             <OutlinedInput name="year" labelWidth={this.state.labelWidth} />
           }
         >
-          <option value="2019" defaultValue>
-            2019
+          <option value="2020" defaultValue>
+            2020
           </option>
-          <option value="2020">2020</option>
           <option value="2021">2021</option>
           <option value="2022">2022</option>
           <option value="2023">2023</option>
           <option value="2024">2024</option>
           <option value="2025">2025</option>
+          <option value="2026">2026</option>
         </Select>
       </FormControl>
     );
@@ -777,7 +793,7 @@ class Form extends Component {
                     />
                   }
                 >
-                  {this.state.productsObj.map((code, index) => (
+                  {this.props.productsObj.map((code, index) => (
                     <option key={index} value={code.code}>
                       {code.code}&nbsp;&nbsp;&nbsp;{code.name}
                     </option>
@@ -1327,6 +1343,7 @@ const mapStateToProps = (state) => ({
   loading: state.clients.loading,
   error: state.clients.error,
   isAuth: state.clients.isAuth,
+  productsObj: state.clients.productsObj,
 });
 
 export default connect(mapStateToProps)(withStyles(styles)(Form));
