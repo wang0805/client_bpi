@@ -16,7 +16,7 @@ import Fdashboard from "./dashboard/fdashboard";
 import axios from "axios";
 
 import { connect } from "react-redux";
-import { fetchClients } from "../components/store/actions";
+import { fetchClients, fetchProducts } from "../components/store/actions";
 
 const CustomTableCell = withStyles(() => ({
   head: {
@@ -55,10 +55,12 @@ class Edit extends Component {
     price: "",
     productsObj: [],
     instruObj: [],
+    contract_size: 100,
   };
 
   async componentDidMount() {
     await this.props.dispatch(fetchClients());
+    await this.props.dispatch(fetchProducts());
 
     await fetch(`/api/transactions/${this.props.match.params.id}`)
       .then((res) => res.json())
@@ -80,6 +82,13 @@ class Edit extends Component {
             data["b_recap"] = this.props.clientsObj[i].recap_emails;
           } else if (data.s_clientid === this.props.clientsObj[i].id) {
             data["s_recap"] = this.props.clientsObj[i].recap_emails;
+          }
+        }
+        for (let i = 0; i < this.props.productsObj.length; i++) {
+          if (data.product_code === this.props.productsObj[i].code) {
+            this.setState({ contract_size: this.props.productsObj[i].consize });
+            //this line below is added due to resend buyer or seller fetching from data
+            data["contract_size"] = this.props.productsObj[i].consize;
           }
         }
         //for making a select dropdown for product_code
@@ -125,6 +134,7 @@ class Edit extends Component {
       b_accounts: this.state.data.b_account,
       s_accounts: this.state.data.s_account,
       consMonth: this.state.data.consmonth,
+      contract_size: this.state.contract_size,
     };
     axios
       .post("/createrecappdf", data)
@@ -179,8 +189,9 @@ class Edit extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-
-    const data = { ...this.state };
+    let volume =
+      this.state.qty * this.state.contract_size * this.state.data.consMonth;
+    const data = { ...this.state, volume };
     fetch(`/api/transactions/${this.state.tradeid}`, {
       method: "POST",
       headers: {
@@ -402,6 +413,7 @@ const mapStateToProps = (state) => ({
   clientsObj: state.clients.clientsObj,
   loading: state.clients.loading,
   error: state.clients.error,
+  productsObj: state.clients.productsObj,
 });
 
 export default connect(mapStateToProps)(withRouter(withStyles(styles)(Edit)));

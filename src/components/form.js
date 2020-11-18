@@ -75,9 +75,9 @@ class Form extends Component {
     contract_size: 100,
   };
 
-  componentDidMount() {
-    this.props.dispatch(fetchClients());
-    this.props.dispatch(fetchProducts());
+  async componentDidMount() {
+    await this.props.dispatch(fetchClients());
+    await this.props.dispatch(fetchProducts());
 
     let created_byid = parseInt(localStorage.getItem("user_id"));
     this.setState({
