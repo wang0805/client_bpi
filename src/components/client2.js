@@ -130,6 +130,7 @@ class Client extends Component {
       obj.id = array[i].id;
       obj.in_sg = array[i].in_sg;
       obj.duedate = array[i].duedate;
+      obj.deduct_broker_comms = array[i].deduct_broker_comms;
       obj.checked = false;
       output.push(obj);
     }
@@ -236,6 +237,7 @@ class Client extends Component {
             transac.size = size;
             transac.contract = transactions[j].contract;
             transac.deal_id = transactions[j].deal_id;
+            transac.deduct_broker_comms = clients[i].deduct_broker_comms;
           }
           if (
             transactions[j].s_clientid === clients[i].id &&
@@ -277,6 +279,7 @@ class Client extends Component {
             transac.size = size;
             transac.contract = transactions[j].contract;
             transac.deal_id = transactions[j].deal_id;
+            transac.deduct_broker_comms = clients[i].deduct_broker_comms;
           }
           if (Object.keys(transac).length) {
             clientarr.push(transac);
@@ -352,6 +355,7 @@ class Client extends Component {
               transac.size = size;
               transac.contract = transactions[j].contract;
               transac.deal_id = transactions[j].deal_id;
+              transac.deduct_broker_comms = clients[i].deduct_broker_comms;
             }
             if (
               transactions[j].s_clientid === clients[i].id &&
@@ -393,6 +397,7 @@ class Client extends Component {
               transac.size = size;
               transac.contract = transactions[j].contract;
               transac.deal_id = transactions[j].deal_id;
+              transac.deduct_broker_comms = clients[i].deduct_broker_comms;
             }
             if (Object.keys(transac).length) {
               clientarr.push(transac);
@@ -532,6 +537,7 @@ class Client extends Component {
             transac.size = size;
             transac.contract = transactions[j].contract;
             transac.deal_id = transactions[j].deal_id;
+            transac.deduct_broker_comms = clients[i].deduct_broker_comms;
           }
           if (
             transactions[j].s_clientid === clients[i].id &&
@@ -573,6 +579,7 @@ class Client extends Component {
             transac.size = size;
             transac.contract = transactions[j].contract;
             transac.deal_id = transactions[j].deal_id;
+            transac.deduct_broker_comms = clients[i].deduct_broker_comms;
           }
           if (Object.keys(transac).length) {
             clientarr.push(transac);
@@ -629,10 +636,12 @@ class Client extends Component {
                 this.setState((prevState) => ({
                   invoiceNoHK: parseInt(prevState.invoiceNoHK) + 1,
                 }));
+                console.log(clientarr[0].client, "sent from hk");
               } else if (clientarr[0].entity === "SG") {
                 this.setState((prevState) => ({
                   invoiceNoSG: parseInt(prevState.invoiceNoSG) + 1,
                 }));
+                console.log(clientarr[0].client, "sent from sg");
               } else {
                 console.log("submit function cannot find entity");
               }
@@ -647,7 +656,6 @@ class Client extends Component {
         } else {
           console.log(`no invoice for ${this.state.clients[i].client}`);
         }
-
         //   console.log(i, "next if");
       }
     }

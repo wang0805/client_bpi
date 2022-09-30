@@ -148,8 +148,8 @@ class Blotter extends Component {
     let csvContent =
       "data:text/csv;charset=utf-8," +
       arrayCsv.map((e) => e.join(",")).join("\n");
-    var encodedUri = encodeURI(csvContent);
-    window.open(encodedUri);
+    // var encodedUri = encodeURI(csvContent);
+    window.open(csvContent);
   };
 
   render() {

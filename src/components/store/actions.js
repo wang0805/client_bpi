@@ -29,7 +29,8 @@ export function fetchClients() {
           let id = "";
           let entity = "";
           let in_sg = 0;
-          let duedate = 7;
+          let duedate = 14;
+          let deduct_broker_comms = "";
 
           for (let j = 0; j < data.length; j++) {
             if (data[j].client_name === clients[i]) {
@@ -48,6 +49,7 @@ export function fetchClients() {
               entity = data[j].entity;
               in_sg = data[j].in_sg;
               duedate = data[j].duedate;
+              deduct_broker_comms = data[j].deduct_broker_comms;
             }
           }
           clientsObj.push({
@@ -67,6 +69,7 @@ export function fetchClients() {
             entity: entity,
             in_sg: in_sg,
             duedate: duedate,
+            deduct_broker_comms: deduct_broker_comms,
           });
         }
         dispatch(

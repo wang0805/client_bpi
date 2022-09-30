@@ -121,10 +121,11 @@ class Client extends Component {
       obj.id = array[i].id;
       obj.in_sg = array[i].in_sg;
       obj.duedate = array[i].duedate;
+      obj.deduct_broker_comms = array[i].deduct_broker_comms;
       obj.checked = false;
       output.push(obj);
     }
-    this.setState({ clients: [...output] });
+    this.setState({ clients: [...output] }, () => console.log("testing"));
   }
 
   //   componentDidUpdate(prevProps, prevState) {
@@ -230,6 +231,7 @@ class Client extends Component {
             transac.size = size;
             transac.contract = transactions[j].contract;
             transac.deal_id = transactions[j].deal_id;
+            transac.deduct_broker_comms = clients[i].deduct_broker_comms;
           }
           if (
             transactions[j].s_clientid === clients[i].id &&
@@ -267,6 +269,7 @@ class Client extends Component {
             transac.size = size;
             transac.contract = transactions[j].contract;
             transac.deal_id = transactions[j].deal_id;
+            transac.deduct_broker_comms = clients[i].deduct_broker_comms;
           }
           if (Object.keys(transac).length) {
             clientarr.push(transac);
