@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { MyContext } from "../components/store/createContext";
+import { MyContext } from "./store/createContext";
 import axios from "axios";
 import { saveAs } from "file-saver";
 
