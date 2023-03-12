@@ -215,6 +215,14 @@ class Fdashboard extends React.Component {
               <ListItemText primary={"Invoice"} />
             </ListItem>
           </List>
+          <List>
+            <ListItem button component={Link} to="/creditnote">
+              <ListItemIcon>
+                <MonetizationOn />
+              </ListItemIcon>
+              <ListItemText primary={"Credit Note"} />
+            </ListItem>
+          </List>
           {/* <List>
             <ListItem button key={"NA"}>
               <ListItemIcon>

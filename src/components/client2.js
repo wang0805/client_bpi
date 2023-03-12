@@ -65,6 +65,7 @@ class Client extends Component {
     invoiceNo: 0,
     invoiceNoSG: 0,
     invoiceNoHK: 0,
+    invoiceNoUK: 0,
     disabled: true,
     transactions: [],
   };
@@ -281,6 +282,8 @@ class Client extends Component {
             transac.deal_id = transactions[j].deal_id;
             transac.deduct_broker_comms = clients[i].deduct_broker_comms;
           }
+          //**** take note that since we are only pushing 1x transac, if buyers and sellers are the same entity then only 1 will be pushed
+          // resulting in a missing txn in invoice
           if (Object.keys(transac).length) {
             clientarr.push(transac);
           }
@@ -409,7 +412,10 @@ class Client extends Component {
             invoiceNo = this.state.invoiceNoHK;
           } else if (clientarr[0].entity === "SG") {
             invoiceNo = this.state.invoiceNoSG;
+          } else if (clientarr[0].entity === "UK") {
+            invoiceNo = this.state.invoiceNoUK;
           }
+          
           //finish pushing all the transaction of 1 client
           let dataState = {
             client: [...clientarr],
@@ -453,6 +459,10 @@ class Client extends Component {
               } else if (clientarr[0].entity === "SG") {
                 this.setState((prevState) => ({
                   invoiceNoSG: parseInt(prevState.invoiceNoSG) + 1,
+                }));
+              } else if (clientarr[0].entity === "UK") {
+                this.setState((prevState) => ({
+                  invoiceNoUK: parseInt(prevState.invoiceNoUK) + 1,
                 }));
               } else {
                 console.log("submit function cannot find entity");
@@ -595,6 +605,8 @@ class Client extends Component {
             invoiceNo = this.state.invoiceNoHK;
           } else if (clientarr[0].entity === "SG") {
             invoiceNo = this.state.invoiceNoSG;
+          } else if (clientarr[0].entity === "UK") {
+            invoiceNo = this.state.invoiceNoUK;
           }
           //finish pushing all the transaction of 1 client
           let dataState = {
@@ -642,6 +654,11 @@ class Client extends Component {
                   invoiceNoSG: parseInt(prevState.invoiceNoSG) + 1,
                 }));
                 console.log(clientarr[0].client, "sent from sg");
+              } else if (clientarr[0].entity === "UK") {
+                this.setState((prevState) => ({
+                  invoiceNoUK: parseInt(prevState.invoiceNoUK) + 1,
+                }));
+                console.log(clientarr[0].client, "sent from UK");
               } else {
                 console.log("submit function cannot find entity");
               }
@@ -784,7 +801,9 @@ class Client extends Component {
       invoiceNo = this.state.invoiceNoHK;
     } else if (this.state.clientarr[0].entity === "SG") {
       invoiceNo = this.state.invoiceNoSG;
-    }
+    } else if (this.state.clientarr[0].entity === "UK") {
+      invoiceNo = this.state.invoiceNoUK;
+    } 
     let dataState = {
       client: [...this.state.clientarr],
       exrate: this.state.exrate,
@@ -809,6 +828,8 @@ class Client extends Component {
       invoiceNo = this.state.invoiceNoHK;
     } else if (this.state.clientarr[0].entity === "SG") {
       invoiceNo = this.state.invoiceNoSG;
+    } else if (this.state.clientarr[0].entity === "UK") {
+      invoiceNo = this.state.invoiceNoUK;
     }
     let data = {
       invoiceNo: invoiceNo,
@@ -841,6 +862,10 @@ class Client extends Component {
           } else if (this.state.clientarr[0].entity === "SG") {
             this.setState((prevState) => ({
               invoiceNoSG: parseInt(prevState.invoiceNoSG) + 1,
+            }));
+          } else if (this.state.clientarr[0].entity === "UK") {
+            this.setState((prevState) => ({
+              invoiceNoUK: parseInt(prevState.invoiceNoUK) + 1,
             }));
           } else {
             console.log("submit function cannot find entity");
@@ -1032,6 +1057,16 @@ class Client extends Component {
               type="number"
               inputProps={{ style: { width: 75 } }}
               value={this.state.invoiceNoHK}
+              onChange={this.handleChange1}
+              variant="outlined"
+            />
+            <TextField
+              className={classes.textControl}
+              label="Invoice No. (UK)"
+              name="invoiceNoUK"
+              type="number"
+              inputProps={{ style: { width: 75 } }}
+              value={this.state.invoiceNoUK}
               onChange={this.handleChange1}
               variant="outlined"
             />
