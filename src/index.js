@@ -10,6 +10,7 @@ import Transactions from "./components/transactions";
 import Form from "./components/form";
 // import Client from "./components/client";
 import Client2 from "./components/client2";
+import Creditnote from "./components/creditNote";
 
 import Blotter from "./components/blotter";
 import Manualinput from "./components/manualinput";
@@ -32,6 +33,7 @@ const Routing = (props) => (
         <Route path="/form" component={Form} />
         <Route path="/blotter" component={Blotter} />
         <Route path="/invoice" component={Client2} />
+        <Route path="/creditnote" component={Creditnote} />
         <Route path="/transactions/:id" component={Edit} />
         <Route path="/transactions" component={Transactions} />
         <Route path="/manualinput" component={Manualinput} />

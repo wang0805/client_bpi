@@ -282,6 +282,8 @@ class Client extends Component {
             transac.deal_id = transactions[j].deal_id;
             transac.deduct_broker_comms = clients[i].deduct_broker_comms;
           }
+          //**** take note that since we are only pushing 1x transac, if buyers and sellers are the same entity then only 1 will be pushed
+          // resulting in a missing txn in invoice
           if (Object.keys(transac).length) {
             clientarr.push(transac);
           }
