@@ -8,9 +8,9 @@ import { withStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 // import FormLabel from "@material-ui/core/FormLabel";
 // import FormGroup from "@material-ui/core/FormGroup";
-// import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 // import FormHelperText from "@material-ui/core/FormHelperText";
-// import Checkbox from "@material-ui/core/Checkbox";
+import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -57,7 +57,8 @@ const styles = (theme) => ({
 class Creditnote extends Component {
   state = {
     clients: [],
-    clientarr: [],
+    clientarr: [], //all trades
+    selectedClienrarr: [], // this one is for checked trades only
     fromM: "",
     toM: "",
     year: 2020,
@@ -171,139 +172,156 @@ class Creditnote extends Component {
     return "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(month) / 3 + 1;
   };
 
-  oldhandleChange = (name) => async (event) => {
-    const { transactions } = this.state;
+  // oldhandleChange = (name) => async (event) => {
+  //   const { transactions } = this.state;
 
-    let clients = [...this.state.clients];
-    for (let i = 0; i < clients.length; i++) {
-      if (clients[i].id === name.id) {
-        clients[i].checked = event.target.checked;
+  //   let clients = [...this.state.clients];
+  //   for (let i = 0; i < clients.length; i++) {
+  //     if (clients[i].id === name.id) {
+  //       clients[i].checked = event.target.checked;
+  //       break;
+  //     }
+  //   }
+  //   await this.setState({
+  //     clients: [...clients],
+  //     disabled: true,
+  //   });
+
+  //   let rangearr = this.range(
+  //     this.getMon(this.state.fromM),
+  //     this.getMon(this.state.toM)
+  //   );
+  //   let clientarr = [];
+
+  //   // set a new array for clientarr to go into pdf
+  //   for (let i = 0; i < this.state.clients.length; i++) {
+  //     if (this.state.clients[i].checked === true) {
+  //       // clientarr = [] if u want only 1 client to show
+  //       // clientarr = [];
+  //       for (let j = 0; j < transactions.length; j++) {
+  //         let transac = {};
+  //         let dateMonth = new Date(transactions[j].trade_date).getMonth() + 1;
+  //         let dateYear = new Date(transactions[j].trade_date).getFullYear();
+  //         if (
+  //           transactions[j].b_clientid === clients[i].id &&
+  //           rangearr.includes(dateMonth) &&
+  //           dateYear === parseInt(this.state.year)
+  //         ) {
+  //           let size = transactions[j].volume;
+  //           // let size = transactions[j].qty;
+  //           // if (transactions[j].instrument === "S") {
+  //           //   size = transactions[j].qty * 500 * transactions[j].consmonth;
+  //           // } else {
+  //           //   size = transactions[j].qty * 100 * transactions[j].consmonth;
+  //           // }
+  //           let date = new Date(
+  //             transactions[j].trade_date
+  //           ).toLocaleDateString();
+  //           transac.id = transactions[j].trade_id;
+  //           transac.address = clients[i].address;
+  //           transac.entity = clients[i].entity;
+  //           transac.in_sg = clients[i].in_sg;
+  //           transac.duedate = clients[i].duedate;
+  //           transac.invoice_emails = clients[i].invoice_emails;
+  //           transac.trade_date = date;
+  //           transac.client = clients[i].client;
+  //           transac.product = transactions[j].product;
+  //           transac.instrument = transactions[j].instrument;
+  //           transac.bs = "Buy";
+  //           transac.account = transactions[j].b_account;
+  //           transac.idb = transactions[j].b_idb;
+  //           transac.trader = transactions[j].b_trader;
+  //           transac.comms = transactions[j].b_commission;
+  //           transac.tcomms =
+  //             Math.round(
+  //               parseFloat(transactions[j].b_commission) * size * 100
+  //             ) / 100;
+  //           transac.price = transactions[j].price;
+  //           transac.strike = transactions[j].strike;
+  //           transac.qty = transactions[j].qty;
+  //           transac.size = size;
+  //           transac.contract = transactions[j].contract;
+  //           transac.deal_id = transactions[j].deal_id;
+  //           transac.deduct_broker_comms = clients[i].deduct_broker_comms;
+  //         }
+  //         if (
+  //           transactions[j].s_clientid === clients[i].id &&
+  //           rangearr.includes(dateMonth) &&
+  //           dateYear === parseInt(this.state.year)
+  //         ) {
+  //           let size = transactions[j].volume;
+  //           // let size = transactions[j].qty;
+  //           // if (transactions[j].instrument === "S") {
+  //           //   size = transactions[j].qty * 500 * transactions[j].consmonth;
+  //           // } else {
+  //           //   size = transactions[j].qty * 100 * transactions[j].consmonth;
+  //           // }
+  //           let date = new Date(
+  //             transactions[j].trade_date
+  //           ).toLocaleDateString();
+  //           transac.id = transactions[j].trade_id;
+  //           transac.address = clients[i].address;
+  //           transac.entity = clients[i].entity;
+  //           transac.in_sg = clients[i].in_sg;
+  //           transac.duedate = clients[i].duedate;
+  //           transac.invoice_emails = clients[i].invoice_emails;
+  //           transac.trade_date = date;
+  //           transac.client = clients[i].client;
+  //           transac.product = transactions[j].product;
+  //           transac.instrument = transactions[j].instrument;
+  //           transac.bs = "Sell";
+  //           transac.account = transactions[j].s_account;
+  //           transac.idb = transactions[j].s_idb;
+  //           transac.trader = transactions[j].s_trader;
+  //           transac.comms = transactions[j].s_commission;
+  //           transac.tcomms =
+  //             Math.round(
+  //               parseFloat(transactions[j].s_commission) * size * 100
+  //             ) / 100;
+  //           transac.price = transactions[j].price;
+  //           transac.strike = transactions[j].strike;
+  //           transac.qty = transactions[j].qty;
+  //           transac.size = size;
+  //           transac.contract = transactions[j].contract;
+  //           transac.deal_id = transactions[j].deal_id;
+  //           transac.deduct_broker_comms = clients[i].deduct_broker_comms;
+  //         }
+  //         if (Object.keys(transac).length) {
+  //           clientarr.push(transac);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   await this.setState({ clientarr });
+  // };
+  handleChange3 = (name) => async (e) => {
+    // uncheck the selected clients > put the unselected clients into a new [] selectedclientarr
+    const {clientarr} = this.state
+    // console.log(name)
+    for (let i = 0; i < clientarr.length; i++){
+      if(clientarr[i].id === name){
+        clientarr[i].checked = e.target.checked;
         break;
       }
     }
     await this.setState({
-      clients: [...clients],
-      disabled: true,
-    });
-
-    let rangearr = this.range(
-      this.getMon(this.state.fromM),
-      this.getMon(this.state.toM)
-    );
-    let clientarr = [];
-
-    // set a new array for clientarr to go into pdf
-    for (let i = 0; i < this.state.clients.length; i++) {
-      if (this.state.clients[i].checked === true) {
-        // clientarr = [] if u want only 1 client to show
-        // clientarr = [];
-        for (let j = 0; j < transactions.length; j++) {
-          let transac = {};
-          let dateMonth = new Date(transactions[j].trade_date).getMonth() + 1;
-          let dateYear = new Date(transactions[j].trade_date).getFullYear();
-          if (
-            transactions[j].b_clientid === clients[i].id &&
-            rangearr.includes(dateMonth) &&
-            dateYear === parseInt(this.state.year)
-          ) {
-            let size = transactions[j].volume;
-            // let size = transactions[j].qty;
-            // if (transactions[j].instrument === "S") {
-            //   size = transactions[j].qty * 500 * transactions[j].consmonth;
-            // } else {
-            //   size = transactions[j].qty * 100 * transactions[j].consmonth;
-            // }
-            let date = new Date(
-              transactions[j].trade_date
-            ).toLocaleDateString();
-            transac.id = transactions[j].trade_id;
-            transac.address = clients[i].address;
-            transac.entity = clients[i].entity;
-            transac.in_sg = clients[i].in_sg;
-            transac.duedate = clients[i].duedate;
-            transac.invoice_emails = clients[i].invoice_emails;
-            transac.trade_date = date;
-            transac.client = clients[i].client;
-            transac.product = transactions[j].product;
-            transac.instrument = transactions[j].instrument;
-            transac.bs = "Buy";
-            transac.account = transactions[j].b_account;
-            transac.idb = transactions[j].b_idb;
-            transac.trader = transactions[j].b_trader;
-            transac.comms = transactions[j].b_commission;
-            transac.tcomms =
-              Math.round(
-                parseFloat(transactions[j].b_commission) * size * 100
-              ) / 100;
-            transac.price = transactions[j].price;
-            transac.strike = transactions[j].strike;
-            transac.qty = transactions[j].qty;
-            transac.size = size;
-            transac.contract = transactions[j].contract;
-            transac.deal_id = transactions[j].deal_id;
-            transac.deduct_broker_comms = clients[i].deduct_broker_comms;
-          }
-          if (
-            transactions[j].s_clientid === clients[i].id &&
-            rangearr.includes(dateMonth) &&
-            dateYear === parseInt(this.state.year)
-          ) {
-            let size = transactions[j].volume;
-            // let size = transactions[j].qty;
-            // if (transactions[j].instrument === "S") {
-            //   size = transactions[j].qty * 500 * transactions[j].consmonth;
-            // } else {
-            //   size = transactions[j].qty * 100 * transactions[j].consmonth;
-            // }
-            let date = new Date(
-              transactions[j].trade_date
-            ).toLocaleDateString();
-            transac.id = transactions[j].trade_id;
-            transac.address = clients[i].address;
-            transac.entity = clients[i].entity;
-            transac.in_sg = clients[i].in_sg;
-            transac.duedate = clients[i].duedate;
-            transac.invoice_emails = clients[i].invoice_emails;
-            transac.trade_date = date;
-            transac.client = clients[i].client;
-            transac.product = transactions[j].product;
-            transac.instrument = transactions[j].instrument;
-            transac.bs = "Sell";
-            transac.account = transactions[j].s_account;
-            transac.idb = transactions[j].s_idb;
-            transac.trader = transactions[j].s_trader;
-            transac.comms = transactions[j].s_commission;
-            transac.tcomms =
-              Math.round(
-                parseFloat(transactions[j].s_commission) * size * 100
-              ) / 100;
-            transac.price = transactions[j].price;
-            transac.strike = transactions[j].strike;
-            transac.qty = transactions[j].qty;
-            transac.size = size;
-            transac.contract = transactions[j].contract;
-            transac.deal_id = transactions[j].deal_id;
-            transac.deduct_broker_comms = clients[i].deduct_broker_comms;
-          }
-          if (Object.keys(transac).length) {
-            clientarr.push(transac);
-          }
-        }
-      }
-    }
-    await this.setState({ clientarr });
-  };
+      clientarr: [...clientarr]
+    })
+  }
 
   //add trade ID 
   handleChange2 = (e) => {
     e.persist();
+    const { clients } = this.state;
+    const { transactions } = this.state;
+
     if(e.target.name === "client_id"){
         this.setState({clientarr:[]})
         this.setState({tradeId: 0})
     }
     this.setState({[e.target.name]: e.target.value}, ()=>{
         if (e.target.name === "client_id"){
-            let clients = [...this.state.clients];
+            // let clients = [...this.state.clients];
             let client = {}
             for (let i =0; i<clients.length; i++){
                 // clients[i].id is a Number while state.client_id is a String/ or can use ==
@@ -320,7 +338,101 @@ class Creditnote extends Component {
                 }
             }
             this.setState({client}, ()=>{
-                // console.log(this.state.client)
+              //find clients trades based on that month and year  
+              let clientarr = []
+              for (let i=0; i<transactions.length; i++){
+                let transac = {}
+                let dateMonth = new Date(transactions[i].trade_date).getMonth() + 1;
+                let dateYear = new Date(transactions[i].trade_date).getFullYear();
+                // console.log(transactions[i].b_clientid, this.state.client_id, this.getMon(this.state.fromM), dateMonth)
+                if(transactions[i].b_clientid === Number(this.state.client_id) &&
+                  this.getMon(this.state.fromM) === dateMonth &&
+                  dateYear === parseInt(this.state.year)){
+                    let size = transactions[i].volume;
+                    // let size = transactions[j].qty;
+                    // if (transactions[j].instrument === "S") {
+                    //   size = transactions[j].qty * 500 * transactions[j].consmonth;
+                    // } else {
+                    //   size = transactions[j].qty * 100 * transactions[j].consmonth;
+                    // }
+                    let date = new Date(
+                      transactions[i].trade_date
+                    ).toLocaleDateString();
+                    transac.id = transactions[i].trade_id;
+                    transac.address = this.state.client.address;
+                    transac.entity = this.state.client.entity;
+                    transac.in_sg = this.state.client.in_sg;
+                    transac.duedate = this.state.client.duedate;
+                    transac.invoice_emails = this.state.client.invoice_emails;
+                    transac.trade_date = date;
+                    transac.client = this.state.client.client;
+                    transac.product = transactions[i].product;
+                    transac.instrument = transactions[i].instrument;
+                    transac.bs = "Buy";
+                    transac.account = transactions[i].b_account;
+                    transac.idb = transactions[i].b_idb;
+                    transac.trader = transactions[i].b_trader;
+                    transac.comms = transactions[i].b_commission;
+                    transac.tcomms =
+                      Math.round(
+                        parseFloat(transactions[i].b_commission) * size * 100
+                      ) / 100;
+                    transac.price = transactions[i].price;
+                    transac.strike = transactions[i].strike;
+                    transac.qty = transactions[i].qty;
+                    transac.size = size;
+                    transac.contract = transactions[i].contract;
+                    transac.deal_id = transactions[i].deal_id;
+                    transac.deduct_broker_comms = this.state.client.deduct_broker_comms;
+                    transac.checked = true
+                  }
+                if(transactions[i].s_clientid === Number(this.state.client_id) &&
+                  this.getMon(this.state.fromM) === dateMonth &&
+                  dateYear === parseInt(this.state.year)){
+                    let size = transactions[i].volume;
+                    // let size = transactions[j].qty;
+                    // if (transactions[j].instrument === "S") {
+                    //   size = transactions[j].qty * 500 * transactions[j].consmonth;
+                    // } else {
+                    //   size = transactions[j].qty * 100 * transactions[j].consmonth;
+                    // }
+                    let date = new Date(
+                      transactions[i].trade_date
+                    ).toLocaleDateString();
+                    transac.id = transactions[i].trade_id;
+                    transac.address = this.state.client.address;
+                    transac.entity = this.state.client.entity;
+                    transac.in_sg = this.state.client.in_sg;
+                    transac.duedate = this.state.client.duedate;
+                    transac.invoice_emails = this.state.client.invoice_emails;
+                    transac.trade_date = date;
+                    transac.client = this.state.client.client;
+                    transac.product = transactions[i].product;
+                    transac.instrument = transactions[i].instrument;
+                    transac.bs = "Sell";
+                    transac.account = transactions[i].s_account;
+                    transac.idb = transactions[i].s_idb;
+                    transac.trader = transactions[i].s_trader;
+                    transac.comms = transactions[i].s_commission;
+                    transac.tcomms =
+                      Math.round(
+                        parseFloat(transactions[i].s_commission) * size * 100
+                      ) / 100;
+                    transac.price = transactions[i].price;
+                    transac.strike = transactions[i].strike;
+                    transac.qty = transactions[i].qty;
+                    transac.size = size;
+                    transac.contract = transactions[i].contract;
+                    transac.deal_id = transactions[i].deal_id;
+                    transac.deduct_broker_comms = this.state.client.deduct_broker_comms;
+                    transac.checked = true
+                  }
+                  if (Object.keys(transac).length){
+                    clientarr.push(transac)
+                  }
+              }
+              console.log(clientarr)
+              this.setState({ clientarr });
             })
         }
     })
@@ -364,6 +476,7 @@ class Creditnote extends Component {
                 transac.contract = data.contract;
                 transac.deal_id = data.deal_id;
                 transac.deduct_broker_comms = this.state.client.deduct_broker_comms;
+                transac.checked = true
             }
             if (Number(data.s_clientid) === Number(this.state.client.id)) {
                 let size = data.volume;
@@ -381,13 +494,13 @@ class Creditnote extends Component {
                 transac.product = data.product;
                 transac.instrument = data.instrument;
                 transac.bs = "Sell";
-                transac.account = data.b_account;
-                transac.idb = data.b_idb;
-                transac.trader = data.b_trader;
-                transac.comms = data.b_commission;
+                transac.account = data.s_account;
+                transac.idb = data.s_idb;
+                transac.trader = data.s_trader;
+                transac.comms = data.s_commission;
                 transac.tcomms =
                 Math.round(
-                    parseFloat(data.b_commission) * size * 100
+                    parseFloat(data.s_commission) * size * 100
                 ) / 100;
                 transac.price = data.price;
                 transac.strike = data.strike;
@@ -396,8 +509,9 @@ class Creditnote extends Component {
                 transac.contract = data.contract;
                 transac.deal_id = data.deal_id;
                 transac.deduct_broker_comms = this.state.client.deduct_broker_comms;
+                transac.checked = true
             }
-            console.log(transac)
+            // console.log(transac)
             this.setState({clientarr: [...this.state.clientarr, transac]},()=>{
                 console.log(this.state.clientarr)
             })
@@ -413,8 +527,20 @@ class Creditnote extends Component {
     } else if (this.state.clientarr[0].entity === "UK") {
       invoiceNo = this.state.invoiceNoUK;
     } 
+
+    //get unchecked trades to go into PDF only
+    let selectedClientarr = [];
+    const {clientarr} = this.state
+
+    for (let i=0; i<clientarr.length; i++){
+      if(clientarr[i].checked === true){
+        selectedClientarr.push(clientarr[i])
+      }
+    }
+    // console.log(selectedClientarr)
+
     let dataState = {
-      client: [...this.state.clientarr],
+      client: [...selectedClientarr],
       exrate: this.state.exrate,
       invoiceNo: invoiceNo,
       fromM: this.state.fromM,
@@ -493,6 +619,7 @@ class Creditnote extends Component {
     const disabled = this.state.disabled;
 
     let headers = [
+      "Select",
       "Id",
       "Trade Date",
       "Client",
@@ -731,6 +858,24 @@ class Creditnote extends Component {
                   {this.state.clientarr.map((client, index) => {
                     return (
                       <TableRow key={index}>
+                        {/* <FormControlLabel
+                          key={index}
+                          control={
+                            <Checkbox
+                              checked={client.checked}
+                              onChange={this.handleChange2}
+                              value={client.id}
+                            />
+                          }
+                          label={client.id}
+                          /> */}
+                        <CustomTableCell align="center">
+                          <Checkbox
+                            checked={client.checked}
+                            onChange={this.handleChange3(client.id)}
+                            value={client.id}
+                          />
+                        </CustomTableCell>
                         <CustomTableCell align="center">
                           {client.id}
                         </CustomTableCell>
