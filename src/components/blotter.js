@@ -104,8 +104,8 @@ class Blotter extends Component {
       //   size = this.state.data[i].qty * 100 * this.state.data[i].consmonth;
       // }
       let totalComms =
-        size * parseFloat(this.state.data[i].b_commission) +
-        size * parseFloat(this.state.data[i].s_commission);
+        parseFloat(this.state.data[i].b_tcomm) +
+        parseFloat(this.state.data[i].s_tcomm);
       let entityS = "";
       let entityB = "";
       for (let j = 0; j < this.props.clientsObj.length; j++) {
@@ -137,12 +137,11 @@ class Blotter extends Component {
       array.push(this.state.data[i].price);
       array.push(this.state.data[i].qty);
       array.push(size);
-      array.push(size * parseFloat(this.state.data[i].b_commission));
-      array.push(size * parseFloat(this.state.data[i].s_commission));
+      array.push(parseFloat(this.state.data[i].b_tcomm));
+      array.push(parseFloat(this.state.data[i].s_tcomm));
       array.push(totalComms);
       array.push(this.state.data[i].deal_id);
       array.push(this.state.data[i].created_by);
-
       arrayCsv.push(array);
     }
     let csvContent =
@@ -194,7 +193,6 @@ class Blotter extends Component {
                     Total Commissions
                   </CustomTableCell>
                   <CustomTableCell align="center">Deal Id</CustomTableCell>
-                  <CustomTableCell align="center">Created by</CustomTableCell>
                   <CustomTableCell align="center">
                     Created at (GMT +8)
                   </CustomTableCell>
@@ -290,26 +288,23 @@ class Blotter extends Component {
                         <CustomTableCell align="center">{size}</CustomTableCell>
                         <CustomTableCell align="center">
                           {Math.round(
-                            size * parseFloat(row.b_commission) * 100
+                            parseFloat(row.b_tcomm) * 100
                           ) / 100}
                         </CustomTableCell>
                         <CustomTableCell align="center">
                           {Math.round(
-                            size * parseFloat(row.s_commission) * 100
+                            parseFloat(row.s_tcomm) * 100
                           ) / 100}
                         </CustomTableCell>
                         <CustomTableCell align="center">
                           {Math.round(
-                            (size * parseFloat(row.b_commission) +
-                              size * parseFloat(row.s_commission)) *
+                            (parseFloat(row.b_tcomm) +
+                              parseFloat(row.s_tcomm)) *
                               100
                           ) / 100}
                         </CustomTableCell>
                         <CustomTableCell align="center">
                           {row.deal_id}
-                        </CustomTableCell>
-                        <CustomTableCell align="center">
-                          {row.created_by}
                         </CustomTableCell>
                         <CustomTableCell align="center">
                           {date_time}

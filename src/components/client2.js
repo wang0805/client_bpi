@@ -170,6 +170,7 @@ class Client extends Component {
 
   handleChange = (name) => async (event) => {
     const { transactions } = this.state;
+    console.log(transactions)
 
     let clients = [...this.state.clients];
     for (let i = 0; i < clients.length; i++) {
@@ -230,7 +231,7 @@ class Client extends Component {
             transac.comms = transactions[j].b_commission;
             transac.tcomms =
               Math.round(
-                parseFloat(transactions[j].b_commission) * size * 100
+                parseFloat(transactions[j].b_tcomm) * 100
               ) / 100;
             transac.price = transactions[j].price;
             transac.strike = transactions[j].strike;
@@ -272,7 +273,7 @@ class Client extends Component {
             transac.comms = transactions[j].s_commission;
             transac.tcomms =
               Math.round(
-                parseFloat(transactions[j].s_commission) * size * 100
+                parseFloat(transactions[j].s_tcomm) * 100
               ) / 100;
             transac.price = transactions[j].price;
             transac.strike = transactions[j].strike;
@@ -350,7 +351,7 @@ class Client extends Component {
               transac.comms = transactions[j].b_commission;
               transac.tcomms =
                 Math.round(
-                  parseFloat(transactions[j].b_commission) * size * 100
+                  parseFloat(transactions[j].b_tcomm) * 100
                 ) / 100;
               transac.price = transactions[j].price;
               transac.strike = transactions[j].strike;
@@ -392,7 +393,7 @@ class Client extends Component {
               transac.comms = transactions[j].s_commission;
               transac.tcomms =
                 Math.round(
-                  parseFloat(transactions[j].s_commission) * size * 100
+                  parseFloat(transactions[j].s_tcomm) * 100
                 ) / 100;
               transac.price = transactions[j].price;
               transac.strike = transactions[j].strike;
@@ -539,7 +540,7 @@ class Client extends Component {
             transac.comms = transactions[j].b_commission;
             transac.tcomms =
               Math.round(
-                parseFloat(transactions[j].b_commission) * size * 100
+                parseFloat(transactions[j].b_tcomm) * 100
               ) / 100;
             transac.price = transactions[j].price;
             transac.strike = transactions[j].strike;
@@ -581,7 +582,7 @@ class Client extends Component {
             transac.comms = transactions[j].s_commission;
             transac.tcomms =
               Math.round(
-                parseFloat(transactions[j].s_commission) * size * 100
+                parseFloat(transactions[j].s_tcomm) * 100
               ) / 100;
             transac.price = transactions[j].price;
             transac.strike = transactions[j].strike;
@@ -734,7 +735,7 @@ class Client extends Component {
                 transac.comms = transactions[j].b_commission;
                 transac.tcomms =
                   Math.round(
-                    parseFloat(transactions[j].b_commission) * size * 100
+                    parseFloat(transactions[j].b_tcomm) * 100
                   ) / 100;
                 transac.price = transactions[j].price;
                 transac.strike = transactions[j].strike;
@@ -775,7 +776,7 @@ class Client extends Component {
                 transac.comms = transactions[j].s_commission;
                 transac.tcomms =
                   Math.round(
-                    parseFloat(transactions[j].s_commission) * size * 100
+                    parseFloat(transactions[j].s_tcomm) * 100
                   ) / 100;
                 transac.price = transactions[j].price;
                 transac.strike = transactions[j].strike;
