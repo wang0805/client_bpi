@@ -71,7 +71,8 @@ class Creditnote extends Component {
     transactions: [],
     tradeId: 0,
     client_id: 0,
-    client: {}
+    client: {},
+    allCheck: true,
   };
 
   async componentDidMount() {
@@ -294,10 +295,24 @@ class Creditnote extends Component {
   //   }
   //   await this.setState({ clientarr });
   // };
+
+  handleChange4 = (e) => {
+    // uncheck the selected clients > put the unselected clients into a new [] selectedclientarr
+    const {clientarr} = this.state
+    // console.log(name, clientarr)
+    for (let i = 0; i < clientarr.length; i++){
+      clientarr[i].checked = e.target.checked;
+    }
+    this.setState({
+      clientarr: [...clientarr],
+      allCheck: e.target.checked,
+    })
+  }
+
   handleChange3 = (name) => async (e) => {
     // uncheck the selected clients > put the unselected clients into a new [] selectedclientarr
     const {clientarr} = this.state
-    // console.log(name)
+    // console.log(name, clientarr)
     for (let i = 0; i < clientarr.length; i++){
       if(clientarr[i].id === name){
         clientarr[i].checked = e.target.checked;
@@ -320,7 +335,7 @@ class Creditnote extends Component {
         this.setState({tradeId: 0})
     }
     this.setState({[e.target.name]: e.target.value}, ()=>{
-        if (e.target.name === "client_id"){
+        // if (e.target.name === "client_id"){
             // let clients = [...this.state.clients];
             let client = {}
             for (let i =0; i<clients.length; i++){
@@ -431,10 +446,10 @@ class Creditnote extends Component {
                     clientarr.push(transac)
                   }
               }
-              console.log(clientarr)
+              // console.log(clientarr)
               this.setState({ clientarr });
             })
-        }
+        // }
     })
   }
 
@@ -513,7 +528,7 @@ class Creditnote extends Component {
             }
             // console.log(transac)
             this.setState({clientarr: [...this.state.clientarr, transac]},()=>{
-                console.log(this.state.clientarr)
+                // console.log(this.state.clientarr)
             })
         })
   }
@@ -619,7 +634,7 @@ class Creditnote extends Component {
     const disabled = this.state.disabled;
 
     let headers = [
-      "Select",
+      // "Select",
       "Id",
       "Trade Date",
       "Client",
@@ -847,6 +862,13 @@ class Creditnote extends Component {
               <Table>
                 <TableHead>
                   <TableRow>
+                    <CustomTableCell align="center" >
+                      <Checkbox
+                        checked={this.state.allCheck}
+                        onChange={this.handleChange4}
+                        value={0}
+                      />
+                    </CustomTableCell>
                     {headers.map((field, index) => (
                       <CustomTableCell align="center" key={index}>
                         {field}
