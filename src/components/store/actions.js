@@ -30,6 +30,7 @@ export function fetchClients() {
           let commission_ncf = 0;
           let commission_st = 0;
           let commission_sc = 0;
+          let commission_atw = 0;
           let idb = "";
           let id = "";
           let entity = "";
@@ -53,6 +54,7 @@ export function fetchClients() {
               commission_ncf = data[j].commission_ncf;
               commission_st = data[j].commission_st;
               commission_sc = data[j].commission_sc;
+              commission_atw = data[j].commission_atw;
               idb = data[j].idb;
               entity = data[j].entity;
               in_sg = data[j].in_sg;
@@ -73,6 +75,7 @@ export function fetchClients() {
             commission_ncf: commission_ncf,
             commission_st: commission_st,
             commission_sc: commission_sc,
+            commission_atw: commission_atw,
             recap_emails: recap_emails,
             invoice_emails: invoice_emails,
             idb: idb,
