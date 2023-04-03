@@ -68,6 +68,7 @@ class Client extends Component {
     invoiceNoUK: 0,
     disabled: true,
     transactions: [],
+    allCheck: false
   };
 
   async componentDidMount() {
@@ -315,6 +316,8 @@ class Client extends Component {
       for (let i = 0; i < this.state.clients.length; i++) {
         if (this.state.clients[i].checked === true) {
           clientarr = [];
+          let total = 0;
+
           for (let j = 0; j < transactions.length; j++) {
             let transac = {};
             let dateMonth = new Date(transactions[j].trade_date).getMonth() + 1;
@@ -407,75 +410,82 @@ class Client extends Component {
               clientarr.push(transac);
             }
           }
-
-          let invoiceNo = 0;
-          if (clientarr[0].entity === "HK") {
-            invoiceNo = this.state.invoiceNoHK;
-          } else if (clientarr[0].entity === "SG") {
-            invoiceNo = this.state.invoiceNoSG;
-          } else if (clientarr[0].entity === "UK") {
-            invoiceNo = this.state.invoiceNoUK;
+          for (let n = 0; n < clientarr.length; n++) {
+            total += clientarr[n].tcomms;
           }
-          
-          //finish pushing all the transaction of 1 client
-          let dataState = {
-            client: [...clientarr],
-            exrate: this.state.exrate,
-            invoiceNo: invoiceNo,
-            fromM: this.state.fromM,
-            toM: this.state.toM,
-            year: this.state.year,
-          };
+          if (clientarr.length > 0 && total !== 0) {
 
-          await axios
-            .post("/createpdf", dataState)
-            .then(() => axios.get("/getpdf", { responseType: "blob" }))
-            .then((res) => {
-              const pdfBlob = new Blob([res.data], {
-                type: "application/pdf",
+            let invoiceNo = 0;
+            if (clientarr[0].entity === "HK") {
+              invoiceNo = this.state.invoiceNoHK;
+            } else if (clientarr[0].entity === "SG") {
+              invoiceNo = this.state.invoiceNoSG;
+            } else if (clientarr[0].entity === "UK") {
+              invoiceNo = this.state.invoiceNoUK;
+            }
+            
+            //finish pushing all the transaction of 1 client
+            let dataState = {
+              client: [...clientarr],
+              exrate: this.state.exrate,
+              invoiceNo: invoiceNo,
+              fromM: this.state.fromM,
+              toM: this.state.toM,
+              year: this.state.year,
+            };
+
+            await axios
+              .post("/createpdf", dataState)
+              .then(() => axios.get("/getpdf", { responseType: "blob" }))
+              .then((res) => {
+                const pdfBlob = new Blob([res.data], {
+                  type: "application/pdf",
+                });
+                saveAs(pdfBlob, `${invoiceNo}.pdf`);
               });
-              saveAs(pdfBlob, `${invoiceNo}.pdf`);
-            });
-          let data = {
-            invoiceNo: invoiceNo,
-            invoice_emails: clientarr[0].invoice_emails,
-            client: clientarr[0].client,
-            toM: this.state.toM,
-            year: this.state.year,
-          };
+            let data = {
+              invoiceNo: invoiceNo,
+              invoice_emails: clientarr[0].invoice_emails,
+              client: clientarr[0].client,
+              toM: this.state.toM,
+              year: this.state.year,
+            };
 
-          await fetch("/sendpdf", {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          })
-            .then(() => {
-              if (clientarr[0].entity === "HK") {
-                this.setState((prevState) => ({
-                  invoiceNoHK: parseInt(prevState.invoiceNoHK) + 1,
-                }));
-              } else if (clientarr[0].entity === "SG") {
-                this.setState((prevState) => ({
-                  invoiceNoSG: parseInt(prevState.invoiceNoSG) + 1,
-                }));
-              } else if (clientarr[0].entity === "UK") {
-                this.setState((prevState) => ({
-                  invoiceNoUK: parseInt(prevState.invoiceNoUK) + 1,
-                }));
-              } else {
-                console.log("submit function cannot find entity");
-              }
-              //   this.setState((prevState) => ({
-              //     invoiceNo: parseInt(prevState.invoiceNo) + 1,
-              //   }));
+            await fetch("/sendpdf", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
             })
-            .catch((error) => {
-              console.error("error: ", error);
-              alert("Error in sending email, please try again");
-            });
+              .then(() => {
+                if (clientarr[0].entity === "HK") {
+                  this.setState((prevState) => ({
+                    invoiceNoHK: parseInt(prevState.invoiceNoHK) + 1,
+                  }));
+                } else if (clientarr[0].entity === "SG") {
+                  this.setState((prevState) => ({
+                    invoiceNoSG: parseInt(prevState.invoiceNoSG) + 1,
+                  }));
+                } else if (clientarr[0].entity === "UK") {
+                  this.setState((prevState) => ({
+                    invoiceNoUK: parseInt(prevState.invoiceNoUK) + 1,
+                  }));
+                } else {
+                  console.log("submit function cannot find entity");
+                }
+                //   this.setState((prevState) => ({
+                //     invoiceNo: parseInt(prevState.invoiceNo) + 1,
+                //   }));
+              })
+              .catch((error) => {
+                console.error("error: ", error);
+                alert("Error in sending email, please try again");
+              });
+            } else {
+              console.log(`no invoice for ${this.state.clients[i].client}`);
+            }
           //   console.log(i, "next if");
         }
       }
@@ -678,6 +688,19 @@ class Client extends Component {
       }
     }
   };
+
+  handleChange0 = (e) => {
+    const {clients} = this.state
+    
+    for (let i = 0; i < clients.length; i++){
+      clients[i].checked = e.target.checked;
+    }
+    this.setState({
+      clients: [...clients],
+      allCheck: e.target.checked,
+    })
+
+  }
 
   handleChange1 = (e) => {
     // to prevent e.target.name to go back to null
@@ -936,7 +959,13 @@ class Client extends Component {
       <Fdashboard>
         <div className={classes.root}>
           <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend">Select Clients</FormLabel>
+            <FormLabel component="legend">Select Clients
+            <Checkbox 
+              checked={this.state.allCheck}
+              onChange={this.handleChange0}
+              value={0}
+            />
+            </FormLabel>
             <FormGroup>
               {clients.map((client, index) => {
                 return (
