@@ -11,7 +11,9 @@ export function fetchClients() {
         let clients = [" "];
         let clientsObj = [];
         for (let i = 0; i < data.length; i++) {
+          if(data[i].inactive !== 1){
           clients.push(data[i].client_name);
+          }
         }
         clients = [...new Set(clients)];
         for (let i = 0; i < clients.length; i++) {
