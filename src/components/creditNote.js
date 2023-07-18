@@ -390,7 +390,7 @@ class Creditnote extends Component {
                     transac.comms = transactions[i].b_commission;
                     transac.tcomms =
                       Math.round(
-                        parseFloat(transactions[i].b_commission) * size * 100
+                        parseFloat(transactions[i].b_tcomm) * 100
                       ) / 100;
                     transac.price = transactions[i].price;
                     transac.strike = transactions[i].strike;
@@ -431,7 +431,7 @@ class Creditnote extends Component {
                     transac.comms = transactions[i].s_commission;
                     transac.tcomms =
                       Math.round(
-                        parseFloat(transactions[i].s_commission) * size * 100
+                        parseFloat(transactions[i].s_tcomm) * 100
                       ) / 100;
                     transac.price = transactions[i].price;
                     transac.strike = transactions[i].strike;
@@ -482,7 +482,7 @@ class Creditnote extends Component {
                 transac.comms = data.b_commission;
                 transac.tcomms =
                 Math.round(
-                    parseFloat(data.b_commission) * size * 100
+                  parseFloat(data.b_tcomm) * 100
                 ) / 100;
                 transac.price = data.price;
                 transac.strike = data.strike;
@@ -515,7 +515,7 @@ class Creditnote extends Component {
                 transac.comms = data.s_commission;
                 transac.tcomms =
                 Math.round(
-                    parseFloat(data.s_commission) * size * 100
+                    parseFloat(data.s_tcomm) * 100
                 ) / 100;
                 transac.price = data.price;
                 transac.strike = data.strike;
@@ -584,7 +584,7 @@ class Creditnote extends Component {
       invoiceNo: invoiceNo,
       invoice_emails: this.state.clientarr[0].invoice_emails,
       client: this.state.clientarr[0].client,
-      toM: this.state.toM,
+      fromM: this.state.fromM,
       year: this.state.year,
     };
     if (

@@ -171,7 +171,7 @@ class Client extends Component {
 
   handleChange = (name) => async (event) => {
     const { transactions } = this.state;
-    console.log(transactions)
+    // console.log(transactions)
 
     let clients = [...this.state.clients];
     for (let i = 0; i < clients.length; i++) {
@@ -223,6 +223,7 @@ class Client extends Component {
             transac.invoice_emails = clients[i].invoice_emails;
             transac.trade_date = date;
             transac.client = clients[i].client;
+            transac.clientid = clients[i].id;
             transac.product = transactions[j].product;
             transac.instrument = transactions[j].instrument;
             transac.bs = "Buy";
@@ -265,6 +266,7 @@ class Client extends Component {
             transac.invoice_emails = clients[i].invoice_emails;
             transac.trade_date = date;
             transac.client = clients[i].client;
+            transac.clientid = clients[i].id;
             transac.product = transactions[j].product;
             transac.instrument = transactions[j].instrument;
             transac.bs = "Sell";
@@ -345,6 +347,7 @@ class Client extends Component {
               transac.invoice_emails = clients[i].invoice_emails;
               transac.trade_date = date;
               transac.client = clients[i].client;
+              transac.clientid = clients[i].id;
               transac.product = transactions[j].product;
               transac.instrument = transactions[j].instrument;
               transac.bs = "Buy";
@@ -387,6 +390,7 @@ class Client extends Component {
               transac.invoice_emails = clients[i].invoice_emails;
               transac.trade_date = date;
               transac.client = clients[i].client;
+              transac.clientid = clients[i].id;
               transac.product = transactions[j].product;
               transac.instrument = transactions[j].instrument;
               transac.bs = "Sell";
@@ -541,6 +545,7 @@ class Client extends Component {
             transac.invoice_emails = clients[i].invoice_emails;
             transac.trade_date = date;
             transac.client = clients[i].client;
+            transac.clientid = clients[i].id;
             transac.product = transactions[j].product;
             transac.instrument = transactions[j].instrument;
             transac.bs = "Buy";
@@ -583,6 +588,7 @@ class Client extends Component {
             transac.invoice_emails = clients[i].invoice_emails;
             transac.trade_date = date;
             transac.client = clients[i].client;
+            transac.clientid = clients[i].id;
             transac.product = transactions[j].product;
             transac.instrument = transactions[j].instrument;
             transac.bs = "Sell";
@@ -715,7 +721,6 @@ class Client extends Component {
           this.getMon(this.state.toM)
         );
         let clientarr = [];
-
         // set a new array for clientarr to go into pdf
         for (let i = 0; i < this.state.clients.length; i++) {
           if (this.state.clients[i].checked === true) {
@@ -749,6 +754,7 @@ class Client extends Component {
                 transac.invoice_emails = clients[i].invoice_emails;
                 transac.trade_date = date;
                 transac.client = clients[i].client;
+                transac.clientid = clients[i].id;
                 transac.product = transactions[j].product;
                 transac.instrument = transactions[j].instrument;
                 transac.bs = "Buy";
@@ -790,6 +796,7 @@ class Client extends Component {
                 transac.invoice_emails = clients[i].invoice_emails;
                 transac.trade_date = date;
                 transac.client = clients[i].client;
+                transac.clientid = clients[i].id;
                 transac.product = transactions[j].product;
                 transac.instrument = transactions[j].instrument;
                 transac.bs = "Sell";
@@ -836,6 +843,7 @@ class Client extends Component {
       toM: this.state.toM,
       year: this.state.year,
     };
+  
     axios
       .post("/createpdf", dataState)
       .then(() => axios.get("/getpdf", { responseType: "blob" }))
