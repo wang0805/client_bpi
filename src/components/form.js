@@ -73,6 +73,8 @@ class Form extends Component {
     deal_id: null,
     brokers: [],
     contract_size: 100,
+    unit: "MT",
+    calculation: "",
   };
 
   async componentDidMount() {
@@ -134,11 +136,11 @@ class Form extends Component {
       execTime: date.toLocaleTimeString("en-US", options).substring(0, 5),
     });
     try {
-      fetch("/api/products")
-        .then((res) => res.json())
-        .then((data) => {
-          this.setState({ productsObj: data });
-        });
+      // fetch("/api/products")
+      //   .then((res) => res.json())
+      //   .then((data) => {
+      //     this.setState({ productsObj: data });
+      //   });
       fetch("/api/instruments")
         .then((res) => res.json())
         .then((data) => {
@@ -161,7 +163,10 @@ class Form extends Component {
         for (let i = 0; i < this.props.productsObj.length; i++) {
           if (this.props.productsObj[i].code === e.target.value) {
             this.setState(
-              { contract_size: this.props.productsObj[i].consize },
+              { contract_size: this.props.productsObj[i].consize, 
+                unit: this.props.productsObj[i].unit,
+                calculation: this.props.productsObj[i].calculation
+              },
               () => {
                 // console.log(this.state.contract_size);
               }
@@ -199,6 +204,7 @@ class Form extends Component {
       }
     }
   };
+
   //commission to set as commission_productcode
   handleChangeS = (x) => (e) => {
     this.setState({ [x]: e.target.value });
@@ -492,7 +498,7 @@ class Form extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-
+  
     let toM = this.getMon(this.state.toM);
     let fromM = this.getMon(this.state.fromM);
     let consMonth = toM - fromM + 1;
@@ -525,6 +531,22 @@ class Form extends Component {
         this.state.year;
     }
 
+    let volume = parseInt(this.state.qty) * this.state.contract_size * consMonth
+
+    let s_tcomm;
+    let b_tcomm;
+
+    // if % will be calculated by notional
+    if (this.state.calculation === "%"){
+      s_tcomm = volume*this.state.price*parseFloat(this.state.s_comms)/100
+      b_tcomm = volume*this.state.price*parseFloat(this.state.b_comms)/100
+    }
+    else {
+      s_tcomm = volume*parseFloat(this.state.s_comms);
+      b_tcomm = volume*parseFloat(this.state.b_comms);
+    }
+
+
     if (
       window.confirm(
         `Please check the below info:
@@ -553,6 +575,9 @@ class Form extends Component {
         ...this.state,
         consMonth: consMonth,
         contract: contract,
+        volume: volume,
+        s_tcomm: s_tcomm,
+        b_tcomm: b_tcomm
       };
       // post to transaction
       fetch("/api/transactions", {
@@ -589,6 +614,7 @@ class Form extends Component {
   };
 
   render() {
+
     const { classes } = this.props;
     let b_traders = [];
     let b_accounts = [];
@@ -599,6 +625,9 @@ class Form extends Component {
     this.loopFunc("accounts", b_accounts);
     this.sloopFunc("traders", s_traders);
     this.sloopFunc("accounts", s_accounts);
+
+    // console.log(this.props.productsObj)
+    // console.log(this.state.unit)
 
     let year = (
       <FormControl className={classes.dateControl} variant="outlined">

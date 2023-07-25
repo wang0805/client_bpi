@@ -399,6 +399,7 @@ class Creditnote extends Component {
                     transac.contract = transactions[i].contract;
                     transac.deal_id = transactions[i].deal_id;
                     transac.deduct_broker_comms = this.state.client.deduct_broker_comms;
+                    transac.unit = transactions[i].unit;
                     transac.checked = true
                   }
                 if(transactions[i].s_clientid === Number(this.state.client_id) &&
@@ -440,6 +441,7 @@ class Creditnote extends Component {
                     transac.contract = transactions[i].contract;
                     transac.deal_id = transactions[i].deal_id;
                     transac.deduct_broker_comms = this.state.client.deduct_broker_comms;
+                    transac.unit = transactions[i].unit;
                     transac.checked = true
                   }
                   if (Object.keys(transac).length){
@@ -491,6 +493,7 @@ class Creditnote extends Component {
                 transac.contract = data.contract;
                 transac.deal_id = data.deal_id;
                 transac.deduct_broker_comms = this.state.client.deduct_broker_comms;
+                transac.unit = data.unit;
                 transac.checked = true
             }
             if (Number(data.s_clientid) === Number(this.state.client.id)) {
@@ -524,6 +527,7 @@ class Creditnote extends Component {
                 transac.contract = data.contract;
                 transac.deal_id = data.deal_id;
                 transac.deduct_broker_comms = this.state.client.deduct_broker_comms;
+                transac.unit = data.unit;
                 transac.checked = true
             }
             // console.log(transac)

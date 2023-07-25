@@ -242,6 +242,7 @@ class Client extends Component {
             transac.contract = transactions[j].contract;
             transac.deal_id = transactions[j].deal_id;
             transac.deduct_broker_comms = clients[i].deduct_broker_comms;
+            transac.unit = transactions[j].unit;
           }
           if (
             transactions[j].s_clientid === clients[i].id &&
@@ -285,6 +286,7 @@ class Client extends Component {
             transac.contract = transactions[j].contract;
             transac.deal_id = transactions[j].deal_id;
             transac.deduct_broker_comms = clients[i].deduct_broker_comms;
+            transac.unit = transactions[j].unit;
           }
           //**** take note that since we are only pushing 1x transac, if buyers and sellers are the same entity then only 1 will be pushed
           // resulting in a missing txn in invoice
@@ -366,6 +368,7 @@ class Client extends Component {
               transac.contract = transactions[j].contract;
               transac.deal_id = transactions[j].deal_id;
               transac.deduct_broker_comms = clients[i].deduct_broker_comms;
+              transac.unit = transactions[j].unit;
             }
             if (
               transactions[j].s_clientid === clients[i].id &&
@@ -409,6 +412,7 @@ class Client extends Component {
               transac.contract = transactions[j].contract;
               transac.deal_id = transactions[j].deal_id;
               transac.deduct_broker_comms = clients[i].deduct_broker_comms;
+              transac.unit = transactions[j].unit;
             }
             if (Object.keys(transac).length) {
               clientarr.push(transac);
@@ -564,6 +568,7 @@ class Client extends Component {
             transac.contract = transactions[j].contract;
             transac.deal_id = transactions[j].deal_id;
             transac.deduct_broker_comms = clients[i].deduct_broker_comms;
+            transac.unit = transactions[j].unit;
           }
           if (
             transactions[j].s_clientid === clients[i].id &&
@@ -607,6 +612,7 @@ class Client extends Component {
             transac.contract = transactions[j].contract;
             transac.deal_id = transactions[j].deal_id;
             transac.deduct_broker_comms = clients[i].deduct_broker_comms;
+            transac.unit = transactions[j].unit;
           }
           if (Object.keys(transac).length) {
             clientarr.push(transac);
@@ -772,6 +778,8 @@ class Client extends Component {
                 transac.size = size;
                 transac.contract = transactions[j].contract;
                 transac.deal_id = transactions[j].deal_id;
+                transac.deduct_broker_comms = clients[i].deduct_broker_comms;
+                transac.unit = transactions[j].unit;
               }
               if (
                 transactions[j].s_clientid === clients[i].id &&
@@ -814,6 +822,8 @@ class Client extends Component {
                 transac.size = size;
                 transac.contract = transactions[j].contract;
                 transac.deal_id = transactions[j].deal_id;
+                transac.deduct_broker_comms = clients[i].deduct_broker_comms;
+                transac.unit = transactions[j].unit;
               }
               if (Object.keys(transac).length) {
                 clientarr.push(transac);
