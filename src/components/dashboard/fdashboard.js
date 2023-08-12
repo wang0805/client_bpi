@@ -208,6 +208,14 @@ class Fdashboard extends React.Component {
             </ListItem>
           </List>
           <List>
+            <ListItem button component={Link} to="/report">
+              <ListItemIcon>
+                <FileCopy />
+              </ListItemIcon>
+              <ListItemText primary={"Report"} />
+            </ListItem>
+          </List>
+          <List>
             <ListItem button component={Link} to="/invoice">
               <ListItemIcon>
                 <MonetizationOn />
