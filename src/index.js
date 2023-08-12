@@ -11,6 +11,7 @@ import Form from "./components/form";
 // import Client from "./components/client";
 import Client2 from "./components/client2";
 import Creditnote from "./components/creditNote";
+import Report from "./components/report";
 
 import Blotter from "./components/blotter";
 import Manualinput from "./components/manualinput";
@@ -32,6 +33,7 @@ const Routing = (props) => (
         <Route path="/login" render={() => <Login />} />
         <Route path="/form" component={Form} />
         <Route path="/blotter" component={Blotter} />
+        <Route path="/report" component={Report} />
         <Route path="/invoice" component={Client2} />
         <Route path="/creditnote" component={Creditnote} />
         <Route path="/transactions/:id" component={Edit} />
